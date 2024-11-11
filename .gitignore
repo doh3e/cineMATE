@@ -1,0 +1,81 @@
+# ======== Vue.js ========
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build Output
+/dist/
+/build/
+public/
+
+# Vue CLI
+/.env
+/.env.*.local
+/.env.local
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+
+# ======== Django ========
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+*.db
+
+# Virtual Environment
+venv/
+env/
+.env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+
+# MacOS
+.DS_Store
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Environment variables
+.env
+*.env
+
+# Test coverage
+coverage.xml
+*.cover
+*.hypothesis/
+*.tox/
+
+# pyenv
+.python-version
+
+# Django migrations
+*/migrations/
+
+# Static files (if not using git for static)
+staticfiles/
