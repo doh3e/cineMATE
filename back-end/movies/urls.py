@@ -4,5 +4,6 @@ from . import views
 
 app_name = "movies"
 urlpatterns = [
-    path('', views.index, name="index"),
+    path('', views.index),
+    path('load-top-list/', views.load_top_rated_data),
 ]

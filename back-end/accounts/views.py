@@ -4,6 +4,8 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 # Create your views here.
