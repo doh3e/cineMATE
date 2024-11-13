@@ -12,5 +12,5 @@ def user_directory_path(instance, filename):
 class User(AbstractUser):
     nickname = models.CharField(max_length=50)
     profile_image = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
-    birthday = models.DateField()
+    birthday = models.DateField(null=True, blank=True)
     followings = models.ManyToManyField('self', symmetrical=False, related_name='followers')

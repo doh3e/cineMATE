@@ -1,11 +1,9 @@
 <!-- src/components/MovieListItem.vue -->
 <template>
-  <li class="movie-item">
-    <h3>{{ movie.movie_title }}</h3>
-    <p>{{ movie.movie_overview }}</p>
-    <p>Rating: {{ movie.movie_rating }}</p>
-    <img :src="getImageUrl(movie.poster_path)" alt="Poster" v-if="movie.poster_path">
-  </li>
+  <div class="movie-item">
+    <img :src="getImageUrl(movie.poster_path)" alt="Poster" v-if="movie.poster_path" id="movie-poster">
+    <h4>{{ movie.movie_title }} ({{ movie.movie_rating }})</h4>
+  </div>
 </template>
 
 <script setup>
@@ -21,6 +19,23 @@ function getImageUrl(path) {
 
 <style scoped>
 .movie-item {
-  margin: 10px 0;
+  flex: 1 1 200px; /* 기본 너비를 200px로 설정하고 공간에 맞게 늘어남 */
+  max-width: 220px; /* 최대 너비 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#movie-poster {
+  width: 200px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 4px;
 }
 </style>

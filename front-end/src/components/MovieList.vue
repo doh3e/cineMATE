@@ -1,8 +1,8 @@
 <!-- src/components/MovieList.vue -->
 <template>
-  <ul>
+  <div class="movielist-box">
     <MovieListItem v-for="movie in movies" :key="movie.id" :movie="movie" />
-  </ul>
+  </div>
 </template>
 
 <script setup>
@@ -14,5 +14,15 @@ const props = defineProps({
 </script>
 
 <style scoped>
-/* 스타일을 여기에 추가할 수 있습니다 */
+.movielist-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
 </style>

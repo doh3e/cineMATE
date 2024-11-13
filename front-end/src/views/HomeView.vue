@@ -1,44 +1,96 @@
 <template>
-  <main>
+  <header class="header">
+    <nav>
+      <p v-if="store.userInfo">내 친구, {{ store.userInfo.username }}!</p>
+      <p v-else>로그인하세요</p>
+    </nav>
+  </header>
+
+  <main class="home-main">
     <h1>Top Rated Movies</h1>
-    <ul>
-      <MovieListItem v-for="movie in movies" :key="movie.id" :movie="movie" />
-    </ul>
+    <div v-if="Array.isArray(store.top_movies) && store.top_movies.length > 0" class="movielist-box">
+      <MovieListItem v-for="movie in store.top_movies" :key="movie.id" :movie="movie" />
+    </div>
+    <h3 v-else>영화 데이터를 불러오는 중입니다...</h3>
+    <div ref="loadMoreTrigger" v-if="store.hasMore" class="loading">
+      <p>Loading more movies...</p>
+    </div>
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import MovieListItem from '@/components/MovieListItem.vue'
-import axios from '@/axios'  // 기본 URL 설정된 axios 사용
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useCounterStore } from '@/stores/counter';
+import MovieListItem from '@/components/MovieListItem.vue';
 
-const movies = ref([])
+const store = useCounterStore();
+const observer = ref(null);
+const loadMoreTrigger = ref(null);
 
 onMounted(async () => {
-  const isMoviesLoaded = localStorage.getItem('movies_loaded')
+  store.resetPagination();
+  window.scrollTo(0, 0);
 
-  if (!isMoviesLoaded) {
-    try {
-      const loadResponse = await axios.get('/movies/load-top-list/')
-      if (loadResponse.data.success) {
-        localStorage.setItem('movies_loaded', 'true')
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        console.log("영화 데이터가 이미 존재합니다.")
-        localStorage.setItem('movies_loaded', 'true')
-      } else {
-        console.error("영화 데이터를 불러오는 중 오류 발생:", error)
-      }
-    }
-  }
   try {
-    const response = await axios.get('/movies/')
-    movies.value = response.data
-    console.log("불러온 영화 데이터:", movies.value)
+    await store.getUserInfo();
+    console.log("유저 정보:", store.userInfo);
   } catch (error) {
-    console.error("영화 데이터를 불러오는 중 오류 발생:", error)
+    console.error("유저 정보를 불러오는 중 오류 발생:", error);
   }
-})
 
+  await store.loadMovies();
+
+  observer.value = new IntersectionObserver(async (entries) => {
+    if (entries[0].isIntersecting && store.hasMore) {
+      await store.loadMovies();
+    }
+  });
+
+  if (loadMoreTrigger.value) {
+    observer.value.observe(loadMoreTrigger.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (observer.value && loadMoreTrigger.value) {
+    observer.value.unobserve(loadMoreTrigger.value);
+  }
+});
 </script>
+
+<style scoped>
+.header {
+  width: 100%;
+  background-color: #f8f8f8;
+  padding: 1em;
+  text-align: center;
+  font-weight: bold;
+}
+
+.home-main {
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 50px;
+}
+.loading {
+  text-align: center;
+  padding: 1em;
+}
+
+.movielist-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+</style>

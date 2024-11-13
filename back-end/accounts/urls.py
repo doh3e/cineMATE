@@ -1,10 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 
 app_name = "accounts"
 urlpatterns = [
-    path('sign-up/', views.signup, name="sign_up"),
-    path('log-in/', views.login, name="log_in"),
-    path('log-out/', views.logout, name="log_out"),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),  # 로그인, 로그아웃, 비밀번호 변경 등을 제공
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),  # 회원가입을 포함
 ]
