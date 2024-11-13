@@ -1,11 +1,20 @@
-from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .serializers import CustomTokenObtainPairSerializer
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import CustomUserSerializer
 
 
-# Create your views here.
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+
+class CustomUserInfoView(APIView):
+    authentication_classes = [JWTAuthentication]  # JWT 인증 클래스 추가
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
+    def get(self, request):
+        serializer = CustomUserSerializer(request.user)
+        return Response(serializer.data)

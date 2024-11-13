@@ -74,8 +74,8 @@ def index(request):
     paginator = PageNumberPagination()
     paginator.page_size = 20
 
-    movies = Movie.objects.all()
+    movies = Movie.objects.all().order_by('-movie_popularity')
     result_page = paginator.paginate_queryset(movies, request)
-    
+
     serializer = TopRatedMovieListSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'community',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'dj_rest_auth',
     'allauth',
     'allauth.account',
@@ -141,6 +143,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+DATE_FORMAT = 'Y-m-d'  # YYYY-MM-DD 형식으로 날짜를 직렬화
+DATETIME_FORMAT = 'Y-m-d H:i:s'  # YYYY-MM-DD HH:MM:SS 형식으로 날짜/시간을 직렬화
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -169,21 +173,19 @@ AUTH_USER_MODEL = 'accounts.User'
 
 
 # 회원가입 후 자동 로그인
-REST_AUTH_REGISTER_AUTO_LOGIN = True
+REST_AUTH_REGISTER_AUTO_LOGIN = False
 
-# 커스텀 시리얼라이저 사용
+ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserSerializer',
 }
-
-ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 
 REST_USE_JWT = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
@@ -192,6 +194,37 @@ REST_FRAMEWORK = {
     ],
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=180),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=50),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
 
 
 ##CORS

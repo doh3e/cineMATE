@@ -73,11 +73,9 @@ export default {
           headers: { 'Content-Type': 'multipart/form-data' },
         })
         if (response.status === 201) {
-          // 응답에서 토큰 저장 (로그인된 상태 유지용)
-          const token = response.data.key // 받은 토큰의 키 확인
-          localStorage.setItem('authToken', token) // 토큰을 localStorage에 저장
+          const token = response.data.key
+          localStorage.setItem('authToken', token)
 
-          // 홈으로 리다이렉트
           this.$router.push({ path: '/' })
         }
       } catch (error) {

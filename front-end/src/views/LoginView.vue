@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { useCounterStore } from '@/stores/counter'  // Pinia store를 import
+import { useCounterStore } from '@/stores/counter'
 
 export default {
   data() {
@@ -31,10 +31,10 @@ export default {
   },
   methods: {
     async handleLogin() {
-      const store = useCounterStore()  // Pinia store 인스턴스를 가져옴
+      const store = useCounterStore()
       try {
-        await store.login(this.form.username, this.form.password)  // store에서 login 메소드 호출
-        this.$router.push({ path: '/' })  // 로그인 후 홈으로 이동
+        await store.login(this.form.username, this.form.password)
+        this.$router.push({ path: '/' })
       } catch (error) {
         console.error('로그인 오류:', error)
         this.errorMessage = '로그인 실패. 다시 시도해주세요.'

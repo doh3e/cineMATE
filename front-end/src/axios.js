@@ -8,9 +8,9 @@ const authAxios = axios.create({
 })
 
 authAxios.interceptors.request.use(config => {
-  const token = localStorage.getItem('authToken')  // 여기서 localStorage에서 직접 가져옵니다.
+  const token = localStorage.getItem('authToken')
   if (token) {
-    config.headers['Authorization'] = `Token ${token}`
+    config.headers['Authorization'] = `Bearer ${token}`
   }
   return config
 })

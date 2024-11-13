@@ -1,7 +1,10 @@
 <template>
   <header class="header">
     <nav>
-      <p v-if="store.userInfo">내 친구, {{ store.userInfo.username }}!</p>
+      <!-- userInfo가 로드된 후에 id가 존재하는지 확인 -->
+      <p v-if="store.userInfo && store.userInfo.id">
+        내 친구, {{ store.userInfo.username }}!
+      </p>
       <p v-else>로그인하세요</p>
     </nav>
   </header>
@@ -30,13 +33,6 @@ const loadMoreTrigger = ref(null);
 onMounted(async () => {
   store.resetPagination();
   window.scrollTo(0, 0);
-
-  try {
-    await store.getUserInfo();
-    console.log("유저 정보:", store.userInfo);
-  } catch (error) {
-    console.error("유저 정보를 불러오는 중 오류 발생:", error);
-  }
 
   await store.loadMovies();
 
