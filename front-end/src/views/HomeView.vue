@@ -1,7 +1,12 @@
 <template>
 
   <div class="home-main">
-    <h1>Top Rated Movies</h1>
+    <div class="home-title">
+      <h1>CINEMATE에서 다양한 영화들을 만나보세요!</h1>
+    </div>
+    <div class="home-search">
+      <h3>여기에 검색창 하나 들어감 검색하면 밑에거 검색결과로 바뀌게</h3>
+    </div>
     <div v-if="Array.isArray(store.top_movies) && store.top_movies.length > 0" class="movielist-box">
       <MovieListItem v-for="movie in store.top_movies" :key="movie.id" :movie="movie" />
     </div>
@@ -55,7 +60,7 @@ onBeforeUnmount(() => {
 <style scoped>
 
 .home-main {
-  width: 100%;
+  width: 80%;
   height: 100vh;
   margin: 0 auto;
   display: flex;
@@ -64,6 +69,15 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 50px;
 }
+
+.home-title {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .loading {
   text-align: center;
   padding: 1em;

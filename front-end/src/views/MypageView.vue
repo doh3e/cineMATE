@@ -1,10 +1,28 @@
 <template>
   <div class="mypage-container">
-    <h1>마이페이지</h1>
+    <div class="mypage-title">
+      <h1>소행성 MV-{{store.userInfo.username}}</h1>
+    </div>
+    <div class="mypage-content">
+      <div class="mypage-mycard">
+
+      </div>
+      <div class="mypage-mymovie">
+
+      </div>
+      <div class="mypage-myreview">
+        
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
+
+import { useCounterStore } from '@/stores/counter';
+
+const store = useCounterStore()
+
 
 </script>
 

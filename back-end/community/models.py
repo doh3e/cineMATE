@@ -7,7 +7,8 @@ from movies.models import Genre
 class Review(models.Model):
     review_title = models.CharField(max_length=100)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_reviews', on_delete=models.CASCADE)
-    review_movie = models.CharField(max_length=200)
+    review_movie_title = models.CharField(max_length=200)
+    review_movie_code = models.IntegerField()
     genres = models.ManyToManyField(Genre)
     is_adult = models.BooleanField()
     overview = models.TextField(null=True, blank=True)

@@ -4,6 +4,8 @@ import HomeView from '../views/HomeView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LoginView from '@/views/LoginView.vue'
 import MypageView from '@/views/MypageView.vue'
+import RecommendView from '@/views/RecommendView.vue'
+import MovieforyouView from '@/views/MovieforyouView.vue'
 
 const routes = [
   {
@@ -25,6 +27,16 @@ const routes = [
     path: '/mypage',
     name: 'Mypage',
     component: MypageView,
+  },
+  {
+    path: '/recommend',
+    name: 'Recommend',
+    component: RecommendView,
+  },
+  {
+    path: '/movieforyou',
+    name: 'Movieforyou',
+    component: MovieforyouView,
   },
 ]
 

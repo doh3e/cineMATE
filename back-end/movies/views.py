@@ -41,6 +41,7 @@ def load_top_rated_data(request):
             break  # 100개 이상이면 종료
 
           movie = Movie.objects.create(
+            movie_code=item['id'],
             movie_title=item['title'],
             movie_overview=item['overview'],
             is_adult=item['adult'],
@@ -69,6 +70,7 @@ def load_top_rated_data(request):
     print("서버 오류 발생:", e)
     return JsonResponse({"error": "서버 오류가 발생했습니다."}, status=500)
 
+
 @api_view(['GET'])
 def index(request):
     paginator = PageNumberPagination()
@@ -79,3 +81,7 @@ def index(request):
 
     serializer = TopRatedMovieListSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
+
+
+def movie_detail(request, movie_code):
+  pass

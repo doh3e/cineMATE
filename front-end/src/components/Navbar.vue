@@ -6,7 +6,7 @@
         <li :class="{ 'current-page': $route.path === '/' }">HOME</li>
       </RouterLink>
 
-      <!-- 로그인 상태에 따른 메뉴 표시 -->
+      <!-- 비로그인 전용 -->
       <RouterLink v-if="!store.userInfo || !store.userInfo.id" :to="{ name: 'SignUp' }">
         <li :class="{ 'current-page': $route.path === '/signup' }">회원가입</li>
       </RouterLink>
@@ -14,12 +14,19 @@
         <li :class="{ 'current-page': $route.path === '/login' }">로그인</li>
       </RouterLink>
 
-      <!-- 로그인 상태일 경우 -->
+      <!-- 로그인 전용 -->
+      <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Recommend' }">
+        <li :class="{ 'current-page': $route.path === '/recommend' }">영화추천</li>
+      </RouterLink>
+      <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Movieforyou' }">
+        <li :class="{ 'current-page': $route.path === '/movieforyou' }">무비포유</li>
+      </RouterLink>
       <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Mypage' }">
-        <li :class="{ 'current-page': $route.path === '/mypage' }">마이페이지</li>
+        <li :class="{ 'current-page': $route.path === '/mypage' }">{{store.userInfo.nickname}}의 마이페이지</li>
       </RouterLink>
       <li v-if="store.userInfo && store.userInfo.id" @click="handleLogout">로그아웃</li>
     </ul>
+    
     <a href="#" class="navbar__toggleBtn" @click="toggleMenu">
       <i class="fa-solid fa-bars fa-xl" style="color: #F8F8F8;"></i>
     </a>
@@ -42,7 +49,7 @@ const handleScroll = () => {
   navbarOpacity.value = window.scrollY > 150 ? 0.8 : 1
 }
 
-// 마우스 hover 시 opacity 변경
+// 네비바 투명도 적용 상태에서 마우스 hover 시 opacity 변경
 const handleMouseEnter = () => {
   navbarOpacity.value = 1
 }
@@ -68,12 +75,11 @@ const toggleMenu = () => {
   menu.classList.toggle('active')
 }
 
-// 컴포넌트 마운트 시 스크롤 이벤트 리스너 추가
+// 스크롤 시 네비바 상태를 변경 (투명도, 위치 등)
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
 })
 
-// 컴포넌트 언마운트 시 이벤트 리스너 제거
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })

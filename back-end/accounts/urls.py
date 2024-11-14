@@ -9,7 +9,6 @@ urlpatterns = [
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 
-    # JWT 토큰 발급 및 갱신을 위한 URL 추가
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),  # 커스텀 JWT 토큰 발급
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),  # JWT 토큰 갱신
 ]
