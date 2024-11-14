@@ -1,39 +1,63 @@
 <template>
   <div>
-    <nav>
-      <RouterLink :to="{ name: 'Home' }">Home</RouterLink>
-      <!-- 유저 정보가 없으면 로그인/회원가입 링크 표시 -->
-      <RouterLink v-if="!store.userInfo || !store.userInfo.pk" :to="{ name: 'SignUp' }">Signup</RouterLink>
-      <RouterLink v-if="!store.userInfo || !store.userInfo.pk" :to="{ name: 'Login' }">Login</RouterLink>
-      <!-- 유저 정보가 있으면 로그아웃 버튼 표시 -->
-      <button v-else @click="handleLogout">Logout</button>
-    </nav>
+    <header class="header">
+      <img src="@/assets/img/logo_imsi.png" alt="" class="header-logo">
+      <Navbar :class="{ 'fixed-navbar': isNavbarFixed }" />
+    </header>
+    <main class="main">
+      <RouterView />
+    </main>
   </div>
-
-  <RouterView />
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useCounterStore } from './stores/counter'
+import { RouterView } from 'vue-router'
+import Navbar from './components/Navbar.vue'
+
 
 const store = useCounterStore()
-const router = useRouter()
+const isNavbarFixed = ref(false)
 
-onMounted(async () => {
-  await store.getUserInfo()
-  console.log('유저 정보:', store.userInfo); 
+onMounted(() => {
+  store.getUserInfo()
+  console.log('유저 정보:', store.userInfo)
+
+  window.addEventListener('scroll', handleScroll)
 })
 
-// 로그아웃 처리 함수
-const handleLogout = async () => {
-  try {
-    await store.logout()
-    alert('로그아웃 되었습니다!')
-    router.replace('/')
-  } catch (error) {
-    console.error('로그아웃 오류:', error)
-  }
+const handleScroll = () => {
+  isNavbarFixed.value = window.scrollY > 150
 }
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
+
+<style scoped>
+.header {
+  width: 100%;
+  position: relative;
+  z-index: 9999; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-logo {
+  width: 150px;
+  object-fit: cover;
+}
+
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+</style>

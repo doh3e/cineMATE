@@ -1,15 +1,6 @@
 <template>
-  <header class="header">
-    <nav>
-      <!-- userInfo가 로드된 후에 id가 존재하는지 확인 -->
-      <p v-if="store.userInfo && store.userInfo.id">
-        내 친구, {{ store.userInfo.username }}!
-      </p>
-      <p v-else>로그인하세요</p>
-    </nav>
-  </header>
 
-  <main class="home-main">
+  <div class="home-main">
     <h1>Top Rated Movies</h1>
     <div v-if="Array.isArray(store.top_movies) && store.top_movies.length > 0" class="movielist-box">
       <MovieListItem v-for="movie in store.top_movies" :key="movie.id" :movie="movie" />
@@ -18,13 +9,13 @@
     <div ref="loadMoreTrigger" v-if="store.hasMore" class="loading">
       <p>Loading more movies...</p>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useCounterStore } from '@/stores/counter';
-import MovieListItem from '@/components/MovieListItem.vue';
+import MovieListItem from '@/components/movies/MovieListItem.vue';
 
 const store = useCounterStore();
 const observer = ref(null);
@@ -45,6 +36,13 @@ onMounted(async () => {
   if (loadMoreTrigger.value) {
     observer.value.observe(loadMoreTrigger.value);
   }
+
+  await store.getUserInfo();
+});
+
+// store.userInfo를 감시하여 값이 업데이트될 때마다 반영
+watch(() => store.userInfo, (newUserInfo) => {
+  console.log('Updated user info:', newUserInfo);
 });
 
 onBeforeUnmount(() => {
@@ -55,13 +53,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.header {
-  width: 100%;
-  background-color: #f8f8f8;
-  padding: 1em;
-  text-align: center;
-  font-weight: bold;
-}
 
 .home-main {
   width: 100%;

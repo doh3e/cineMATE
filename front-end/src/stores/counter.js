@@ -78,7 +78,8 @@ export const useCounterStore = defineStore('counter', () => {
         alert(`${userInfo.value.username}님, 어서오세요!`)
       }
     } catch (error) {
-      console.error('로그인 실패:', error)
+      alert('아이디 혹은 비밀번호를 다시 확인해주세요!')
+      next(false)
     }
   }
 
