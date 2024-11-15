@@ -4,6 +4,34 @@ import { authAxios, publicAxios } from '@/axios'
 
 
 export const useCounterStore = defineStore('counter', () => {
+
+  const GENRE_MAP = {
+    28: "액션",
+    12: "어드벤처",
+    16: "애니메이션",
+    35: "코미디",
+    80: "범죄",
+    99: "다큐멘터리",
+    18: "드라마",
+    10751: "가족",
+    14: "판타지",
+    36: "역사",
+    27: "공포",
+    10402: "음악",
+    9648: "미스터리",
+    10749: "로맨스",
+    878: "SF",
+    10770: "TV 영화",
+    53: "스릴러",
+    10752: "전쟁",
+    37: "서부"
+  }
+
+  // 장르 ID에 맞는 장르명 반환
+  const getGenreNameById = (id) => {
+    return GENRE_MAP[id] || "알 수 없음"
+  }
+  
   const top_movies = ref([])  // 영화 데이터
   const currentPage = ref(1)  // 페이지
   const hasMore = ref(true)  // 추가 데이터 유무
@@ -26,6 +54,7 @@ export const useCounterStore = defineStore('counter', () => {
     try {
       const response = await publicAxios.get(`/movies/?page=${currentPage.value}`)
       top_movies.value.push(...response.data.results)
+      console.log(response.data.results)
       currentPage.value += 1
       hasMore.value = response.data.next !== null
     } catch (error) {
@@ -95,7 +124,14 @@ export const useCounterStore = defineStore('counter', () => {
     }
   }
 
+  // TMDB 경로에서 포스터 이미지 받아오기
+  const getImageUrl = (path) => {
+    return `https://image.tmdb.org/t/p/w500${path}`
+  }
+
   return {
+    GENRE_MAP,
+    getGenreNameById,
     top_movies,
     currentPage,
     hasMore,
@@ -105,5 +141,6 @@ export const useCounterStore = defineStore('counter', () => {
     getUserInfo,
     login,
     logout,
+    getImageUrl
   }
 }, { persist: true })

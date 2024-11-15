@@ -6,6 +6,8 @@ import LoginView from '@/views/LoginView.vue'
 import MypageView from '@/views/MypageView.vue'
 import RecommendView from '@/views/RecommendView.vue'
 import MovieforyouView from '@/views/MovieforyouView.vue'
+import MovieDetail from '@/components/movies/MovieDetail.vue'
+
 
 const routes = [
   {

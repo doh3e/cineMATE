@@ -40,7 +40,7 @@ onUnmounted(() => {
 .header {
   width: 100%;
   position: relative;
-  z-index: 9999; 
+  z-index: 999; 
   display: flex;
   flex-direction: column;
   justify-content: center;

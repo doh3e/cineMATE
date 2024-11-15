@@ -10,7 +10,7 @@ from django.conf import settings
 import requests, json
 
 from .models import Movie, Genre
-from .serializers import TopRatedMovieListSerializer
+from .serializers import TopRatedMovieListSerializer, MovieDetailSerializer
 
 # Create your views here.
 
@@ -76,12 +76,8 @@ def index(request):
     paginator = PageNumberPagination()
     paginator.page_size = 20
 
-    movies = Movie.objects.all().order_by('-movie_popularity')
+    movies = Movie.objects.prefetch_related('genres').all().order_by('-movie_popularity')
     result_page = paginator.paginate_queryset(movies, request)
 
-    serializer = TopRatedMovieListSerializer(result_page, many=True)
+    serializer = MovieDetailSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
-
-
-def movie_detail(request, movie_code):
-  pass
