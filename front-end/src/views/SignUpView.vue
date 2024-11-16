@@ -36,56 +36,59 @@
   </div>
 </template>
 
-<script>
-import { authAxios, publicAxios } from '@/axios'
+<script setup>
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { publicAxios } from '@/axios'
 
-export default {
-  data() {
-    return {
-      form: {
-        username: '',
-        email: '',
-        password1: '',
-        password2: '',
-        nickname: '',
-        birthday: null,
-        profile_image: null,
-      },
-      errorMessage: '',
-    }
-  },
-  methods: {
-    handleImageUpload(event) {
-      this.form.profile_image = event.target.files[0]
-    },
-    async handleSignUp() {
-      const formData = new FormData()
-      for (const key in this.form) {
-        formData.append(key, this.form[key])
-      }
+// 데이터 정의
+const router = useRouter()
 
-      formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`)
-      })
+const form = reactive({
+  username: '',
+  email: '',
+  password1: '',
+  password2: '',
+  nickname: '',
+  birthday: null,
+  profile_image: null,
+})
 
-      try {
-        const response = await publicAxios.post('/accounts/dj-rest-auth/registration/', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        })
-        if (response.status === 201) {
-          const token = response.data.key
-          localStorage.setItem('authToken', token)
+const errorMessage = ref('')
 
-          this.$router.push({ path: '/' })
-        }
-      } catch (error) {
-        this.errorMessage = error.response?.data?.detail || '회원가입 실패. 다시 시도해주세요.'
-        console.error("회원가입 오류:", error.response?.data)
-      }
-    },
-  },
+// 이미지 업로드 처리
+const handleImageUpload = (event) => {
+  form.profile_image = event.target.files[0]
 }
 
+// 회원가입 처리
+const handleSignUp = async () => {
+  const formData = new FormData()
+  for (const key in form) {
+    formData.append(key, form[key])
+  }
+
+  formData.forEach((value, key) => {
+    console.log(`${key}: ${value}`) // 디버깅용 출력
+  })
+
+  try {
+    const response = await publicAxios.post('/accounts/dj-rest-auth/registration/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+
+    if (response.status === 201) {
+      const token = response.data.key
+      localStorage.setItem('authToken', token)
+      alert('회원가입을 환영합니다!')
+      router.push('/') // 홈으로 이동
+      window.location.reload() // 새로고침으로 상태 초기화
+    }
+  } catch (error) {
+    errorMessage.value = error.response?.data?.detail || '회원가입 실패. 다시 시도해주세요.'
+    console.error('회원가입 오류:', error.response?.data)
+  }
+}
 </script>
 
 <style scoped>

@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from .serializers import CustomUserSerializer
 
 from .models import User
+from movies.models import Bookmark, Like
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -19,5 +20,15 @@ class CustomUserInfoView(APIView):
 
     def get(self, request):
         user = User.objects.get(pk=request.user.pk)
+
+        bookmarked_movies = Bookmark.objects.filter(user=user).values_list('movie_id', flat=True)
+        liked_movies = Like.objects.filter(user=user).values_list('movie_id', flat=True)
+
         serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
+        user_data = serializer.data
+        user_data.update({
+            'bookmarked_movies': list(bookmarked_movies),
+            'liked_movies': list(liked_movies),
+        })
+
+        return Response(user_data)

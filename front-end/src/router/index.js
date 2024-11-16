@@ -4,9 +4,8 @@ import HomeView from '../views/HomeView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LoginView from '@/views/LoginView.vue'
 import MypageView from '@/views/MypageView.vue'
-import RecommendView from '@/views/RecommendView.vue'
+import MovieView from '@/views/MovieView.vue'
 import MovieforyouView from '@/views/MovieforyouView.vue'
-import MovieDetail from '@/components/movies/MovieDetail.vue'
 
 
 const routes = [
@@ -31,9 +30,21 @@ const routes = [
     component: MypageView,
   },
   {
-    path: '/recommend',
-    name: 'Recommend',
-    component: RecommendView,
+    path: '/movie',
+    name: 'Movie',
+    component: MovieView,
+    children: [
+      {
+        path: 'search',
+        name: 'MovieSearch',
+        component: () => import('@/components/movies/MovieSearch.vue'),
+      },
+      {
+        path: 'curating',
+        name: 'MovieCurating',
+        component: () => import('@/components/movies/MovieCurating.vue'),
+      },
+    ],
   },
   {
     path: '/movieforyou',

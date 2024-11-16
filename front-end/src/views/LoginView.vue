@@ -16,31 +16,29 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCounterStore } from '@/stores/counter'
 
-export default {
-  data() {
-    return {
-      form: {
-        username: '',
-        password: '',
-      },
-      errorMessage: '',
-    }
-  },
-  methods: {
-    async handleLogin() {
-      const store = useCounterStore()
-      try {
-        await store.login(this.form.username, this.form.password)
-        this.$router.push({ path: '/' })
-      } catch (error) {
-        console.error('로그인 오류:', error)
-        this.errorMessage = '로그인 실패. 다시 시도해주세요.'
-      }
-    },
-  },
+const store = useCounterStore()
+const router = useRouter()
+
+// 폼 데이터와 에러 메시지
+const form = ref({
+  username: '',
+  password: '',
+})
+const errorMessage = ref('')
+
+// 로그인 처리 함수
+const handleLogin = async () => {
+  try {
+    await store.login(form.value.username, form.value.password) // 로그인 요청
+    router.replace({ path: '/' }) // 뒤로 가기 불가능하게 replace 사용
+  } catch (error) {
+    errorMessage.value = '로그인 실패. 다시 시도해주세요.'
+  }
 }
 </script>
 

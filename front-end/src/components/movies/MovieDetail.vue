@@ -2,17 +2,18 @@
   <div v-if="movie && isVisible" class="modal-overlay" @click.self="close">
     <div class="modal-content">
       <button class="close-btn" @click="close">X</button>
-      <h2>{{ movie.movie_title }}</h2>
+      <h2 class="truncate">{{ movie.title }}</h2>
       <img :src="store.getImageUrl(movie.poster_path)" alt="Poster" v-if="movie.poster_path" id="movie-poster">
-      <p>평점: {{ movie.movie_rating }}</p>
+      <p>평점: {{ movie.vote_average }}</p>
       <p>장르: {{ genreNames.join(', ') }}</p>
+      <p>{{ movie.overview }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { useCounterStore } from '@/stores/counter';
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, onMounted } from 'vue';
 
 const store = useCounterStore();
 
@@ -33,9 +34,20 @@ const close = () => {
   emit('close')
 }
 
-const genreNames = computed(() => {
-  return props.movie.genres.map(genre => store.getGenreNameById(genre.id))
+const genreNames = ref([])
+
+const flattenGenreIds = (genreIds) => {
+  if (Array.isArray(genreIds) && genreIds.length > 0 && typeof genreIds[0] === 'object') {
+    return genreIds.map(genre => genre.id)
+  }
+  return genreIds
+}
+
+onMounted(() => {
+  const genreIds = flattenGenreIds(props.movie.genre_ids)
+  genreNames.value = genreIds.map(genreId => store.getGenreNameById(genreId))
 })
+
 
 </script>
 
@@ -70,4 +82,5 @@ const genreNames = computed(() => {
   font-size: 20px;
   cursor: pointer;
 }
+
 </style>

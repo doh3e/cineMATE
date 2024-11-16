@@ -1,23 +1,33 @@
 <template>
-  <nav class="navbar" :style="{ opacity: navbarOpacity }" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+  <nav class="navbar">
     <div class="navbar__logo">cineMATE</div>
-    <ul class="navbar__menu">
+    <ul :class="['navbar__menu', { active: isMenuActive }]">
       <RouterLink :to="{ name: 'Home' }">
         <li :class="{ 'current-page': $route.path === '/' }">HOME</li>
       </RouterLink>
-
-      <!-- 비로그인 전용 -->
       <RouterLink v-if="!store.userInfo || !store.userInfo.id" :to="{ name: 'SignUp' }">
         <li :class="{ 'current-page': $route.path === '/signup' }">회원가입</li>
       </RouterLink>
       <RouterLink v-if="!store.userInfo || !store.userInfo.id" :to="{ name: 'Login' }">
         <li :class="{ 'current-page': $route.path === '/login' }">로그인</li>
       </RouterLink>
-
-      <!-- 로그인 전용 -->
-      <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Recommend' }">
-        <li :class="{ 'current-page': $route.path === '/recommend' }">영화추천</li>
-      </RouterLink>
+      <!-- 드롭다운 메뉴 -->
+      <li
+        v-if="store.userInfo && store.userInfo.id"
+        class="dropdown-container"
+        @mouseenter="toggleDropdown(true)"
+        @mouseleave="toggleDropdown(false)"
+      >
+        <span :class="{ 'current-page': $route.path.includes('/movie') }">영화탐색</span>
+        <ul v-if="isDropdownOpen" class="dropdown-menu">
+          <RouterLink :to="{ name: 'MovieSearch' }">
+            <li :class="{ 'current-page': $route.name === 'MovieSearch' }">영화 검색</li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'MovieCurating' }">
+            <li :class="{ 'current-page': $route.name === 'MovieCurating' }">큐레이팅</li>
+          </RouterLink>
+        </ul>
+      </li>
       <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Movieforyou' }">
         <li :class="{ 'current-page': $route.path === '/movieforyou' }">무비포유</li>
       </RouterLink>
@@ -26,7 +36,6 @@
       </RouterLink>
       <li v-if="store.userInfo && store.userInfo.id" @click="handleLogout">로그아웃</li>
     </ul>
-    
     <a href="#" class="navbar__toggleBtn" @click="toggleMenu">
       <i class="fa-solid fa-bars fa-xl" style="color: #F8F8F8;"></i>
     </a>
@@ -34,22 +43,21 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useCounterStore } from '../stores/counter'
 import { useRouter } from 'vue-router'
-import { ref, onMounted, onUnmounted } from 'vue'
 
 const store = useCounterStore()
 const router = useRouter()
 
-// 초기 navbar 불투명도 설정
 const navbarOpacity = ref(1)
+const isMenuActive = ref(false)
+const isDropdownOpen = ref(false)
 
-// 스크롤에 따른 navbar 불투명도 변경
 const handleScroll = () => {
   navbarOpacity.value = window.scrollY > 150 ? 0.8 : 1
 }
 
-// 네비바 투명도 적용 상태에서 마우스 hover 시 opacity 변경
 const handleMouseEnter = () => {
   navbarOpacity.value = 1
 }
@@ -58,24 +66,25 @@ const handleMouseLeave = () => {
   navbarOpacity.value = window.scrollY > 150 ? 0.8 : 1
 }
 
-// 로그아웃 처리 함수
+const toggleDropdown = (state) => {
+  isDropdownOpen.value = state
+}
+
 const handleLogout = async () => {
   try {
     await store.logout()
     alert('로그아웃 되었습니다!')
     router.replace('/')
+    window.location.reload()
   } catch (error) {
     console.error('로그아웃 오류:', error)
   }
 }
 
-// 메뉴 토글 함수 (모바일에서)
 const toggleMenu = () => {
-  const menu = document.querySelector('.navbar__menu')
-  menu.classList.toggle('active')
+  isMenuActive.value = !isMenuActive.value
 }
 
-// 스크롤 시 네비바 상태를 변경 (투명도, 위치 등)
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
 })
@@ -121,7 +130,7 @@ onUnmounted(() => {
   text-align: center;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .navbar__menu li::after {
@@ -137,20 +146,20 @@ onUnmounted(() => {
   transition: width 0.3s ease;
 }
 
-.navbar__menu li:hover::after {
-  width: 50%;
-}
-
 .navbar__menu li:hover {
   color: #1F1F1F;
 }
 
-.navbar__menu .current-page::after {
+.navbar__menu li:hover::after {
   width: 50%;
 }
 
 .navbar__menu .current-page {
   color: #1F1F1F;
+}
+
+.navbar__menu .current-page::after {
+  width: 50%;
 }
 
 .navbar__toggleBtn {
@@ -159,6 +168,47 @@ onUnmounted(() => {
   display: none;
   z-index: 1;
 }
+
+/* 드롭다운 */ 
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #7469B6;
+  list-style: none;
+  padding: 15px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 250px; /* 드롭다운 크기 유지 */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-container:hover > .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu li {
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  color: #F8F8F8;
+  transition: color 0.3s ease;
+}
+
+.dropdown-menu li:hover {
+  color: #1F1F1F;
+}
+
+
+/* 화면이 작을 경우 */
 
 @media screen and (max-width: 700px) {
   .navbar__toggleBtn {

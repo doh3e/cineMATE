@@ -8,14 +8,37 @@ class Genre(models.Model):
     
 
 class Movie(models.Model):
-    movie_code = models.IntegerField()
-    movie_title = models.CharField(max_length=200)
-    movie_overview = models.TextField()
-    is_adult = models.BooleanField()
-    movie_popularity = models.FloatField()
-    movie_rating = models.FloatField() # vote_average
-    genres = models.ManyToManyField(Genre)
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=200)
+    overview = models.TextField()
+    adult = models.BooleanField()
+    popularity = models.FloatField()
+    vote_average = models.FloatField()
+    genre_ids = models.ManyToManyField(Genre)
     release_date = models.DateField()
     poster_path = models.CharField(max_length=200)
-    bookmarks = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='bookmarked_movies')
 
+
+class ActionBase(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    movie_id = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True  # 추상 클래스 (테이블 생성 안 함)
+        unique_together = ('user', 'movie_id')
+
+
+class Bookmark(ActionBase):
+    """북마크 모델"""
+    class Meta(ActionBase.Meta):
+        db_table = 'movies_bookmark'
+
+
+class Like(ActionBase):
+    """좋아요 모델"""
+    class Meta(ActionBase.Meta):
+        db_table = 'movies_like'

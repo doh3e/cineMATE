@@ -2,27 +2,28 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.generics import ListAPIView
+from rest_framework import status
 from django.conf import settings
 import requests, json
 
-from .models import Movie, Genre
-from .serializers import TopRatedMovieListSerializer, MovieDetailSerializer
+from .models import Movie, Genre, Bookmark, Like
+from .serializers import MovieDetailSerializer
 
 # Create your views here.
+
+MOVIE_API_KEY = settings.MOVIE_API_KEY
 
 @api_view(['GET'])
 def load_top_rated_data(request):
   try:
     if not Movie.objects.exists():
       MOVIE_API_URL = "https://api.themoviedb.org/3/movie/top_rated"
-      MOVIE_API_KEY = settings.MOVIE_API_KEY
       page = 1
-      total_movies = 100  # 가져올 영화 개수
-      movies_count = 0  # 현재 저장된 영화 개수
+      total_movies = 100
+      movies_count = 0
 
       while movies_count < total_movies:
         params = {
@@ -36,32 +37,39 @@ def load_top_rated_data(request):
           return JsonResponse({"error": "Failed to retrieve data", "status_code": response.status_code}, status=response.status_code)
 
         response_data = response.json()
-        for item in response_data['results']:
+        results = response_data.get('results', [])
+
+        if not results:
+          break
+
+        for item in results:
           if movies_count >= total_movies:
-            break  # 100개 이상이면 종료
+            break
 
           movie = Movie.objects.create(
-            movie_code=item['id'],
-            movie_title=item['title'],
-            movie_overview=item['overview'],
-            is_adult=item['adult'],
-            movie_popularity=item['popularity'],
-            movie_rating=item['vote_average'],
+            id=item['id'],
+            title=item['title'],
+            overview=item['overview'],
+            adult=item['adult'],
+            popularity=item['popularity'],
+            vote_average=item['vote_average'],
             release_date=item['release_date'],
             poster_path=item['poster_path']
           )
-          
-          # 영화에 장르 추가
+
           for genre_id in item['genre_ids']:
             try:
               genre = Genre.objects.get(pk=genre_id)
-              movie.genres.add(genre)
+              movie.genre_ids.add(genre)
             except Genre.DoesNotExist:
               print(f"Genre with id {genre_id} does not exist")
 
-          movies_count += 1  # 저장된 영화 수 증가
+          movies_count += 1
 
-        page += 1  # 다음 페이지로 넘어감
+        page += 1
+
+        if page > response_data.get('total_pages', 1):
+          break
 
       return JsonResponse({"success": True, "message": "영화가 성공적으로 등록되었습니다."}, status=200)
     else:
@@ -71,13 +79,93 @@ def load_top_rated_data(request):
     return JsonResponse({"error": "서버 오류가 발생했습니다."}, status=500)
 
 
+
 @api_view(['GET'])
 def index(request):
-    paginator = PageNumberPagination()
-    paginator.page_size = 20
+  try:
+    movies = Movie.objects.prefetch_related('genre_ids').all().order_by('-popularity')
+    serializer = MovieDetailSerializer(movies, many=True)
+    return Response(serializer.data, status=200)
+  except Exception as e:
+      return Response({"error": str(e)}, status=500)
 
-    movies = Movie.objects.prefetch_related('genres').all().order_by('-movie_popularity')
-    result_page = paginator.paginate_queryset(movies, request)
 
-    serializer = MovieDetailSerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
+@api_view(['GET'])
+def movie_search(request):
+  query = request.GET.get('query', '').strip()
+  if not query:
+    return Response({"error": "검색어를 입력해주세요."}, status=400)
+
+  try:
+    MOVIE_API_URL = "https://api.themoviedb.org/3/search/movie"
+    movies = []  # 결과 저장 리스트
+    page = 1
+    max_results = 100  # 최대 100개
+    total_results = 0  # 가져온 영화 개수
+
+    while total_results < max_results:
+      params = {
+        'api_key': MOVIE_API_KEY,
+        'language': 'ko-KR',
+        'query': query,
+        'page': page,
+      }
+
+      response = requests.get(MOVIE_API_URL, params=params)
+      if response.status_code != 200:
+        return Response({"error": "TMDB API 호출 실패"}, status=response.status_code)
+
+      response_data = response.json()
+      results = response_data.get('results', [])
+      if not results:
+        break
+
+      movies.extend(results[:max_results - total_results])
+      total_results = len(movies)
+      page += 1
+
+      if page > response_data.get('total_pages', 1):
+        break
+
+    sorted_movies = sorted(movies, key=lambda x: x.get('popularity', 0), reverse=True)
+
+    return Response(sorted_movies)  # 최대 100개 반환
+  except Exception as e:
+    return Response({"error": str(e)}, status=500)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def bookmark(request):
+    movie_id = request.data.get('movie_id')
+    if not movie_id:
+        return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    bookmark, created = Bookmark.objects.get_or_create(user=request.user, movie_id=movie_id)
+
+    if not created:
+        bookmark.delete()
+        action = 'removed'
+    else:
+        action = 'added'
+
+    return Response({'action': action, 'movie_id': movie_id}, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def like(request):
+    movie_id = request.data.get('movie_id')
+    if not movie_id:
+        return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    like, created = Like.objects.get_or_create(user=request.user, movie_id=movie_id)
+
+    if not created:
+        like.delete()
+        action = 'removed'
+    else:
+        action = 'added'
+
+    return Response({'action': action, 'movie_id': movie_id}, status=status.HTTP_200_OK)

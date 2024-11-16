@@ -12,28 +12,22 @@
 
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
-import { useCounterStore } from './stores/counter'
-import { RouterView } from 'vue-router'
 import Navbar from './components/Navbar.vue'
 
-
-const store = useCounterStore()
 const isNavbarFixed = ref(false)
-
-onMounted(() => {
-  store.getUserInfo()
-  console.log('유저 정보:', store.userInfo)
-
-  window.addEventListener('scroll', handleScroll)
-})
 
 const handleScroll = () => {
   isNavbarFixed.value = window.scrollY > 150
 }
 
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
+
 </script>
 
 <style scoped>
