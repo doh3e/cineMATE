@@ -18,7 +18,7 @@ const store = useCounterStore()
 // 영화 데이터 로드
 const loadMovies = async () => {
   try {
-    await store.loadTopMovies() // Pinia에서 영화 데이터를 로드
+    await store.loadTopMovies()
   } catch (error) {
     console.error('영화 데이터를 로드하는 중 오류 발생:', error)
   }

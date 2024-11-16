@@ -21,8 +21,8 @@ class CustomUserInfoView(APIView):
     def get(self, request):
         user = User.objects.get(pk=request.user.pk)
 
-        bookmarked_movies = Bookmark.objects.filter(user=user).values_list('movie_id', flat=True)
-        liked_movies = Like.objects.filter(user=user).values_list('movie_id', flat=True)
+        bookmarked_movies = Bookmark.objects.filter(user=user).values_list('id', flat=True)
+        liked_movies = Like.objects.filter(user=user).values_list('id', flat=True)
 
         serializer = CustomUserSerializer(user)
         user_data = serializer.data

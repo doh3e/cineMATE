@@ -14,12 +14,11 @@
             class="fa-heart fa-lg"
             :style="{ color: isLiked ? 'red' : '#B197FC' }"
             @animationend="isLikeAnimating = false"
-          ></i>{{ movie.likes_count }}
+          ></i>
         </span>
       </div>
       <div class="bookmarks" @click.stop="toggleBookmark">
         <span>
-          {{ movie.bookmarks_count }}
           <i
             :class="{
               'fa-regular': !isBookmarked,
@@ -76,17 +75,15 @@ const toggleBookmark = async () => {
   }
   try {
     const response = await authAxios.post('/movies/bookmark/', {
-      movie_id: props.movie.id
+      movie: props.movie
     })
     const { action } = response.data
     isBookmarkAnimating.value = true
     if (action === 'added') {
       store.userInfo.bookmarked_movies.push(props.movie.id)
-      props.movie.bookmarks_count++
     } else {
       const index = store.userInfo.bookmarked_movies.indexOf(props.movie.id)
       if (index !== -1) store.userInfo.bookmarked_movies.splice(index, 1)
-      props.movie.bookmarks_count--
     }
   } catch (error) {
     console.error('Bookmark toggle failed:', error)
@@ -102,31 +99,27 @@ const toggleLike = async () => {
   }
   try {
     const response = await authAxios.post('/movies/like/', {
-      movie_id: props.movie.id
+      movie: props.movie
     })
     const { action } = response.data
     isLikeAnimating.value = true
     if (action === 'added') {
       store.userInfo.liked_movies.push(props.movie.id)
-      props.movie.likes_count++
     } else {
       const index = store.userInfo.liked_movies.indexOf(props.movie.id)
       if (index !== -1) store.userInfo.liked_movies.splice(index, 1)
-      props.movie.likes_count--
     }
   } catch (error) {
     console.error('Like toggle failed:', error)
     alert('좋아요를 업데이트하는 중 문제가 발생했습니다. 다시 시도해주세요.')
   }
 }
-
-
 </script>
 
 <style scoped>
 .movie-item {
-  flex: 1 1 250px; /* 기본 너비를 지정하고 flex-grow와 flex-shrink를 조정 */
-  max-width: 250px; /* 최대 너비를 고정 */
+  flex: 1 1 250px;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -140,16 +133,16 @@ const toggleLike = async () => {
 
 .truncate {
   display: inline-block;
-  max-width: 230px; /* 제목 길이 제한 */
+  max-width: 230px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 #movie-poster {
-  width: 100%; /* 카드 너비에 맞게 설정 */
-  aspect-ratio: 2 / 3; /* 이미지 비율 유지 */
-  object-fit: cover; /* 비율에 맞게 잘림 */
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
   border-radius: 4px;
 }
 
@@ -158,7 +151,7 @@ const toggleLike = async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px; /* 상단과의 간격 추가 */
+  margin-top: 10px;
 }
 
 .likes, .bookmarks {

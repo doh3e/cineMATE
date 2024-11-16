@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.db.models import Count
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -79,15 +80,20 @@ def load_top_rated_data(request):
     return JsonResponse({"error": "서버 오류가 발생했습니다."}, status=500)
 
 
-
 @api_view(['GET'])
 def index(request):
   try:
-    movies = Movie.objects.prefetch_related('genre_ids').all().order_by('-popularity')
+    movies = Movie.objects.annotate(
+      bookmarks_count=Count('bookmark'),
+      likes_count=Count('like')
+    ).prefetch_related('genre_ids').order_by('-popularity')
+
     serializer = MovieDetailSerializer(movies, many=True)
     return Response(serializer.data, status=200)
   except Exception as e:
-      return Response({"error": str(e)}, status=500)
+    # 에러 처리
+    return Response({"error": str(e)}, status=500)
+
 
 
 @api_view(['GET'])
@@ -137,11 +143,36 @@ def movie_search(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def bookmark(request):
-    movie_id = request.data.get('movie_id')
-    if not movie_id:
+    movie_data = request.data.get('movie')
+    if not movie_data:
+        return Response({'error': 'movie data is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    id = movie_data.get('id')
+    if not id:
         return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    bookmark, created = Bookmark.objects.get_or_create(user=request.user, movie_id=movie_id)
+    movie, _ = Movie.objects.get_or_create(
+        id=id,
+        defaults={
+            'title': movie_data['title'],
+            'overview': movie_data['overview'],
+            'adult': movie_data['adult'],
+            'popularity': movie_data['popularity'],
+            'vote_average': movie_data['vote_average'],
+            'release_date': movie_data['release_date'],
+            'poster_path': movie_data['poster_path'],
+        }
+    )
+
+    bookmark, created = Bookmark.objects.get_or_create(user=request.user, id=movie.id, defaults={
+        'title': movie.title,
+        'overview': movie.overview,
+        'adult': movie.adult,
+        'popularity': movie.popularity,
+        'vote_average': movie.vote_average,
+        'release_date': movie.release_date,
+        'poster_path': movie.poster_path,
+    })
 
     if not created:
         bookmark.delete()
@@ -149,18 +180,42 @@ def bookmark(request):
     else:
         action = 'added'
 
-    return Response({'action': action, 'movie_id': movie_id}, status=status.HTTP_200_OK)
-
+    return Response({'action': action, 'movie_id': id}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def like(request):
-    movie_id = request.data.get('movie_id')
-    if not movie_id:
+    movie_data = request.data.get('movie')
+    if not movie_data:
+        return Response({'error': 'movie data is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    id = movie_data.get('id')
+    if not id:
         return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    like, created = Like.objects.get_or_create(user=request.user, movie_id=movie_id)
+    movie, _ = Movie.objects.get_or_create(
+        id=id,
+        defaults={
+            'title': movie_data['title'],
+            'overview': movie_data['overview'],
+            'adult': movie_data['adult'],
+            'popularity': movie_data['popularity'],
+            'vote_average': movie_data['vote_average'],
+            'release_date': movie_data['release_date'],
+            'poster_path': movie_data['poster_path'],
+        }
+    )
+
+    like, created = Like.objects.get_or_create(user=request.user, id=movie.id, defaults={
+        'title': movie.title,
+        'overview': movie.overview,
+        'adult': movie.adult,
+        'popularity': movie.popularity,
+        'vote_average': movie.vote_average,
+        'release_date': movie.release_date,
+        'poster_path': movie.poster_path,
+    })
 
     if not created:
         like.delete()
@@ -168,4 +223,4 @@ def like(request):
     else:
         action = 'added'
 
-    return Response({'action': action, 'movie_id': movie_id}, status=status.HTTP_200_OK)
+    return Response({'action': action, 'movie_id': id}, status=status.HTTP_200_OK)
