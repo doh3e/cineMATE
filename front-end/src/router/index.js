@@ -33,6 +33,7 @@ const routes = [
     path: '/movie',
     name: 'Movie',
     component: MovieView,
+    redirect: '/movie/search',
     children: [
       {
         path: 'search',

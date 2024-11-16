@@ -5,16 +5,20 @@ from movies.models import Genre
 
 # Create your models here.
 class Review(models.Model):
+    # 영화 API에서 받아올때 API 필드랑 이름이 일치하지 않으면 아주 귀찮아집니다..
+    # 그래서 review의 기본키 아이디도 이름 변경함
+    review_id = models.AutoField(primary_key=True)
     review_title = models.CharField(max_length=100)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_reviews', on_delete=models.CASCADE)
-    review_movie_title = models.CharField(max_length=200)
-    review_movie_code = models.IntegerField()
-    genres = models.ManyToManyField(Genre)
-    is_adult = models.BooleanField()
-    overview = models.TextField(null=True, blank=True)
-    movie_rating = models.FloatField()
-    poster_path = models.CharField(max_length=200, null=True, blank=True)
+    id = models.IntegerField()
+    title = models.CharField(max_length=200)
+    overview = models.TextField()
+    adult = models.BooleanField()
+    popularity = models.FloatField()
+    vote_average = models.FloatField()
+    genre_ids = models.ManyToManyField(Genre)
     release_date = models.DateField()
+    poster_path = models.CharField(max_length=200)
     review_content = models.TextField(null=True, blank=True)
     user_rating = models.IntegerField()
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_likes')

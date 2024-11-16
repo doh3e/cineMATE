@@ -18,7 +18,9 @@
         @mouseenter="toggleDropdown(true)"
         @mouseleave="toggleDropdown(false)"
       >
-        <span :class="{ 'current-page': $route.path.includes('/movie') }">영화탐색</span>
+        <RouterLink :to="{ name: 'Movie' }">
+          <span :class="{ 'current-page': $route.path.includes('/movie') }">영화탐색</span>
+        </RouterLink>
         <ul v-if="isDropdownOpen" class="dropdown-menu">
           <RouterLink :to="{ name: 'MovieSearch' }">
             <li :class="{ 'current-page': $route.name === 'MovieSearch' }">영화검색</li>
