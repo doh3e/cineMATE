@@ -21,7 +21,7 @@
         <span :class="{ 'current-page': $route.path.includes('/movie') }">영화탐색</span>
         <ul v-if="isDropdownOpen" class="dropdown-menu">
           <RouterLink :to="{ name: 'MovieSearch' }">
-            <li :class="{ 'current-page': $route.name === 'MovieSearch' }">영화 검색</li>
+            <li :class="{ 'current-page': $route.name === 'MovieSearch' }">영화검색</li>
           </RouterLink>
           <RouterLink :to="{ name: 'MovieCurating' }">
             <li :class="{ 'current-page': $route.name === 'MovieCurating' }">큐레이팅</li>
@@ -32,7 +32,7 @@
         <li :class="{ 'current-page': $route.path === '/movieforyou' }">무비포유</li>
       </RouterLink>
       <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Mypage' }">
-        <li :class="{ 'current-page': $route.path === '/mypage' }">{{store.userInfo.nickname}}의 마이페이지</li>
+        <li :class="{ 'current-page': $route.path === '/mypage' }">나의 소행성</li>
       </RouterLink>
       <li v-if="store.userInfo && store.userInfo.id" @click="handleLogout">로그아웃</li>
     </ul>
@@ -96,6 +96,7 @@ onUnmounted(() => {
 
 <style scoped>
 .navbar {
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -122,6 +123,10 @@ onUnmounted(() => {
 }
 
 .navbar__menu li {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
   font-family: 'TTLaundryGothicB';
   font-size: 1.5rem;
@@ -210,12 +215,26 @@ onUnmounted(() => {
 
 /* 화면이 작을 경우 */
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
+
+  .navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px 20px;
+  }
+
   .navbar__toggleBtn {
     display: block;
     position: absolute;
     right: 30px;
     top: 30px;
+    font-size: 1.5rem;
+    color: #F8F8F8;
+    cursor: pointer;
+    transition: max-height 0.3s ease;
   }
 
   .navbar__logo {
@@ -231,21 +250,30 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: flex-start;
     margin: 0;
+    width: 100%;
   }
 
   .navbar__menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease, opacity 0.3s ease;
     opacity: 0;
-    flex-direction: column;
-    align-items: center;
     width: 100%;
     gap: 10px;
   }
 
+  .navbar__menu > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
   .navbar__menu.active {
-    margin-top: 20px;
     max-height: 500px;
     opacity: 1;
   }
@@ -256,23 +284,61 @@ onUnmounted(() => {
     text-align: center;
     display: flex;
     justify-content: center;
+    position: relative;
+    cursor: pointer;
   }
 
-  .navbar__menu li:hover {
+  .navbar__menu li::after {
+    content: none; /* 밑줄 제거 */
+  }
+
+
+  /* 드롭다운 메뉴 스타일 */
+  .dropdown-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .dropdown-menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+    max-height: 0;
+    overflow: hidden;
+    background-color: #7469B6;
+    border-radius: 5px;
+    transition: max-height 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+    opacity: 0;
+  }
+
+  li:hover > .dropdown-menu {
+    max-height: 300px;
+    opacity: 1;
+    background-color: #AD88C6;
+  }
+
+  .dropdown-menu li {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 10px 15px;
+    margin-left: 5px;
+    text-align: left;
+    color: #F8F8F8;
+    transition: color 0.3s ease;
+  }
+
+  .dropdown-menu li:hover {
     color: #1F1F1F;
   }
-
-  .navbar__menu li:hover::after {
-    width: 20%;
-  }
-
-  .navbar__menu .current-page::after {
-    width: 20%;
-  }
-
-  .navbar__icons {
-    display: none;
-    justify-content: center;
-  }
 }
+
 </style>
