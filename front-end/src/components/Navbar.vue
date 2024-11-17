@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar">
+  <nav class="navbar" :style="{ opacity: navbarOpacity }">
     <div class="navbar__logo">cineMATE</div>
     <ul :class="['navbar__menu', { active: isMenuActive }]">
       <RouterLink :to="{ name: 'Home' }">
@@ -11,7 +11,6 @@
       <RouterLink v-if="!store.userInfo || !store.userInfo.id" :to="{ name: 'Login' }">
         <li :class="{ 'current-page': $route.path === '/login' }">로그인</li>
       </RouterLink>
-      <!-- 드롭다운 메뉴 -->
       <li
         v-if="store.userInfo && store.userInfo.id"
         class="dropdown-container"
@@ -27,6 +26,24 @@
           </RouterLink>
           <RouterLink :to="{ name: 'MovieCurating' }">
             <li :class="{ 'current-page': $route.name === 'MovieCurating' }">큐레이팅</li>
+          </RouterLink>
+        </ul>
+      </li>
+      <li
+        v-if="store.userInfo && store.userInfo.id"
+        class="dropdown-container"
+        @mouseenter="toggleDropdown(true)"
+        @mouseleave="toggleDropdown(false)"
+      >
+        <RouterLink :to="{ name: 'Review' }">
+          <span :class="{ 'current-page': $route.path.includes('/review') }">리뷰</span>
+        </RouterLink>
+        <ul v-if="isDropdownOpen" class="dropdown-menu">
+          <RouterLink :to="{ name: 'ReviewList' }">
+            <li :class="{ 'current-page': $route.name === 'ReviewList' }">리뷰목록</li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'ReviewWrite' }">
+            <li :class="{ 'current-page': $route.name === 'ReviewWrite' }">리뷰작성</li>
           </RouterLink>
         </ul>
       </li>
@@ -75,9 +92,6 @@ const toggleDropdown = (state) => {
 const handleLogout = async () => {
   try {
     await store.logout()
-    alert('로그아웃 되었습니다!')
-    router.replace('/')
-    window.location.reload()
   } catch (error) {
     console.error('로그아웃 오류:', error)
   }
@@ -185,7 +199,7 @@ onUnmounted(() => {
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: #7469B6;
+  background-color: #AD88C6;
   list-style: none;
   padding: 15px 0;
   border-radius: 8px;
@@ -322,7 +336,7 @@ onUnmounted(() => {
   }
 
   li:hover > .dropdown-menu {
-    max-height: 300px;
+    max-height: 500px;
     opacity: 1;
     background-color: #AD88C6;
   }

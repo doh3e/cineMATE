@@ -68,10 +68,6 @@ const handleSignUp = async () => {
     formData.append(key, form[key])
   }
 
-  formData.forEach((value, key) => {
-    console.log(`${key}: ${value}`) // 디버깅용 출력
-  })
-
   try {
     const response = await publicAxios.post('/accounts/dj-rest-auth/registration/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -81,8 +77,7 @@ const handleSignUp = async () => {
       const token = response.data.key
       localStorage.setItem('authToken', token)
       alert('회원가입을 환영합니다!')
-      router.push('/') // 홈으로 이동
-      window.location.reload() // 새로고침으로 상태 초기화
+      router.replace('/') // 홈으로 이동
     }
   } catch (error) {
     errorMessage.value = error.response?.data?.detail || '회원가입 실패. 다시 시도해주세요.'

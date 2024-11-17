@@ -83,15 +83,10 @@ def load_top_rated_data(request):
 @api_view(['GET'])
 def index(request):
   try:
-    movies = Movie.objects.annotate(
-      bookmarks_count=Count('bookmark'),
-      likes_count=Count('like')
-    ).prefetch_related('genre_ids').order_by('-popularity')
-
+    movies = Movie.objects.prefetch_related('genre_ids').order_by('-popularity')
     serializer = MovieDetailSerializer(movies, many=True)
     return Response(serializer.data, status=200)
   except Exception as e:
-    # 에러 처리
     return Response({"error": str(e)}, status=500)
 
 

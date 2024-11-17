@@ -10,6 +10,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useCounterStore } from '@/stores/counter'
+import { onBeforeRouteUpdate } from 'vue-router'
 import MovieList from '@/components/movies/MovieList.vue'
 
 // Pinia 스토어 사용
@@ -27,6 +28,7 @@ const loadMovies = async () => {
 onMounted(() => {
   loadMovies()
 })
+
 
 </script>
 

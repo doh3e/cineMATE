@@ -1,8 +1,13 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { authAxios, publicAxios } from '@/axios'
+import { useRouter } from 'vue-router'
+
 
 export const useCounterStore = defineStore('counter', () => {
+
+  const router = useRouter()
+  
   const GENRE_MAP = {
     28: "액션",
     12: "어드벤처",
@@ -97,6 +102,8 @@ export const useCounterStore = defineStore('counter', () => {
       authToken.value = null
       userInfo.value = null
       localStorage.removeItem('authToken')
+      alert('로그아웃 되었습니다!')
+      router.replace('/')
     } catch (error) {
       console.error('로그아웃 실패:', error)
     }

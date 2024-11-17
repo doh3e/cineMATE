@@ -6,6 +6,7 @@ import LoginView from '@/views/LoginView.vue'
 import MypageView from '@/views/MypageView.vue'
 import MovieView from '@/views/MovieView.vue'
 import MovieforyouView from '@/views/MovieforyouView.vue'
+import ReviewView from '@/views/ReviewView.vue'
 
 
 const routes = [
@@ -46,6 +47,29 @@ const routes = [
         component: () => import('@/components/movies/MovieCurating.vue'),
       },
     ],
+  },
+  {
+    path: '/review',
+    name: 'Review',
+    component: ReviewView,
+    redirect: { name: 'ReviewList' },
+    children: [
+      {
+        path: '',
+        name: 'ReviewList',
+        component: () => import('@/components/community/ReviewList.vue'),
+      },
+      {
+        path: 'write',
+        name: 'ReviewWrite',
+        component: () => import('@/components/community/ReviewWrite.vue'),
+      }, 
+      {
+        path: ':review_id',
+        name: 'ReviewDetail',
+        component: () => import('@/components/community/ReviewDetail.vue'),
+      }, 
+    ]
   },
   {
     path: '/movieforyou',
