@@ -21,7 +21,7 @@ class Review(models.Model):
     poster_path = models.CharField(max_length=200)
     review_content = models.TextField(null=True, blank=True)
     user_rating = models.IntegerField()
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_likes')
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='user_likes_review')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

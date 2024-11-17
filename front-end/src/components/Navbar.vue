@@ -50,8 +50,8 @@
       <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Movieforyou' }">
         <li :class="{ 'current-page': $route.path === '/movieforyou' }">무비포유</li>
       </RouterLink>
-      <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Mypage' }">
-        <li :class="{ 'current-page': $route.path === '/mypage' }">나의 소행성</li>
+      <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Mypage', params: { username: store.userInfo.username } }">
+        <li :class="{ 'current-page': $route.path === `/mypage/${store.userInfo.username}` }">나의 소행성</li>
       </RouterLink>
       <li v-if="store.userInfo && store.userInfo.id" @click="handleLogout">로그아웃</li>
     </ul>
