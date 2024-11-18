@@ -203,4 +203,29 @@ tbody td {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+@media (max-width: 900px) {
+  #date,
+  #like,
+  .like-data,
+  .date-data {
+    display: none;
+  }
+
+  thead th {
+    text-align: center;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  tbody td {
+    text-align: center;
+  }
+
+  .comment-cnt {
+    font-size: 12px;
+  }
+}
 </style>

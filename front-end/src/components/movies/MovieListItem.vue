@@ -1,6 +1,7 @@
 <template>
   <div class="movie-item" @click="openModal">
     <img :src="store.getImageUrl(movie.poster_path)" alt="Poster" v-if="movie.poster_path" id="movie-poster">
+    <img v-else src="@/assets/img/default_movie_poster.png" alt="Default Poster" id="movie-poster">
     <h4 class="truncate">{{ movie.title }}</h4>
     <div class="action-btn">
       <div class="likes" @click.stop="toggleLike">

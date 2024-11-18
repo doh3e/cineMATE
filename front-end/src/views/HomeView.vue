@@ -25,6 +25,8 @@ const loadMovies = async () => {
   }
 }
 
+console.log(store.userInfo)
+
 onMounted(() => {
   loadMovies()
 })

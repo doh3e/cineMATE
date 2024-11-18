@@ -13,15 +13,19 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 import Navbar from './components/Navbar.vue'
+import { useAuthStore, useCounterStore } from './stores/counter';
 
+const authStore = useAuthStore()
+const store = useCounterStore()
 const isNavbarFixed = ref(false)
 
 const handleScroll = () => {
-  isNavbarFixed.value = window.scrollY > 150
+  isNavbarFixed.value = window.scrollY > 300
 }
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  handleScroll()
 })
 
 onUnmounted(() => {

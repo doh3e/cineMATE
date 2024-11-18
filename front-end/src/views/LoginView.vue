@@ -34,8 +34,7 @@ const errorMessage = ref('')
 // 로그인 처리 함수
 const handleLogin = async () => {
   try {
-    await store.login(form.value.username, form.value.password) // 로그인 요청
-    router.replace({ path: '/' }) // 뒤로 가기 불가능하게 replace 사용
+    await store.login(form.value.username, form.value.password)
   } catch (error) {
     errorMessage.value = '로그인 실패. 다시 시도해주세요.'
   }

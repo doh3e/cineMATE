@@ -1,14 +1,16 @@
 <template>
-  <div class="bookmark-box">
-    {{ bookmark.title }} ({{ bookmark.release_date }})
+  <div>
+    {{ review.review_title }} : {{ review.title }}
   </div>
 </template>
 
+
 <script setup>
 const props = defineProps({
-  bookmark: Object
+  review: Object,
 })
 
+console.log(props.review)
 </script>
 
 <style scoped>

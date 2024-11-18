@@ -3,11 +3,54 @@ import { defineStore } from 'pinia'
 import { authAxios, publicAxios } from '@/axios'
 import { useRouter } from 'vue-router'
 
+// Auth Store
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    token: localStorage.getItem('authToken') || null,
+    refreshToken: localStorage.getItem('refreshToken') || null,
+    user: null,
+  }),
+  actions: {
+    setToken(token, refreshToken) {
+      this.token = token
+      this.refreshToken = refreshToken
+      localStorage.setItem('authToken', token)
+      localStorage.setItem('refreshToken', refreshToken)
+    },
+    logout() {
+      const counterStore = useCounterStore() // counterStore 가져오기
 
+      // Auth 상태 초기화
+      this.token = null
+      this.refreshToken = null
+      this.user = null
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('refreshToken')
+
+      // CounterStore의 사용자 정보 초기화
+      counterStore.userInfo = null
+
+      alert('로그인이 만료되었습니다. 다시 로그인해주세요.')
+    },
+    async checkTokenValidity() {
+      if (!this.token) return false
+
+      const payload = JSON.parse(atob(this.token.split('.')[1]))
+      const currentTime = Math.floor(Date.now() / 1000)
+      if (payload.exp < currentTime) {
+        // 토큰이 만료되었으므로 로그아웃 처리
+        this.logout()
+        return false
+      }
+      return true
+    },
+  },
+})
+
+// Counter Store
 export const useCounterStore = defineStore('counter', () => {
-
   const router = useRouter()
-  
+
   const GENRE_MAP = {
     28: "액션",
     12: "어드벤처",
@@ -34,7 +77,9 @@ export const useCounterStore = defineStore('counter', () => {
     return GENRE_MAP[id] || "알 수 없음"
   }
 
-  const topMovies = ref([])
+  const topMovies = ref([]) // 인기 영화 데이터
+  const userInfo = ref(null) // 로그인한 유저의 정보
+  const authToken = ref(localStorage.getItem('authToken') || null) // 토큰
 
   const loadTopMovies = async () => {
     if (topMovies.value.length === 0) {
@@ -59,9 +104,6 @@ export const useCounterStore = defineStore('counter', () => {
       }
     }
   }
-
-  const userInfo = ref(null) // 사용자 정보
-  const authToken = ref(localStorage.getItem('authToken') || null) // 토큰
 
   const getUserInfo = async () => {
     try {
@@ -91,6 +133,7 @@ export const useCounterStore = defineStore('counter', () => {
       if (userInfo.value) {
         alert(`${userInfo.value.nickname}님, 어서오세요!`)
       }
+      router.replace({ name: 'Home' })
     } catch (error) {
       alert('아이디 혹은 비밀번호를 다시 확인해주세요!')
     }
@@ -102,10 +145,14 @@ export const useCounterStore = defineStore('counter', () => {
       authToken.value = null
       userInfo.value = null
       localStorage.removeItem('authToken')
-      alert('로그아웃 되었습니다!')
-      router.replace('/')
     } catch (error) {
       console.error('로그아웃 실패:', error)
+    } finally {
+      authToken.value = null
+      userInfo.value = null
+      localStorage.removeItem('authToken')
+      alert('로그아웃 되었습니다!')
+      router.replace({name: 'Home'})
     }
   }
 

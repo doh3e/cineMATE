@@ -2,7 +2,6 @@
   <div class="movie-container">
     <h1>영화 추천/검색 영역</h1>
     <div class="movie-head">
-      <!-- 탭 전환 버튼 -->
       <div class="tabs">
         <RouterLink
           :to="{ name: 'MovieSearch' }"

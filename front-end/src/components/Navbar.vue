@@ -74,7 +74,7 @@ const isMenuActive = ref(false)
 const isDropdownOpen = ref(false)
 
 const handleScroll = () => {
-  navbarOpacity.value = window.scrollY > 150 ? 0.8 : 1
+  navbarOpacity.value = window.scrollY > 300 ? 0.8 : 1
 }
 
 const handleMouseEnter = () => {
@@ -82,7 +82,7 @@ const handleMouseEnter = () => {
 }
 
 const handleMouseLeave = () => {
-  navbarOpacity.value = window.scrollY > 150 ? 0.8 : 1
+  navbarOpacity.value = window.scrollY > 300 ? 0.8 : 1
 }
 
 const toggleDropdown = (state) => {
@@ -172,7 +172,7 @@ onUnmounted(() => {
 }
 
 .navbar__menu li:hover::after {
-  width: 50%;
+  width: 100px;
 }
 
 .navbar__menu .current-page {
@@ -190,7 +190,6 @@ onUnmounted(() => {
   z-index: 1;
 }
 
-/* 드롭다운 */ 
 .dropdown-container {
   position: relative;
 }
@@ -227,9 +226,6 @@ onUnmounted(() => {
 .dropdown-menu li:hover {
   color: #1F1F1F;
 }
-
-
-/* 화면이 작을 경우 */
 
 @media screen and (max-width: 900px) {
 
@@ -305,11 +301,9 @@ onUnmounted(() => {
   }
 
   .navbar__menu li::after {
-    content: none; /* 밑줄 제거 */
+    content: none;
   }
 
-
-  /* 드롭다운 메뉴 스타일 */
   .dropdown-container {
     width: 100%;
     display: flex;

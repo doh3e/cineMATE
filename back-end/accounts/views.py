@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import CustomTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from .serializers import CustomUserSerializer, MyPageSerializer
+from .serializers import CustomUserSerializer, MyPageSerializer, CustomUserUpdateSerializer
 
 from .models import User
 from movies.models import Bookmark, Like
@@ -35,6 +36,14 @@ class CustomUserInfoView(APIView):
     })
 
     return Response(user_data)
+  
+  def patch(self, request):
+    user = request.user
+    serializer = CustomUserUpdateSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid(raise_exception=True):
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=400)
 
 
 @api_view(['GET'])
@@ -43,3 +52,28 @@ def mypage(request, username):
   serializer = MyPageSerializer(user)
   return Response(serializer.data)
 
+
+@api_view(['DELETE'])
+def delete_user(request, user_id):
+  if request.user.id != user_id:
+    return Response({"detail": "권한이 없습니다."}, status=403)
+  user = get_object_or_404(User, id=user_id)
+  user.delete()
+  return Response({"detail": "회원 탈퇴가 완료되었습니다."}, status=204)
+  
+  
+@api_view(['POST'])
+def follows(request, personname):
+  user = get_user_model()
+  person = get_object_or_404(User, username=personname)
+  if request.user.username != person:
+    if person.followers.filter(pk=request.user.pk).exists():
+      person.followers.remove(request.user)
+      is_followed = False
+    else:
+      person.followers.add(request.user)
+      is_followed = True
+    return Response({"is_followed": is_followed}, status=200)
+  return Response({"detail": "자기자신은 팔로우 할 수 없습니다."}, status=403)
+  
+  

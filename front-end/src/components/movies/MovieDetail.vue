@@ -4,6 +4,7 @@
       <button class="close-btn" @click="close">X</button>
       <h2 class="truncate">{{ movie.title }}</h2>
       <img :src="store.getImageUrl(movie.poster_path)" alt="Poster" v-if="movie.poster_path" id="movie-poster">
+      <img v-else src="@/assets/img/default_movie_poster.png" alt="Default Poster" id="movie-poster">
       <p>평점: {{ movie.vote_average }}</p>
       <p>장르: {{ genreNames.join(', ') }}</p>
       <p>{{ movie.overview }}</p>
@@ -71,8 +72,19 @@ onMounted(() => {
   border-radius: 8px;
   width: 80%;
   max-width: 500px;
+  min-width: 350px;
+  height: 90vh;
+  min-height: 450px;
   text-align: center;
+  overflow-y: scroll;
 }
+
+.modal-content > img {
+  width: 90%;
+  min-width: 300px;
+  object-fit: cover;
+}
+
 .close-btn {
   position: absolute;
   top: 10px;
