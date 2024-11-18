@@ -2,32 +2,101 @@
   <div class="movie-container">
     <h1>영화 추천/검색 영역</h1>
     <div class="movie-head">
-      <div class="tabs">
-        <RouterLink
-          :to="{ name: 'MovieSearch' }"
-          class="tab"
-          :class="{ active: $route.name === 'MovieSearch' }"
-        >
-          영화 검색
-        </RouterLink>
-        <RouterLink
-          :to="{ name: 'MovieCurating' }"
-          class="tab"
-          :class="{ active: $route.name === 'MovieCurating' }"
-        >
-          큐레이팅
-        </RouterLink>
+      <div class="search-box">
+        <input
+          v-model="keyword"
+          type="text"
+          placeholder="검색어를 입력하세요"
+          @keyup.enter="searchMovies"
+        />
+        <button @click="searchMovies">검색</button>
       </div>
-
-      <RouterView />
+    </div>
+    <div class="result-box">
+      <MovieSearch
+        v-if="isSearched"
+        :movies="movies"
+        :hasMore="hasMore"
+        @loadMore="loadMoreSearchMovies"
+      />
+      <MovieCurating v-else-if="!isSearched && recommendations" :recommends="recommendations" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { RouterLink, RouterView, useRoute } from 'vue-router'
-const $route = useRoute()
+import { ref, onMounted } from 'vue'
+import MovieSearch from '@/components/movies/MovieSearch.vue'
+import MovieCurating from '@/components/movies/MovieCurating.vue'
+import { authAxios, publicAxios } from '@/axios'
 
+const movies = ref([]) // 검색 결과
+const hasMore = ref(false) // 추가 데이터 유무
+const keyword = ref('') // 검색 키워드
+const currentPage = ref(1) // 현재 페이지
+const isSearched = ref(false) // 검색 여부 상태
+const recommendations = ref([]) // 추천 영화 리스트
+
+// 기본 추천 영화 로드 (좋아요, 북마크에 따른)
+const loadRecommendations = async () => {
+  try {
+    const response = await authAxios.get('/movies/recommend/default/')
+    recommendations.value = response.data
+  } catch (error) {
+    console.error('추천 영화 로드 중 오류 발생:', error)
+  }
+}
+
+// 검색 실행
+const searchMovies = async () => {
+  if (!keyword.value.trim()) {
+    alert('검색 키워드를 입력해주세요!')
+    return
+  }
+
+  if (keyword.value.length < 2) {
+    alert('검색어는 두 글자 이상 입력해주세요!')
+    return
+  }
+
+  movies.value = []
+  hasMore.value = false
+  currentPage.value = 1
+
+  try {
+    const response = await publicAxios.get('/movies/search/', {
+      params: { query: keyword.value.trim() },
+    })
+
+    movies.value = response.data
+    hasMore.value = movies.value.length > 20
+    currentPage.value = 1
+    isSearched.value = true
+  } catch (error) {
+    console.error('검색 중 오류 발생:', error)
+  }
+}
+
+// 추가 검색 결과 로드
+const loadMoreSearchMovies = async () => {
+  try {
+    const nextPage = currentPage.value + 1
+    const response = await publicAxios.get('/movies/search/', {
+      params: { query: keyword.value.trim(), page: nextPage },
+    })
+
+    const newMovies = response.data
+    movies.value = [...movies.value, ...newMovies]
+    hasMore.value = newMovies.length > 0
+    currentPage.value = nextPage
+  } catch (error) {
+    console.error('추가 검색 중 오류 발생:', error)
+  }
+}
+
+onMounted(() => {
+  loadRecommendations()
+})
 </script>
 
 <style scoped>
@@ -38,31 +107,43 @@ const $route = useRoute()
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 30px;
 }
 
-.tabs {
+.search-box {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.tab {
+.search-box input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-box button {
   padding: 10px 20px;
   background-color: #7469B6;
-  color: #fff;
-  text-decoration: none;
+  color: white;
+  border: none;
   border-radius: 5px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.tab.active {
+.search-box button:hover {
   background-color: #574F9F;
 }
 
-.tab:hover {
-  background-color: #574F9F;
+.result-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="myinfo-box" v-if="person">
     <div class="profile-imgbox">
-      <img v-if="person?.profile_image" :src="userImgPath" alt="profile-img" id="profile-img">
+      <img v-if="userImgPath" :src="userImgPath" alt="profile-img" id="profile-img">
       <img v-else src="@/assets/img/default_profile_img.png" alt="profile-img" id="profile-img">
     </div>
     <div class="profile-content">
@@ -11,7 +11,6 @@
       <p>팔로워 수: {{ person?.followers.length }}</p>
       <p>팔로잉 수: {{ person?.followings.length }}</p>
     </div>
-    <!-- 조건부로 정보 수정 버튼 렌더링 -->
     <button v-if="isEditAllowed" @click="$emit('editProfile')">정보 수정</button>
     <button
       v-if="isFollowVisible"
@@ -32,25 +31,22 @@ const props = defineProps({
   person: Object,
 })
 
-// 현재 로그인한 사용자 정보 가져오기
 const store = useCounterStore()
 
-// 사용자 프로필 이미지 경로
-const userImgPath = computed(() => `http://127.0.0.1:8000${props.person?.profile_image}`)
+const userImgPath = computed(() => {
+  const profileImage = props.person?.profile_image
+  return profileImage === '/media/null' ? null : `http://127.0.0.1:8000${profileImage}`
+})
 
-// 정보 수정 버튼 표시 여부
 const isEditAllowed = computed(() => props.person?.username === store.userInfo?.username)
 
-// 팔로우 버튼 표시 여부 (자기 자신이 아닐 때만 표시)
 const isFollowVisible = computed(() => props.person?.username !== store.userInfo?.username)
 
-// 팔로우 상태
 const isFollowing = computed(() => {
   return props.person?.followers?.includes(store.userInfo.username)
 })
 
 const emit = defineEmits(['updateRequired'])
-
 
 const toggleFollow = async () => {
   try {

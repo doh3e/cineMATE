@@ -3,10 +3,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Count
+from collections import Counter
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotAuthenticated
 from django.conf import settings
 import requests, json
 
@@ -138,84 +140,139 @@ def movie_search(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def bookmark(request):
-    movie_data = request.data.get('movie')
-    if not movie_data:
-        return Response({'error': 'movie data is required'}, status=status.HTTP_400_BAD_REQUEST)
+  movie_data = request.data.get('movie')
+  if not movie_data:
+    return Response({'error': 'movie data is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    id = movie_data.get('id')
-    if not id:
-        return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+  id = movie_data.get('id')
+  if not id:
+    return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    movie, _ = Movie.objects.get_or_create(
-        id=id,
-        defaults={
-            'title': movie_data['title'],
-            'overview': movie_data['overview'],
-            'adult': movie_data['adult'],
-            'popularity': movie_data['popularity'],
-            'vote_average': movie_data['vote_average'],
-            'release_date': movie_data['release_date'],
-            'poster_path': movie_data['poster_path'],
-        }
-    )
+  bookmark, created = Bookmark.objects.get_or_create(user=request.user, id=id, defaults={
+    'title': movie_data.get('title'),
+    'overview': movie_data.get('overview'),
+    'adult': movie_data.get('adult'),
+    'popularity': movie_data.get('popularity'),
+    'vote_average': movie_data.get('vote_average'),
+    'release_date': movie_data.get('release_date'),
+    'poster_path': movie_data.get('poster_path'),
+  })
 
-    bookmark, created = Bookmark.objects.get_or_create(user=request.user, id=movie.id, defaults={
-        'title': movie.title,
-        'overview': movie.overview,
-        'adult': movie.adult,
-        'popularity': movie.popularity,
-        'vote_average': movie.vote_average,
-        'release_date': movie.release_date,
-        'poster_path': movie.poster_path,
-    })
+  genre_ids = movie_data.get('genre_ids', [])
+  if genre_ids and isinstance(genre_ids[0], dict):  # genre_ids가 딕셔너리 리스트인 경우
+    genre_ids = [genre['id'] for genre in genre_ids]
 
-    if not created:
-        bookmark.delete()
-        action = 'removed'
-    else:
-        action = 'added'
+  genres = Genre.objects.filter(id__in=genre_ids)
 
-    return Response({'action': action, 'movie_id': id}, status=status.HTTP_200_OK)
+  if created:
+    bookmark.genre_ids.set(genres)
+    action = 'added'
+  else:
+    bookmark.delete()
+    action = 'removed'
+
+  return Response({'action': action, 'movie_id': id}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def like(request):
-    movie_data = request.data.get('movie')
-    if not movie_data:
-        return Response({'error': 'movie data is required'}, status=status.HTTP_400_BAD_REQUEST)
+  movie_data = request.data.get('movie')
+  if not movie_data:
+    return Response({'error': 'movie data is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    id = movie_data.get('id')
-    if not id:
-        return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+  id = movie_data.get('id')
+  if not id:
+    return Response({'error': 'movie_id is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    movie, _ = Movie.objects.get_or_create(
-        id=id,
-        defaults={
-            'title': movie_data['title'],
-            'overview': movie_data['overview'],
-            'adult': movie_data['adult'],
-            'popularity': movie_data['popularity'],
-            'vote_average': movie_data['vote_average'],
-            'release_date': movie_data['release_date'],
-            'poster_path': movie_data['poster_path'],
-        }
-    )
 
-    like, created = Like.objects.get_or_create(user=request.user, id=movie.id, defaults={
-        'title': movie.title,
-        'overview': movie.overview,
-        'adult': movie.adult,
-        'popularity': movie.popularity,
-        'vote_average': movie.vote_average,
-        'release_date': movie.release_date,
-        'poster_path': movie.poster_path,
-    })
+  like, created = Like.objects.get_or_create(user=request.user, id=id, defaults={
+    'title': movie_data.get('title'),
+    'overview': movie_data.get('overview'),
+    'adult': movie_data.get('adult'),
+    'popularity': movie_data.get('popularity'),
+    'vote_average': movie_data.get('vote_average'),
+    'release_date': movie_data.get('release_date'),
+    'poster_path': movie_data.get('poster_path'),
+  })
 
-    if not created:
-        like.delete()
-        action = 'removed'
-    else:
-        action = 'added'
+  genre_ids = movie_data.get('genre_ids', [])
+  if genre_ids and isinstance(genre_ids[0], dict):  # genre_ids가 딕셔너리 리스트인 경우
+    genre_ids = [genre['id'] for genre in genre_ids]
+    
+  genres = Genre.objects.filter(id__in=genre_ids)
 
-    return Response({'action': action, 'movie_id': id}, status=status.HTTP_200_OK)
+  if created:
+    like.genre_ids.set(genres)
+    action = 'added'
+  else:
+    like.delete()
+    action = 'removed'
+
+  return Response({'action': action, 'movie_id': id}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def recommend(request, category):
+  MOVIE_API_URL = 'https://api.themoviedb.org/3/discover/movie'
+  user = request.user
+  print(user)
+
+  bookmarked_movie_ids = Bookmark.objects.filter(user=user).values_list('id', flat=True)
+  liked_movie_ids = Like.objects.filter(user=user).values_list('id', flat=True)
+  excluded_movie_ids = set(bookmarked_movie_ids).union(set(liked_movie_ids))
+
+  if category == 'default':
+    bookmark_genres = Genre.objects.filter(bookmark__user_id=user.id).values_list('id', flat=True)
+    like_genres = Genre.objects.filter(like__user_id=user.id).values_list('id', flat=True)
+
+    all_genres = list(bookmark_genres) + list(like_genres)
+    genre_counts = Counter(all_genres)
+    top_two_genres = [str(genre_id) for genre_id, count in genre_counts.most_common(2)]
+    with_genres = ','.join(top_two_genres) if top_two_genres else None
+
+    print(with_genres)
+
+    params = {
+      'api_key': MOVIE_API_KEY,
+      'language': 'ko-KR',
+      'page': 1,
+      'sort_by': 'vote_average.desc',
+      'include_adult': 'false',
+      'vote_average.gte': 7.5,
+      'vote_count.gte': 2000,
+      'with_genres': with_genres,
+    }
+
+    try:
+      filtered_results = []
+      while len(filtered_results) < 20:
+        response = requests.get(MOVIE_API_URL, params=params)
+        if response.status_code != 200:
+          break
+
+        data = response.json()
+        results = data.get('results', [])
+
+        new_movies = [
+          movie for movie in results
+          if movie['id'] not in excluded_movie_ids
+        ]
+
+        filtered_results.extend(new_movies)
+
+        if len(filtered_results) >= 20:
+          break
+
+        # 다음 페이지로 이동
+        params['page'] += 1
+
+        # 더 이상 데이터가 없으면 중단
+        if params['page'] > data.get('total_pages', 1):
+          break
+
+      # 결과 반환
+      return Response(filtered_results[:20], status=200)
+
+    except Exception as e:
+      return Response({'error': str(e)}, status=500)

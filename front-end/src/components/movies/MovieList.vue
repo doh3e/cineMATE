@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div v-if="displayedMovies.length > 0" class="movielist-box">
       <MovieListItem v-for="movie in displayedMovies" :key="movie.id" :movie="movie" />
     </div>
@@ -9,7 +8,6 @@
       <p v-else-if="hasMore">더 많은 영화를 로드합니다...</p>
       <p v-else>더 이상 데이터가 없습니다.</p>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -78,11 +76,19 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+
+.movielist-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 .movielist-box {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 40px;
   width: 100%;
   max-width: 1200px;
