@@ -64,7 +64,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useCounterStore } from '../stores/counter'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const store = useCounterStore()
 const router = useRouter()

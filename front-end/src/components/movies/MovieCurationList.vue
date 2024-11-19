@@ -1,8 +1,4 @@
 <template>
-  <div class="curation-title">
-    <h3>🎉 생일 축하해요, {{ store.userInfo.nickname }}님! 🎉</h3>
-    <p> 당신이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
-  </div>
   <div v-if="movies.length > 0" class="movie-slider-container">
     <Carousel v-bind="config">
       <Slide v-for="(movie, index) in movies" :key="index" class="carousel__slide">
@@ -39,15 +35,20 @@ const props = defineProps({
 
 // 캐러셀 설정
 const config = {
-  itemsToShow: 3.95, // 자연스러운 4개 표시
+  itemsToShow: 4.95, // 자연스러운 4개 표시
   wrapAround: true,  // 무한 루프
   autoplay: 3000,    // 3초마다 자동 슬라이드
   transition: 500,   // 부드러운 전환
+  height: 300,
 }
 </script>
 
 <style scoped>
 .carousel__slide {
+  height: 90%;
+  min-height: 180px;
+  opacity: 0.9;
+  transform: rotateY(-20deg) scale(0.9);
   padding: 5px;
 }
 
@@ -57,11 +58,6 @@ const config = {
 
 .carousel__track {
   transform-style: preserve-3d;
-}
-
-.carousel__slide {
-  opacity: 0.9;
-  transform: rotateY(-20deg) scale(0.9);
 }
 
 .carousel__slide--active ~ .carousel__slide {
@@ -88,8 +84,10 @@ const config = {
   position: relative;
   width: 100%;
   max-width: 1000px;
+  min-width: 500px;
+  height: 300px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding-top: 20px;
   background-color: #1f1f1f;
   border-radius: 12px;
 }

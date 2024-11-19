@@ -27,7 +27,6 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('authToken')
       localStorage.removeItem('refreshToken')
 
-      // CounterStore의 사용자 정보 초기화
       counterStore.userInfo = null
 
       alert('로그인이 만료되었습니다. 다시 로그인해주세요.')
@@ -38,7 +37,6 @@ export const useAuthStore = defineStore('auth', {
       const payload = JSON.parse(atob(this.token.split('.')[1]))
       const currentTime = Math.floor(Date.now() / 1000)
       if (payload.exp < currentTime) {
-        // 토큰이 만료되었으므로 로그아웃 처리
         this.logout()
         return false
       }

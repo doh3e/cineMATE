@@ -1,79 +1,126 @@
 <template>
   <div class="curation-container">
     <h1>더욱 심화된 큐레이션</h1>
+
+    <!-- 생일 추천 영화 -->
+    <div class="curation-title" v-if="isBirthday && birthDayQue.length > 0">
+      <h3>🎉 생일 축하해요, {{ store.userInfo.nickname }}님! 🎉</h3>
+      <p> 당신이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
+    </div>
     <MovieCurationList
       v-if="isBirthday && birthDayQue.length > 0"
       :movies="birthDayQue"
     />
+
+    <!-- 특별한 날 추천 영화 -->
+    <div class="curation-title" v-if="isEventDay && eventDayQue.length > 0">
+      <h3>오늘은 {{ currentSpecialDay }}!</h3>
+      <p> {{ eventMent }} </p>
+    </div>
     <MovieCurationList
-      v-if="isEventDay"
+      v-if="isEventDay && eventDayQue.length > 0"
+      :movies="eventDayQue"
     />
-    <MovieCurationList/>
-    <MovieCurationList/>
+
+    <!-- 기본 메시지 -->
+    <div v-if="!isBirthday && !isEventDay">
+      <p>추천할 영화가 없습니다.</p>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { publicAxios, authAxios } from '@/axios';
-import { useCounterStore } from '@/stores/counter';
-import MovieCurationList from '@/components/movies/MovieCurationList.vue';
+import { authAxios } from '@/axios'
+import { useCounterStore } from '@/stores/counter'
+import MovieCurationList from '@/components/movies/MovieCurationList.vue'
 
 const store = useCounterStore()
+
+// 상태 관리
 const isBirthday = ref(false)
 const isEventDay = ref(false)
-const birthDayQue = ref([])
+const currentSpecialDay = ref('') // 현재 특별한 날 (생일/이벤트 이름)
+const eventMent= ref('')
 
-// 생일 영화 추천 로직
-const isValidBirthday = (birthday) => {
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!regex.test(birthday)) {
-    return false;
-  }
+// 추천 영화
+const birthDayQue = ref([]) // 생일 영화 추천
+const eventDayQue = ref([]) // 특별한 날 영화 추천
 
-  const date = new Date(birthday);
-  return date instanceof Date && !isNaN(date);
+// 특별한 날(크리스마스, 할로윈 등)
+const eventDay = {
+  '01-01': ['새해', `${store.userInfo.nickname}님, 새해에는 어떤 다짐을 하셨나요?`],
+  '01-29': ['설날', '명절에 가족들과 함께 볼 수 있는 영화들을 소개할게요.'],
+  '02-14': ['발렌타인데이', '사랑하는 사람과의 달콤한 시간을 누려요.'],
+  '03-01': ['삼일절', '역사를 잊은 민족에게 미래는 없습니다.'],
+  '03-14': ['화이트데이', '사랑하는 사람과의 달콤한 시간을 누려요.'],
+  '05-05': ['어린이날', '오월은 푸르고 어린이들이 자라나는 달입니다.'],
+  '05-08': ['어버이날', '키워주신 감사를 전해봐요.'],
+  '08-15': ['광복절', '역사를 잊은 민족에게 미래는 없습니다.'],
+  '10-06': ['추석', '명절에 가족들과 함께 볼 수 있는 영화들을 소개할게요.'],
+  '10-31': ['할로윈', '할로윈이니 으스스한 영화 어때요?'],
+  '11-19': ['프로젝트 발표연습', '프로젝트를 위해 머리를 잔뜩 굴려볼까요?'],
+  '11-27': ['프로젝트 발표날', '프로젝트를 위해 머리를 잔뜩 굴려볼까요?'],
+  '12-24': ['크리스마스 이브', '이번 크리스마스엔 무엇을 하시나요?'],
+  '12-25': ['크리스마스', `메리 크리스마스, ${store.userInfo.nickname}님!`],
+  '12-31': ['연말'],
 }
 
-const checkBirthday = () => {
-  const userBirthday = store.userInfo?.birthday
-  if (!userBirthday || !isValidBirthday(userBirthday)) return false
-
+// 날짜 비교 함수
+const isToday = (date) => {
   const today = new Date()
-  const [year, month, day] = userBirthday.split('-')
-
+  const [year, month, day] = date.split('-')
+  console.log(year, month, day)
   return today.getMonth() + 1 === parseInt(month) && today.getDate() === parseInt(day)
 }
 
-const birthdayMovie = async () => {
-  if (!isBirthday.value) {
-    console.log('생일 아님!')
-    return
+// 생일 및 특별한 날 체크
+const checkSpecialDay = () => {
+  const todayKey = new Date().toISOString().slice(5, 10) // 'MM-DD'
+  const userBirthday = store.userInfo?.birthday
+
+  // 생일 체크
+  if (userBirthday && isToday(userBirthday)) {
+    isBirthday.value = true
+    currentSpecialDay.value = '생일'
   }
 
+  // 특별한 날 체크
+  if (eventDay[todayKey][0]) {
+    isEventDay.value = true
+    currentSpecialDay.value = eventDay[todayKey][0]
+    eventMent.value = eventDay[todayKey][1]
+  }
+}
+
+// 생일 영화 API 호출
+const fetchBirthdayMovies = async () => {
   try {
     const response = await authAxios.get('/movies/recommend/birthday/')
     birthDayQue.value = response.data
-    console.log(birthDayQue.value)
+    console.log('생일 추천 영화:', birthDayQue.value)
   } catch (error) {
-    console.log('생일 추천 영화 로드 중 오류 발생:', error)
+    console.error('생일 영화 추천 API 호출 중 오류 발생:', error)
   }
 }
 
-
-// 특별한 날(크리스마스, 할로윈)
-const eventDay = {
-  '01-01': '새해',
-  '12-25': '크리스마스',
+// 특별한 날 영화 API 호출
+const fetchEventDayMovies = async () => {
+  try {
+    const params = { keyword: currentSpecialDay.value }
+    const response = await authAxios.get('/movies/recommend/eventday/', { params })
+    eventDayQue.value = response.data
+    console.log('특별한 날 추천 영화:', eventDayQue.value)
+  } catch (error) {
+    console.error('특별한 날 영화 추천 API 호출 중 오류 발생:', error)
+  }
 }
-
 
 onMounted(() => {
-  isBirthday.value = checkBirthday()
-  
-  if (isBirthday.value) {
-    birthdayMovie()
-  }
+  checkSpecialDay()
+
+  if (isBirthday.value) fetchBirthdayMovies()
+  if (isEventDay.value) fetchEventDayMovies()
 })
 </script>
 

@@ -257,6 +257,48 @@ def recommend(request, category):
       'primary_release_year': user.birthday.year,
     }
   
+  if category == 'eventday':
+    keyword = request.GET.get('keyword')
+    origin = ''
+    if keyword == '설날' or keyword == '추석':
+      genre = '10751,35' # 가족, 코미디
+    elif keyword == '어린이날':
+      genre = '10751,16' # 가족, 애니메이션
+    elif keyword == '할로윈':
+      genre = '27' # 공포
+    elif keyword == '어버이날':
+      genre = '10751' # 가족
+      filter_word = ['엄마', '아빠', '어머니', '아버지']
+    elif keyword == '크리스마스 이브' or keyword == '크리스마스':
+      genre = '10749' # 로맨스
+      filter_word = ['크리스마스', '성탄절', '12월 25일', '산타']
+    elif keyword == '새해' or keyword == '연말':
+      genre = '18|35|10751|12|14' # 드라마, 코미디, 가족, 모험, 판타지
+      filter_word = ['새해', '1월 1일', '연말', '신년', '12월 31일', 'new year']
+    elif keyword == '발렌타인데이' or keyword == '화이트데이':
+      genre = '10749' # 로맨스
+      filter_word = ['초콜릿', '발렌타인', '화이트데이', '연인']
+    elif keyword == '광복절' or keyword == '삼일절':
+      genre = '36'
+      origin = 'ko'
+      filter_word = ['일본', '일제강점기', '1945년', '3월 1일', '삼일절',
+                     '일제 치하', '1910년', '1920년', '1930년', '광복']
+    elif keyword == '프로젝트 발표연습' or keyword == '프로젝트 발표날':
+      genre = '99|9648'
+      filter_word = ['발표', '프레젠테이션', '시연', '코딩', '프로젝트']
+      
+    params = {
+      'api_key': MOVIE_API_KEY,
+      'language': 'ko-KR',
+      'page': 1,
+      'sort_by': 'vote_average.desc',
+      'include_adult': 'false',
+      'vote_average.gte': 6.5,
+      'vote_count.gte': 50,
+      'with_genres': genre,
+      'with_original_language': origin,
+    }
+    
   try:
     filtered_results = []
     while len(filtered_results) < 20:
@@ -267,10 +309,22 @@ def recommend(request, category):
       data = response.json()
       results = data.get('results', [])
 
-      new_movies = [
-        movie for movie in results
-        if movie['id'] not in excluded_movie_ids
-      ]
+      new_movies = []
+      for movie in results:
+        # 영화 ID 제외 조건
+        if movie['id'] in excluded_movie_ids:
+          continue
+
+        # 필터 키워드 조건 추가
+        if 'filter_word' in locals():  # filter_word가 존재할 경우
+          title = movie.get('title', '')
+          overview = movie.get('overview', '')
+
+          # title이나 overview에 filter_word 중 하나라도 포함되어 있는지 확인
+          if not any(word in title or word in overview for word in filter_word):
+            continue
+
+        new_movies.append(movie)
 
       filtered_results.extend(new_movies)
 

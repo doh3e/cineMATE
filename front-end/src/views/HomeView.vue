@@ -3,20 +3,21 @@
     <div class="home-title">
       <h1>CINEMATE에서 다양한 영화들을 만나보세요!</h1>
     </div>
-    <MovieList :movies="store.topMovies" />
+    <MovieList :movies="movies" />
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useCounterStore } from '@/stores/counter'
 import { onBeforeRouteUpdate } from 'vue-router'
+import { useRouter } from 'vue-router'
 import MovieList from '@/components/movies/MovieList.vue'
 
-// Pinia 스토어 사용
 const store = useCounterStore()
 
-// 영화 데이터 로드
+const movies = computed(() => store.topMovies)
+
 const loadMovies = async () => {
   try {
     await store.loadTopMovies()
@@ -24,8 +25,6 @@ const loadMovies = async () => {
     console.error('영화 데이터를 로드하는 중 오류 발생:', error)
   }
 }
-
-console.log(store.userInfo)
 
 onMounted(() => {
   loadMovies()

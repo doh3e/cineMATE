@@ -14,14 +14,21 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import Navbar from './components/Navbar.vue'
 import { useAuthStore, useCounterStore } from './stores/counter';
+import { useRoute } from 'vue-router';
 
 const authStore = useAuthStore()
 const store = useCounterStore()
 const isNavbarFixed = ref(false)
+const route = useRoute()
 
 const handleScroll = () => {
-  isNavbarFixed.value = window.scrollY > 300
+  if (route.name === 'Home' || route.name === 'Movie' ) {
+    isNavbarFixed.value = window.scrollY > 150
+  } else {
+    isNavbarFixed.value = false
+  }
 }
+
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
@@ -56,6 +63,12 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 1000;
+  opacity: 0.8;
+  transition: opacity 0.3 ease;
+}
+
+.fixed-navbar:hover {
+  opacity: 1;
 }
 
 </style>
