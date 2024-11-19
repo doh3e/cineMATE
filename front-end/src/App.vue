@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="app-container">
     <header class="header">
       <img src="@/assets/img/logo_imsi.png" alt="" class="header-logo">
       <Navbar :class="{ 'fixed-navbar': isNavbarFixed }" />
     </header>
-    <main class="main">
+    <main class="main-container">
       <RouterView />
     </main>
   </div>
@@ -42,6 +42,16 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+}
+
 .header {
   width: 100%;
   position: relative;
@@ -69,6 +79,14 @@ onUnmounted(() => {
 
 .fixed-navbar:hover {
   opacity: 1;
+}
+
+.main-container {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 </style>
