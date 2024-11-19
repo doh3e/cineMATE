@@ -79,7 +79,7 @@ const handleSignUp = async () => {
       const token = response.data.key
       localStorage.setItem('authToken', token)
       alert('회원가입을 환영합니다!')
-      router.replace('/') // 홈으로 이동
+      router.replace({name: 'Home'}) // 홈으로 이동
     }
   } catch (error) {
     errorMessage.value = error.response?.data?.detail || '회원가입 실패. 다시 시도해주세요.'

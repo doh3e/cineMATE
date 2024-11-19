@@ -279,22 +279,22 @@ def recommend(request, category):
       genre = '10749' # 로맨스
       filter_word = ['초콜릿', '발렌타인', '화이트데이', '연인']
     elif keyword == '광복절' or keyword == '삼일절':
-      genre = '36'
+      genre = '36' # 역사
       origin = 'ko'
       filter_word = ['일본', '일제강점기', '1945년', '3월 1일', '삼일절',
                      '일제 치하', '1910년', '1920년', '1930년', '광복']
     elif keyword == '프로젝트 발표연습' or keyword == '프로젝트 발표날':
-      genre = '99|9648'
-      filter_word = ['발표', '프레젠테이션', '시연', '코딩', '프로젝트']
+      genre = '9648'
+      filter_word = ['발표', '프레젠테이션', '코딩', '개발자', '공부', '두뇌', '천재', '컴퓨터', '해커']
       
     params = {
       'api_key': MOVIE_API_KEY,
       'language': 'ko-KR',
       'page': 1,
-      'sort_by': 'vote_average.desc',
+      'sort_by': 'vote_count.desc',
       'include_adult': 'false',
-      'vote_average.gte': 6.5,
-      'vote_count.gte': 50,
+      'vote_average.gte': 7,
+      'vote_count.gte': 100,
       'with_genres': genre,
       'with_original_language': origin,
     }
