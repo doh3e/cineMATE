@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar" :style="{ opacity: navbarOpacity }">
+  <nav class="navbar">
     <div class="navbar__logo">cineMATE</div>
     <ul :class="['navbar__menu', { active: isMenuActive }]">
       <RouterLink :to="{ name: 'Home' }">
@@ -18,14 +18,14 @@
         @mouseleave="toggleDropdown(false)"
       >
         <RouterLink :to="{ name: 'Movie' }">
-          <span :class="{ 'current-page': $route.path.includes('/movie') }">영화탐색</span>
+          <span :class="{ 'current-page': $route.name == 'Movie' }">영화탐색</span>
         </RouterLink>
         <ul v-if="isDropdownOpen" class="dropdown-menu">
-          <RouterLink :to="{ name: 'MovieSearch' }">
-            <li :class="{ 'current-page': $route.name === 'MovieSearch' }">영화검색</li>
+          <RouterLink :to="{ name: 'Movie' }">
+            <li :class="{ 'current-page': $route.name === 'Movie' }">영화검색</li>
           </RouterLink>
-          <RouterLink :to="{ name: 'MovieCurating' }">
-            <li :class="{ 'current-page': $route.name === 'MovieCurating' }">큐레이팅</li>
+          <RouterLink :to="{ name: 'MovieCuration' }">
+            <li :class="{ 'current-page': $route.name === 'MovieCuration' }">큐레이팅</li>
           </RouterLink>
         </ul>
       </li>
@@ -62,33 +62,34 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useCounterStore } from '../stores/counter'
 import { useRouter } from 'vue-router'
 
 const store = useCounterStore()
 const router = useRouter()
 
-const navbarOpacity = ref(1)
 const isMenuActive = ref(false)
 const isDropdownOpen = ref(false)
+const navbarHeight = ref('auto')
 
-const handleScroll = () => {
-  navbarOpacity.value = window.scrollY > 300 ? 0.8 : 1
+// 메뉴 열릴 때 높이 계산
+const calculateNavbarHeight = () => {
+  const navbarMenu = document.querySelector('.navbar__menu')
+  if (navbarMenu) {
+    navbarHeight.value = isMenuActive.value
+      ? `${navbarMenu.scrollHeight}px` // 열렸을 때 높이
+      : '0px' // 닫혔을 때 높이
+  }
 }
 
-const handleMouseEnter = () => {
-  navbarOpacity.value = 1
-}
-
-const handleMouseLeave = () => {
-  navbarOpacity.value = window.scrollY > 300 ? 0.8 : 1
-}
-
+// 드롭다운 열기/닫기 상태
 const toggleDropdown = (state) => {
   isDropdownOpen.value = state
+  nextTick(calculateNavbarHeight)
 }
 
+// 로그아웃 처리
 const handleLogout = async () => {
   try {
     await store.logout()
@@ -97,18 +98,31 @@ const handleLogout = async () => {
   }
 }
 
+// 메뉴 열고 닫기
 const toggleMenu = () => {
   isMenuActive.value = !isMenuActive.value
+  nextTick(() => {
+    calculateNavbarHeight()
+  })
 }
 
+// 화면 크기 변화에 따른 메뉴 초기화
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  const resetMenuOnResize = () => {
+    if (window.innerWidth > 980) {
+      isMenuActive.value = false // 데스크탑에서는 닫힘 상태 유지
+    }
+    calculateNavbarHeight()
+  }
+  window.addEventListener('resize', resetMenuOnResize)
+  calculateNavbarHeight()
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('resize', calculateNavbarHeight)
 })
 </script>
+
 
 <style scoped>
 .navbar {
@@ -175,6 +189,14 @@ onUnmounted(() => {
   width: 100px;
 }
 
+.dropdown-menu li::after {
+  content: none;
+}
+
+.dropdown-menu li:hover::after {
+  content: none;
+}
+
 .navbar__menu .current-page {
   color: #1F1F1F;
 }
@@ -227,15 +249,11 @@ onUnmounted(() => {
   color: #1F1F1F;
 }
 
-@media screen and (max-width: 900px) {
-
+@media screen and (max-width: 980px) {
   .navbar {
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px 20px;
+    transition: height 0.3s ease; /* 높이 전환 효과 추가 */
+    overflow: hidden; /* 높이가 줄어들 때 잘리지 않도록 처리 */
   }
 
   .navbar__toggleBtn {
@@ -258,24 +276,20 @@ onUnmounted(() => {
     font-size: 2.5rem;
   }
 
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 0;
-    width: 100%;
-  }
-
   .navbar__menu {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-    width: 100%;
     gap: 10px;
+    max-height: 0px;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+  }
+
+  .navbar__menu.active {
+    max-height: 500px;
+    opacity: 1;
   }
 
   .navbar__menu > a {
@@ -291,7 +305,7 @@ onUnmounted(() => {
   }
 
   .navbar__menu li {
-    width: 100%;
+    width: 90%;
     padding: 15px 8px;
     text-align: center;
     display: flex;
@@ -305,45 +319,45 @@ onUnmounted(() => {
   }
 
   .dropdown-container {
+    position: relative;
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    text-align: center;
-    gap: 15px;
   }
 
   .dropdown-menu {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 90%;
+    position: absolute; /* 부모 메뉴의 위치 기준 */
+    top: 0;
+    left: 100%; /* 부모 메뉴의 오른쪽에 표시 */
+    background-color: #AD88C6;
+    list-style: none;
+    padding: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 200px; /* 드롭다운 메뉴의 너비 */
     max-height: 0;
-    overflow: hidden;
-    background-color: #7469B6;
-    border-radius: 5px;
-    transition: max-height 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
     opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    z-index: 10;
   }
 
-  li:hover > .dropdown-menu {
-    max-height: 500px;
+  .dropdown-container:hover > .dropdown-menu,
+  .dropdown-container.active > .dropdown-menu {
+    max-height: 300px; /* 드롭다운이 열렸을 때의 최대 높이 */
     opacity: 1;
-    background-color: #AD88C6;
+    visibility: visible;
   }
 
   .dropdown-menu li {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
+    width: 85%;
     padding: 10px 15px;
-    margin-left: 5px;
-    text-align: left;
+    text-align: center;
     color: #F8F8F8;
     transition: color 0.3s ease;
+    white-space: nowrap; /* 텍스트 잘림 방지 */
   }
 
   .dropdown-menu li:hover {

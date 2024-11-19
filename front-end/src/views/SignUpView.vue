@@ -24,7 +24,7 @@
       </div>
       <div>
         <label for="birthday">Birthday</label>
-        <input v-model="form.birthday" type="date" id="birthday" required />
+        <input v-model="form.birthday" type="date" id="birthday" />
       </div>
       <div>
         <label for="profileImage">Profile Image</label>
@@ -65,7 +65,9 @@ const handleImageUpload = (event) => {
 const handleSignUp = async () => {
   const formData = new FormData()
   for (const key in form) {
-    formData.append(key, form[key])
+    if (form[key] !== null && form[key] !== '') {
+      formData.append(key, form[key])
+    }
   }
 
   try {

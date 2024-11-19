@@ -19,7 +19,7 @@
         :hasMore="hasMore"
         @loadMore="loadMoreSearchMovies"
       />
-      <MovieCurating v-else-if="!isSearched && recommendations" :recommends="recommendations" />
+      <MovieYouLike v-else-if="!isSearched && recommendations" :recommends="recommendations" />
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import MovieSearch from '@/components/movies/MovieSearch.vue'
-import MovieCurating from '@/components/movies/MovieCurating.vue'
+import MovieYouLike from '@/components/movies/MovieYouLike.vue'
 import { authAxios, publicAxios } from '@/axios'
 
 const movies = ref([]) // 검색 결과

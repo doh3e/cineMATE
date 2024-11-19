@@ -46,6 +46,8 @@ def load_top_rated_data(request):
           break
 
         for item in results:
+          if item['vote_count'] < 1000:
+            continue
           if movies_count >= total_movies:
             break
 
@@ -56,6 +58,7 @@ def load_top_rated_data(request):
             adult=item['adult'],
             popularity=item['popularity'],
             vote_average=item['vote_average'],
+            vote_count=item['vote_count'],
             release_date=item['release_date'],
             poster_path=item['poster_path']
           )
@@ -85,7 +88,7 @@ def load_top_rated_data(request):
 @api_view(['GET'])
 def index(request):
   try:
-    movies = Movie.objects.prefetch_related('genre_ids').order_by('-popularity')
+    movies = Movie.objects.prefetch_related('genre_ids').order_by('-vote_average', '-vote_count')
     serializer = MovieDetailSerializer(movies, many=True)
     return Response(serializer.data, status=200)
   except Exception as e:
@@ -231,8 +234,6 @@ def recommend(request, category):
     top_two_genres = [str(genre_id) for genre_id, count in genre_counts.most_common(2)]
     with_genres = ','.join(top_two_genres) if top_two_genres else None
 
-    print(with_genres)
-
     params = {
       'api_key': MOVIE_API_KEY,
       'language': 'ko-KR',
@@ -243,36 +244,49 @@ def recommend(request, category):
       'vote_count.gte': 2000,
       'with_genres': with_genres,
     }
+    
+  if category == 'birthday':
+    params = {
+      'api_key': MOVIE_API_KEY,
+      'language': 'ko-KR',
+      'page': 1,
+      'sort_by': 'vote_average.desc',
+      'include_adult': 'false',
+      'vote_average.gte': 7.0,
+      'vote_count.gte': 1000,
+      'primary_release_year': user.birthday.year,
+    }
+  
+  try:
+    filtered_results = []
+    while len(filtered_results) < 20:
+      response = requests.get(MOVIE_API_URL, params=params)
+      if response.status_code != 200:
+        break
 
-    try:
-      filtered_results = []
-      while len(filtered_results) < 20:
-        response = requests.get(MOVIE_API_URL, params=params)
-        if response.status_code != 200:
-          break
+      data = response.json()
+      results = data.get('results', [])
 
-        data = response.json()
-        results = data.get('results', [])
+      new_movies = [
+        movie for movie in results
+        if movie['id'] not in excluded_movie_ids
+      ]
 
-        new_movies = [
-          movie for movie in results
-          if movie['id'] not in excluded_movie_ids
-        ]
+      filtered_results.extend(new_movies)
 
-        filtered_results.extend(new_movies)
+      if len(filtered_results) >= 20:
+        break
 
-        if len(filtered_results) >= 20:
-          break
+      # 다음 페이지로 이동
+      params['page'] += 1
 
-        # 다음 페이지로 이동
-        params['page'] += 1
+      # 더 이상 데이터가 없으면 중단
+      if params['page'] > data.get('total_pages', 1):
+        break
 
-        # 더 이상 데이터가 없으면 중단
-        if params['page'] > data.get('total_pages', 1):
-          break
+    # 결과 반환
+    return Response(filtered_results[:20], status=200)
 
-      # 결과 반환
-      return Response(filtered_results[:20], status=200)
-
-    except Exception as e:
-      return Response({'error': str(e)}, status=500)
+  except Exception as e:
+    return Response({'error': str(e)}, status=500)
+    

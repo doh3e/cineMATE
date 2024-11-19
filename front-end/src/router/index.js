@@ -7,6 +7,7 @@ import MypageView from '@/views/MypageView.vue'
 import MovieView from '@/views/MovieView.vue'
 import MovieforyouView from '@/views/MovieforyouView.vue'
 import ReviewView from '@/views/ReviewView.vue'
+import MovieCurationView from '@/views/MovieCurationView.vue'
 
 
 const routes = [
@@ -34,19 +35,11 @@ const routes = [
     path: '/movie',
     name: 'Movie',
     component: MovieView,
-    redirect: '/movie/search',
-    children: [
-      {
-        path: 'search',
-        name: 'MovieSearch',
-        component: () => import('@/components/movies/MovieSearch.vue'),
-      },
-      {
-        path: 'curating',
-        name: 'MovieCurating',
-        component: () => import('@/components/movies/MovieCurating.vue'),
-      },
-    ],
+  },
+  {
+    path: '/curation',
+    name: 'MovieCuration',
+    component: MovieCurationView,
   },
   {
     path: '/review',

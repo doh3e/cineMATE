@@ -156,10 +156,8 @@ class MyPageSerializer(serializers.ModelSerializer):
   
   def get_followings(self, obj):
       followings = obj.followings.all()
-      print(f"Followings for {obj.username}: {followings}")  # 디버깅 출력
       return [user.username for user in followings]
 
   def get_followers(self, obj):
       followers = obj.followers.all()
-      print(f"Followers for {obj.username}: {followers}")  # 디버깅 출력
       return [user.username for user in followers]

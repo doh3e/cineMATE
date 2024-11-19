@@ -13,6 +13,7 @@ class Movie(models.Model):
   adult = models.BooleanField()
   popularity = models.FloatField()
   vote_average = models.FloatField()
+  vote_count = models.IntegerField()
   genre_ids = models.ManyToManyField(Genre)
   release_date = models.DateField()
   poster_path = models.CharField(max_length=200)

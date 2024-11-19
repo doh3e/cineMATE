@@ -35,8 +35,9 @@ const store = useCounterStore()
 
 const userImgPath = computed(() => {
   const profileImage = props.person?.profile_image
-  return profileImage === '/media/null' ? null : `http://127.0.0.1:8000${profileImage}`
+  return profileImage ? `http://127.0.0.1:8000${profileImage}` : null
 })
+
 
 const isEditAllowed = computed(() => props.person?.username === store.userInfo?.username)
 
