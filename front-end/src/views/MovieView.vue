@@ -19,7 +19,11 @@
         :hasMore="hasMore"
         @loadMore="loadMoreSearchMovies"
       />
-      <MovieYouLike v-else-if="!isSearched && recommendations" :recommends="recommendations" />
+    </div>
+    <div class="desciprtion-box" v-if="!isSearched">
+      <h3>검색 방법</h3>
+      <p>원하시는 영화의 제목을 2글자 이상 입력해주세요.</p>
+      <p>띄어쓰기를 정확히 하셔야 해요. (ex.세얼간이x 세 얼간이o)</p>
     </div>
   </div>
 </template>
@@ -27,7 +31,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import MovieSearch from '@/components/movies/MovieSearch.vue'
-import MovieYouLike from '@/components/movies/MovieYouLike.vue'
 import { authAxios, publicAxios } from '@/axios'
 
 const movies = ref([]) // 검색 결과
@@ -35,17 +38,6 @@ const hasMore = ref(false) // 추가 데이터 유무
 const keyword = ref('') // 검색 키워드
 const currentPage = ref(1) // 현재 페이지
 const isSearched = ref(false) // 검색 여부 상태
-const recommendations = ref([]) // 추천 영화 리스트
-
-// 기본 추천 영화 로드 (좋아요, 북마크에 따른)
-const loadRecommendations = async () => {
-  try {
-    const response = await authAxios.get('/movies/recommend/default/')
-    recommendations.value = response.data
-  } catch (error) {
-    console.error('추천 영화 로드 중 오류 발생:', error)
-  }
-}
 
 // 검색 실행
 const searchMovies = async () => {
@@ -94,9 +86,6 @@ const loadMoreSearchMovies = async () => {
   }
 }
 
-onMounted(() => {
-  loadRecommendations()
-})
 </script>
 
 <style scoped>

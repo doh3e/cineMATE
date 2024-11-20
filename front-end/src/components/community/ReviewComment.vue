@@ -9,6 +9,7 @@
           name="comment-content"
           id="comment-content"
           v-model="query"
+          @keyup.enter.prevent="createComment"
         ></textarea>
         <button type="submit">등록</button>
       </form>
@@ -47,7 +48,7 @@ const createComment = async () => {
   try {
     console.log('작성된 댓글:', query.value)
     await authAxios.post(`/community/reviews/${prop.review_id}/comments/`, {
-      content: query.value,
+      content: query.value.trim(),
     })
     alert('댓글 등록이 완료되었습니다!')
     query.value = '' // 입력 필드 초기화

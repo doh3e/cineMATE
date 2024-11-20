@@ -75,7 +75,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior() {
-    return { top: 0 }  // 항상 스크롤을 최상단으로 이동
+    return { top: 0 }
   }
 })
 

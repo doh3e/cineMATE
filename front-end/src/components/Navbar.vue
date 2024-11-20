@@ -277,6 +277,7 @@ onUnmounted(() => {
   }
 
   .navbar__menu {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -305,7 +306,8 @@ onUnmounted(() => {
   }
 
   .navbar__menu li {
-    width: 90%;
+    width: 100%;
+    box-sizing: border-box;
     padding: 15px 8px;
     text-align: center;
     display: flex;
@@ -328,8 +330,8 @@ onUnmounted(() => {
 
   .dropdown-menu {
     position: absolute; /* 부모 메뉴의 위치 기준 */
-    top: 0;
-    left: 100%; /* 부모 메뉴의 오른쪽에 표시 */
+    left: 57%;
+    top:10%;
     background-color: #AD88C6;
     list-style: none;
     padding: 10px 0;
@@ -341,7 +343,7 @@ onUnmounted(() => {
     visibility: hidden;
     overflow: hidden;
     transition: max-height 0.3s ease, opacity 0.3s ease;
-    z-index: 10;
+    z-index: 99;
   }
 
   .dropdown-container:hover > .dropdown-menu,
@@ -351,8 +353,13 @@ onUnmounted(() => {
     visibility: visible;
   }
 
+  .dropdown-menu a {
+    width: 100%;
+    margin: 0 auto;
+  }
+
   .dropdown-menu li {
-    width: 85%;
+    width: 100%;
     padding: 10px 15px;
     text-align: center;
     color: #F8F8F8;

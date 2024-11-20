@@ -11,7 +11,7 @@
       <p>팔로워 수: {{ person?.followers.length }}</p>
       <p>팔로잉 수: {{ person?.followings.length }}</p>
     </div>
-    <button v-if="isEditAllowed" @click="$emit('editProfile')">정보 수정</button>
+    <button v-if="isEditAllowed" @click="editProfile">정보 수정</button>
     <button
       v-if="isFollowVisible"
       @click="toggleFollow"
@@ -31,6 +31,12 @@ const props = defineProps({
   person: Object,
 })
 
+const emit = defineEmits(['editProfile', 'updateRequired'])
+
+const editProfile = () => {
+  emit('editProfile')
+}
+
 const store = useCounterStore()
 
 const userImgPath = computed(() => {
@@ -46,8 +52,6 @@ const isFollowVisible = computed(() => props.person?.username !== store.userInfo
 const isFollowing = computed(() => {
   return props.person?.followers?.includes(store.userInfo.username)
 })
-
-const emit = defineEmits(['updateRequired'])
 
 const toggleFollow = async () => {
   try {

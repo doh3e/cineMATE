@@ -1,0 +1,513 @@
+[
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$XbKKzsEaB2QVNgCaQpS7EH$0P9CgPuT2wpR/o0hFQNKhG2BIt0xthkZiIfCAj7P8Wk=",
+    "last_login": "2024-11-19T00:13:19.948Z",
+    "is_superuser": false,
+    "username": "test11",
+    "first_name": "",
+    "last_name": "",
+    "email": "test11@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-19T00:13:19.595Z",
+    "nickname": "지은",
+    "profile_image": "user_test11/e9b6776a-9648-4ea3-93c9-0e8d4d1f3f4a.png",
+    "birthday": "1994-11-20",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      2,
+      6,
+      9
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$irCjOiHdFbwmpFqCukbmim$f/dpv7zheOpB0WBRFz5C1c6PkCIGxEULA+r1+x3f+Z0=",
+    "last_login": "2024-11-19T01:21:34.128Z",
+    "is_superuser": false,
+    "username": "test22",
+    "first_name": "",
+    "last_name": "",
+    "email": "test22@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-19T01:21:33.809Z",
+    "nickname": "도희",
+    "profile_image": "",
+    "birthday": "1994-08-18",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      1,
+      3,
+      10
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$fJbP4iQpV3LWxQukPnCZOW$x1dvDTt/o/kDeHa2v29HnhblHmNvMBu4WoKKkoxbgCM=",
+    "last_login": "2024-11-20T07:46:23.927Z",
+    "is_superuser": false,
+    "username": "test33",
+    "first_name": "",
+    "last_name": "",
+    "email": "test33@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-20T07:46:23.600Z",
+    "nickname": "마늘",
+    "profile_image": "",
+    "birthday": "1997-10-17",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$fAtHnxSFmeYsQHCVmDHmea$tXr8ucYj3OcHmtedeu8DQrxB+ViXPzMEZmAAs2Xtlr4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test44",
+    "first_name": "",
+    "last_name": "",
+    "email": "test4@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-20T01:28:01.708Z",
+    "nickname": "다람",
+    "profile_image": "",
+    "birthday": "1994-11-15",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      1,
+      2,
+      10
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$XSPdp6Tks2y7Unfnc6GsoX$ncBgsfm1s0HJtrLjGfzZ8aENTz4zngfgUvJDhVXks34=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test55",
+    "first_name": "",
+    "last_name": "",
+    "email": "test5@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-15T15:43:04.112Z",
+    "nickname": "도은",
+    "profile_image": "",
+    "birthday": "1959-11-29",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      7,
+      12,
+      20
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$gFMnTfZaJik3rpXHsdxqAt$iBez+sTLAH99V8Nz8CrvKGwN1bZwyj8QzPSD+oQq0Oc=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test66",
+    "first_name": "",
+    "last_name": "",
+    "email": "test6@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-12T21:32:17.001Z",
+    "nickname": "달콤",
+    "profile_image": "",
+    "birthday": "1949-04-25",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      5,
+      6,
+      8,
+      19
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$po05LS17RmmpM6d3zG3AQm$1JHWCbj3iznZdsI9k/7wCdqMMZKEdKnZ8/7rTZyK6eY=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test77",
+    "first_name": "",
+    "last_name": "",
+    "email": "test7@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-18T02:01:50.500Z",
+    "nickname": "단비",
+    "profile_image": "",
+    "birthday": "2000-05-08",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      1,
+      6
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 8,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$NryNtPal2Pp0DaNAA5ZsQX$tw8tkkTBSTE5RKn+PRuCOfDFALxowgoOGMX2Y1LZh0A=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test88",
+    "first_name": "",
+    "last_name": "",
+    "email": "test8@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-16T21:57:18.415Z",
+    "nickname": "포드",
+    "profile_image": "",
+    "birthday": "1928-08-26",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      7,
+      11,
+      12,
+      16,
+      17
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 9,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$TbtKr9SrVXqu1SMBYbBGql$QJKTAYzoxPZBudBqEIj8CDBn/f+/fJjcvVdnwX5tSJk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test99",
+    "first_name": "",
+    "last_name": "",
+    "email": "test9@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-11T06:18:20.241Z",
+    "nickname": "비노",
+    "profile_image": "",
+    "birthday": "1981-09-22",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      6
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 10,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$c9hfRhQgzvc20Y1LR74bUE$48Czjfz8sARhDUnHVvsSIeBtD0Rf8GkLRt0Bdnw2K40=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1010",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1010@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-15T21:17:58.200Z",
+    "nickname": "뮤뮤",
+    "profile_image": "",
+    "birthday": "1953-09-10",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      9,
+      20
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 11,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$aLyfB28dXz0SGN7bcRHm3W$zPHZUOuZhEUY9e3QYsIe0ogZDT94p7NbROA9ftr3udo=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1111",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1111@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-11T12:14:04.141Z",
+    "nickname": "최정홈런",
+    "profile_image": "",
+    "birthday": "1955-07-14",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      7,
+      10,
+      13,
+      15
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 12,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$6riyWW0wbWpELjAch6r3Kg$ld+gc/1hk/s+HsfnAwJfAH0ssV1WMZoIbV/7t7rdl1Y=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1212",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1212@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-16T01:22:34.020Z",
+    "nickname": "오케이티오나의사랑소닉붐",
+    "profile_image": "",
+    "birthday": "1936-11-23",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      1
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 13,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$XKmstrzYywOZWPHGFJRngU$QNZlSfdf26vioeRdsIzCHHqic4vS9TWrAYNSBAkIqk8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1313",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1313@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-17T10:36:36.525Z",
+    "nickname": "복이",
+    "profile_image": "",
+    "birthday": "2003-01-12",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      5,
+      7,
+      15
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 14,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$RzCRJLtFatJ2EJxzwYeCj9$dV/zvx2OCMdijmdGJqeuf666SVXwXtnjNADCNfzDj1M=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1414",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1414@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-19T00:53:13.988Z",
+    "nickname": "틀니가안껴져",
+    "profile_image": "",
+    "birthday": "1927-07-02",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      6,
+      19
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 15,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$jDlHEusHx5bfg5A7uGuNwB$RPoSYkEsB4ZlyUJIfuGzRCRcmwKpV+a4iXyYLVYRJ6g=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1515",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1515@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-14T09:35:20.458Z",
+    "nickname": "루피",
+    "profile_image": "",
+    "birthday": "1992-12-14",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      14,
+      18
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 16,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$EwjbEtjucm4IwsRt0HNEpM$m4m+Jqf8XIe3HRm9fbqCHFhCGtxKr0aH6jSGaWqBRBA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1616",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1616@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-12T00:38:55.112Z",
+    "nickname": "제로",
+    "profile_image": "",
+    "birthday": "1991-03-11",
+    "groups": [],
+    "user_permissions": [],
+    "followings": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 17,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$vpVtVyuZoYjZUdsyaNQ5os$YILf0ihiMh0nzoA/FVkhgxmmInhxGQqq41Wi970cxPc=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1717",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1717@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-13T07:26:48.333Z",
+    "nickname": "이착헌보자",
+    "profile_image": "",
+    "birthday": "1954-12-21",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      4,
+      9,
+      16
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 18,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$ajAKGLfR5XM2vXwTLYzO9M$pUIP6Pgi4Qe53bod3ZutQ5fGIfWwx2HIg1TNtlmj2AQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1818",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1818@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-17T16:33:44.656Z",
+    "nickname": "어바등재밌음",
+    "profile_image": "",
+    "birthday": "1951-08-26",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      8,
+      9,
+      16,
+      19
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 19,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$gGwm5IZ1dVLGqqVcZoPa9S$1oruw0q0XsLzv6P0/TRHmji6GlmlZOxTxFkSl8U0HDQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1919",
+    "first_name": "",
+    "last_name": "",
+    "email": "test1919@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-14T05:35:03.177Z",
+    "nickname": "희야링",
+    "profile_image": "",
+    "birthday": "1993-02-02",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      8,
+      11,
+      12,
+      16
+    ]
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 20,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$fUKHHMfrYe1SDfo9Z31fHO$O6Hw0XrugFuIszsocUc0JkZo6Ik/P5Ve1o08WJQUvws=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test2020",
+    "first_name": "",
+    "last_name": "",
+    "email": "test2020@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-15T19:17:07.784Z",
+    "nickname": "달빛",
+    "profile_image": "",
+    "birthday": "1964-08-04",
+    "groups": [],
+    "user_permissions": [],
+    "followings": [
+      15
+    ]
+  }
+}
+]

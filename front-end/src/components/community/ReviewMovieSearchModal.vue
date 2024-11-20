@@ -6,6 +6,7 @@
         type="text"
         v-model="searchQuery"
         placeholder="영화 제목을 입력하세요"
+        @keyup.enter.prevent="searchMovies"
       />
       <button @click="searchMovies">검색</button>
       <div class="result-box">

@@ -5,47 +5,59 @@
       <div>
         <label for="nickname">닉네임</label>
         <input type="text" v-model="form.nickname" id="nickname" required />
+        <p v-if="errors.nickname" class="error-message">{{ errors.nickname }}</p>
       </div>
       <div>
         <label for="old_password">현재 비밀번호</label>
         <input type="password" v-model="form.old_password" id="old_password" required />
+        <p v-if="!form.old_password" class="error-message">현재 비밀번호는 필수입니다.</p>
       </div>
       <div>
         <label for="new_password1">새 비밀번호</label>
         <input type="password" v-model="form.new_password1" id="new_password1" />
+        <p v-if="errors.new_password1" class="error-message">{{ errors.new_password1 }}</p>
       </div>
       <div>
         <label for="new_password2">새 비밀번호 확인</label>
         <input type="password" v-model="form.new_password2" id="new_password2" />
+        <p v-if="errors.new_password2" class="error-message">{{ errors.new_password2 }}</p>
       </div>
       <div>
         <label for="email">이메일</label>
         <input type="email" v-model="form.email" id="email" required />
+        <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
       </div>
       <div>
         <label for="birthday">생일</label>
         <input type="date" v-model="form.birthday" id="birthday" />
+        <p v-if="errors.birthday" class="error-message">{{ errors.birthday }}</p>
       </div>
       <div>
         <label for="profile_image">프로필 이미지</label>
         <input type="file" @change="handleFileChange" id="profile_image" />
       </div>
-      <button type="submit">저장</button>
+      <button type="submit" :disabled="!isFormValid">저장</button>
     </form>
     <button @click="goodbye">회원탈퇴</button>
   </div>
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { authAxios } from '@/axios'
 import { useCounterStore } from '@/stores/counter'
+import {
+  validateEmail,
+  validatePassword,
+  validatePasswordMatch,
+  validateNickname,
+  validateBirthday,
+} from '@/utils/validators'
 
 const router = useRouter()
 const route = useRoute()
 const store = useCounterStore()
-
 
 const form = reactive({
   email: '',
@@ -56,6 +68,47 @@ const form = reactive({
   new_password1: '',
   new_password2: '',
 })
+
+const errors = reactive({
+  email: '',
+  nickname: '',
+  birthday: '',
+  old_password: '',
+  new_password1: '',
+  new_password2: '',
+})
+
+watch(() => form.email, () => {
+  errors.email = validateEmail(form.email)
+})
+
+watch(() => form.new_password1, () => {
+  errors.new_password1 = validatePassword(form.new_password1)
+})
+
+watch(() => form.new_password2, () => {
+  errors.new_password2 = validatePasswordMatch(form.new_password1, form.new_password2)
+})
+
+watch(() => form.nickname, () => {
+  errors.nickname = validateNickname(form.nickname)
+})
+
+watch(() => form.birthday, () => {
+  errors.birthday = validateBirthday(form.birthday)
+})
+
+const isFormValid = computed(() => {
+  return (
+    !errors.email &&
+    !errors.nickname &&
+    !errors.birthday &&
+    !errors.new_password1 &&
+    !errors.new_password2 &&
+    form.old_password // 필수
+  )
+})
+
 
 // store에서 초기값 가져오기
 onMounted(() => {
@@ -143,5 +196,10 @@ button {
 }
 button:hover {
   background-color: #45a049;
+}
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
 }
 </style>

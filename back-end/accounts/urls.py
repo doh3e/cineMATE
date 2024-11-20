@@ -15,4 +15,5 @@ urlpatterns = [
     path('mypage/<str:username>/', views.mypage, name='mypage'),
     path('delete/<int:user_id>/', views.delete_user, name='delete_user'),
     path('follows/<str:personname>/', views.follows, name='follows'),
+    # path('hashing_user/', views.encrypt_all_passwords, name="hashing"), 암호화되지 않은 더미유저 데이터를 암호화하는 경로
 ]
