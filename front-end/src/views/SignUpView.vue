@@ -41,7 +41,6 @@
       </div>
       <button type="submit" :disabled="!isFormValid">회원가입</button>
     </form>
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
   </div>
 </template>
 

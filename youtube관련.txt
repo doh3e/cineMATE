@@ -1,0 +1,2 @@
+iframe 주소
+https://www.youtube.com/embed/영상시리얼번호 (보통 유튜브 들어가면 있는 끝자리)

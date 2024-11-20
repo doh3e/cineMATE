@@ -216,7 +216,7 @@ def like(request):
     })
 
     genre_ids = movie_data.get('genre_ids', [])
-    if genre_ids and isinstance(genre_ids[0], dict):  # genre_ids가 딕셔너리 리스트인 경우
+    if genre_ids and isinstance(genre_ids[0], dict):
       genre_ids = [genre['id'] for genre in genre_ids]
       
     genres = Genre.objects.filter(id__in=genre_ids)
@@ -260,10 +260,10 @@ def recommend(request, category):
       'api_key': MOVIE_API_KEY,
       'language': 'ko-KR',
       'page': 1,
-      'sort_by': 'vote_average.desc',
+      'sort_by': 'vote_count.desc',
       'include_adult': 'false',
-      'vote_average.gte': 7.5,
-      'vote_count.gte': 2000,
+      'vote_average.gte': 7.0,
+      'vote_count.gte': 1000,
       'with_genres': with_genres,
     }
     

@@ -5,7 +5,7 @@
     <!-- 생일 추천 영화 -->
     <div class="curation-title" v-if="isBirthday && birthDayQue.length > 0">
       <h3>🎉 생일 축하해요, {{ store.userInfo?.nickname }}님! 🎉</h3>
-      <p> 당신이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
+      <p> {{ store.userInfo?.nickname }}님이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
     </div>
     <MovieCurationList
       v-if="isBirthday && birthDayQue.length > 0"
