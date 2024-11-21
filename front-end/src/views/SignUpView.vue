@@ -124,6 +124,7 @@ const handleSignUp = async () => {
   }
 
   try {
+    console.log(formData)
     const response = await publicAxios.post('/accounts/dj-rest-auth/registration/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })

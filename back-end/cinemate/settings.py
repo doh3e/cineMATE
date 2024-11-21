@@ -24,8 +24,6 @@ environ.Env.read_env(
 )
 try:
     MOVIE_API_KEY = env('MOVIE_API_KEY')
-    SOCIAL_AUTH_KAKAO_REST_ID = env('SOCIAL_AUTH_KAKAO_REST_ID')
-    SOCIAL_AUTH_KAKAO_CLIENT_SECRET_ID = env('SOCIAL_AUTH_KAKAO_CLIENT_SECRET_ID')
 except KeyError:
     raise ValueError("API_KEY 환경 변수가 설정되어 있지 않습니다.")
 
@@ -57,7 +55,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.kakao',
     'dj_rest_auth.registration',
     'corsheaders',
     'django.contrib.sites', 
@@ -71,28 +68,6 @@ INSTALLED_APPS = [
 
 # 사이트 ID 설정
 SITE_ID = 1
-SOCIALACCOUNT_LOGIN_ON_GET = True
-LOGIN_REDIRECT_URL = '/movies/ '
-ACCOUNT_LOGOUT_REDIRECT_URL = '/movies/'
-ACCOUNT_LOGOUT_ON_GET = True
-SOCIAL_AUTH_REDIRECT_URL = '/movies/'
-
-SOCIALACCOUNT_PROVIDERS = {
-    'kakao': {
-        'APP': {
-            'client_id': SOCIAL_AUTH_KAKAO_REST_ID,
-            'secret': SOCIAL_AUTH_KAKAO_CLIENT_SECRET_ID,  # 필요 없다면 빈 문자열
-        },
-        'SCOPE': [
-            'account_email',  # 이메일 요청
-            'profile_nickname',  # 닉네임 요청
-            'profile_image'
-        ],
-        'FIELDS': ['email', 'nickname', 'profile_image' ],  # 가져올 사용자 정보
-    }
-}
-
-SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomSocialAccountAdapter'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,11 +82,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'cinemate.urls'
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
 
 TEMPLATES = [
     {
@@ -281,3 +251,4 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+

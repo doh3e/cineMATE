@@ -2,28 +2,17 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import CustomTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from rest_framework import status
 from .serializers import CustomUserSerializer, MyPageSerializer, CustomUserUpdateSerializer
 from django.contrib.auth.hashers import make_password # 유저 정보 임의 입력 후 해시화할 때 사용
-from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
-from dj_rest_auth.registration.views import SocialLoginView
-from allauth.socialaccount.models import SocialAccount
-from django.conf import settings
-from django.http import JsonResponse
-from django.http import HttpResponse
-from urllib.parse import urlencode
-import requests
 
 from .models import User
 from movies.models import Bookmark, Like
 from community.models import Review, Comment, Movieforyou
-
 
 
 # 유저 커스텀을 위한 클래스 뷰
@@ -58,89 +47,6 @@ class CustomUserInfoView(APIView):
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(serializer.data)
-
-
-# 회원가입을 위한 이메일 요청
-# @api_view(['POST'])
-# def resend_email_verification(request):
-#   user = request.user
-#   if not user.is_authenticated:
-#     return Response({"detail": "로그인이 필요합니다."}, status=401)
-
-#   try:
-#     email_address = EmailAddress.objects.get(user=user, email=user.email)
-#     if email_address.verified:
-#       return Response({"detail": "이미 이메일 인증이 완료되었습니다."}, status=400)
-#     email_address.send_confirmation(request)
-#     return Response({"detail": "이메일 인증 메일이 전송되었습니다."}, status=200)
-#   except ObjectDoesNotExist:
-#     return Response({"detail": "유효하지 않은 사용자입니다."}, status=400)
-
-# 카카오 로그인
-
-class KakaoLogin(APIView):
-    def get(self, request, *args, **kwargs):
-        # Step 1: Authorization Code 받기
-        auth_code = request.GET.get('code')
-        if not auth_code:
-            return Response({"error": "Authorization code is missing."}, status=400)
-
-        # Step 2: Access Token 요청
-        token_url = "https://kauth.kakao.com/oauth/token"
-        token_data = {
-            "grant_type": "authorization_code",
-            "client_id": settings.SOCIAL_AUTH_KAKAO_REST_ID,
-            "client_secret": settings.SOCIAL_AUTH_KAKAO_CLIENT_SECRET_ID,
-            "redirect_uri": "http://127.0.0.1:8000/accounts/kakao/login/callback/",
-            "code": auth_code,
-        }
-        token_headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        token_response = requests.post(token_url, data=token_data, headers=token_headers)
-
-        if token_response.status_code != 200:
-            return Response({"error": "Failed to get access token."}, status=token_response.status_code)
-
-        access_token = token_response.json().get("access_token")
-
-        # Step 3: 사용자 정보 요청
-        user_info_url = "https://kapi.kakao.com/v2/user/me"
-        user_info_headers = {"Authorization": f"Bearer {access_token}"}
-        user_info_response = requests.get(user_info_url, headers=user_info_headers)
-
-        if user_info_response.status_code != 200:
-            return Response({"error": "Failed to get user info."}, status=user_info_response.status_code)
-
-        user_info = user_info_response.json()
-        kakao_account = user_info.get("kakao_account", {})
-        email = kakao_account.get("email", f"kakao_{user_info['id']}@kakao.com")
-        nickname = kakao_account.get("profile", {}).get("nickname", f"kakao_{user_info['id']}")
-
-        # Step 4: 유저 생성 또는 조회
-        user, created = User.objects.get_or_create(
-            email=email,
-            defaults={"nickname": nickname, "username": email.split("@")[0]},
-        )
-
-        # Step 5: JWT 토큰 발급
-        refresh = RefreshToken.for_user(user)
-        redirect_url = f"http://localhost:5173/login?access_token={access_token}&refresh_token={refresh}"
-        return redirect(redirect_url)
-
-
-    
-def kakao_login_redirect(request):
-    # 카카오 인증 URL 생성 및 리다이렉트
-    kakao_auth_url = "https://kauth.kakao.com/oauth/authorize"
-    client_id = settings.SOCIAL_AUTH_KAKAO_REST_ID
-    redirect_uri = "http://127.0.0.1:5173/kakao/login/callback"
-
-    params = {
-        "client_id": client_id,
-        "redirect_uri": redirect_uri,
-        "response_type": "code"
-    }
-    redirect_url = f"{kakao_auth_url}?{urlencode(params)}"
-    return redirect(redirect_url)
 
 
 # 마이페이지 접근
