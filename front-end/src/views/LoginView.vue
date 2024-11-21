@@ -13,6 +13,7 @@
       <button type="submit">로그인</button>
     </form>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+    <button @click="loginWithKakao">카카오로 로그인</button>
   </div>
 </template>
 
@@ -20,6 +21,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCounterStore } from '@/stores/counter'
+import { publicAxios } from '@/axios';
+
+const KAKAO_REST_ID = import.meta.env.VITE_KAKAO_REST_ID
+console.log(KAKAO_REST_ID)
 
 const store = useCounterStore()
 const router = useRouter()
@@ -32,13 +37,14 @@ const form = ref({
 const errorMessage = ref('')
 
 // 로그인 처리 함수
-const handleLogin = async () => {
-  try {
-    await store.login(form.value.username, form.value.password)
-  } catch (error) {
-    errorMessage.value = '로그인 실패. 다시 시도해주세요.'
-  }
+const loginWithKakao = async () => {
+  const REDIRECT_URI = 'http://127.0.0.1:5173/kakao/login'
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`
+  window.location.href = KAKAO_AUTH_URL
 }
+
+
+
 </script>
 
 <style scoped>

@@ -10,4 +10,5 @@ urlpatterns = [
     path('bookmark/', views.bookmark),
     path('like/', views.like),
     path('recommend/<str:category>/', views.recommend),
+    path('movie-by-genre/<int:genre_id>/', views.moviebygenre),
 ]

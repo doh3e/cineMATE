@@ -15,5 +15,5 @@ class MovieDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'overview', 'adult',
             'popularity', 'vote_average', 'genre_ids',
-            'release_date', 'poster_path', 'youtube_path',
+            'release_date', 'poster_path',
         ]

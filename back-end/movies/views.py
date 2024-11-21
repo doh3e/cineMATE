@@ -19,14 +19,14 @@ from .serializers import MovieDetailSerializer
 
 MOVIE_API_KEY = settings.MOVIE_API_KEY
 
-# 인기 영화 100선 호출 (DB에 저장할 데이터)
+# 인기 영화 2000개 호출 (DB에 저장할 데이터)
 @api_view(['GET'])
 def load_top_rated_data(request):
   try:
     if not Movie.objects.exists():
       MOVIE_API_URL = "https://api.themoviedb.org/3/movie/top_rated"
       page = 1
-      total_movies = 100
+      total_movies = 2000
       movies_count = 0
 
       while movies_count < total_movies:
@@ -90,7 +90,7 @@ def load_top_rated_data(request):
 @api_view(['GET'])
 def index(request):
   try:
-    movies = Movie.objects.prefetch_related('genre_ids').order_by('-vote_average', '-vote_count')
+    movies = Movie.objects.prefetch_related('genre_ids').order_by('-vote_average', '-vote_count')[:100]
     serializer = MovieDetailSerializer(movies, many=True)
     return Response(serializer.data, status=200)
   except Movie.DoesNotExist:
@@ -100,7 +100,7 @@ def index(request):
     return Response({"error": "서버 오류가 발생했습니다."}, status=500)
 
 
-
+# 영화를 검색하는 로직
 @api_view(['GET'])
 def movie_search(request):
   query = request.GET.get('query', '').strip()
@@ -109,10 +109,10 @@ def movie_search(request):
 
   try:
     MOVIE_API_URL = "https://api.themoviedb.org/3/search/movie"
-    movies = []  # 결과 저장 리스트
+    movies = []
     page = 1
-    max_results = 100  # 최대 100개
-    total_results = 0  # 가져온 영화 개수
+    max_results = 100
+    total_results = 0
 
     while total_results < max_results:
       params = {
@@ -150,6 +150,7 @@ def movie_search(request):
     return Response({"error": "서버 오류가 발생했습니다.", "details": str(e)}, status=500)
 
 
+# 영화 북마크 하기
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def bookmark(request):
@@ -190,6 +191,7 @@ def bookmark(request):
     return Response({'error': f'장르 ID를 찾을 수 없습니다: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
   except Exception as e:
     return Response({'error': f'서버 오류가 발생했습니다: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # 영화 좋아요 하기
 @api_view(['POST'])
@@ -236,6 +238,7 @@ def like(request):
     return Response({'error': f'서버 오류가 발생했습니다: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# 조건에 따른 추천 영화 (분기: 기본(선호기반) / 생일 / 특별한 날 )
 @api_view(['GET'])
 def recommend(request, category):
   MOVIE_API_URL = 'https://api.themoviedb.org/3/discover/movie'
@@ -339,7 +342,6 @@ def recommend(request, category):
 
       new_movies = []
       for movie in results:
-        # 영화 ID 제외 조건
         if movie['id'] in excluded_movie_ids:
           continue
 
@@ -357,17 +359,22 @@ def recommend(request, category):
       if len(filtered_results) >= 20:
         break
 
-      # 다음 페이지로 이동
       params['page'] += 1
 
-      # 더 이상 데이터가 없으면 중단
       if params['page'] > data.get('total_pages', 1):
         break
 
-    # 결과 반환
     return Response(filtered_results[:20], status=200)
 
   except requests.RequestException as e:
     return Response({'error': f'TMDB API 호출 실패: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   except Exception as e:
     return Response({'error': f'서버 오류가 발생했습니다: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def moviebygenre(request, genre_id):
+  movies = Movie.objects.filter(genre_ids__id=genre_id)
+  serializer = MovieDetailSerializer(movies, many=True)
+  return Response(serializer.data)
+    

@@ -17,7 +17,6 @@ class Movie(models.Model):
   genre_ids = models.ManyToManyField(Genre)
   release_date = models.DateField()
   poster_path = models.CharField(max_length=200)
-  youtube_path = models.CharField(max_length=300, null=True, blank=True, default=None) 
 
 
 class ActionBase(models.Model):

@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import MovieListItem from './MovieListItem.vue'
 
 const props = defineProps({
@@ -52,10 +52,8 @@ const paginateMovies = () => {
 
 // 무한 스크롤 설정
 onMounted(() => {
-  // 초기 데이터를 페이징 처리
   paginateMovies()
 
-  // IntersectionObserver 설정
   observer.value = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !isLoading.value && hasMore.value) {
       paginateMovies()
@@ -66,6 +64,11 @@ onMounted(() => {
     observer.value.observe(loadMoreTrigger.value)
   }
 })
+
+watch(() => props.movies, (newMovies) => {
+  resetPagination() // 페이징 초기화
+  paginateMovies()  // 첫 페이지 로드
+}, { immediate: true })
 
 // 컴포넌트가 언마운트될 때 관찰 중지
 onBeforeUnmount(() => {

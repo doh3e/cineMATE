@@ -22,7 +22,10 @@
         </RouterLink>
         <ul v-if="isDropdownOpen" class="dropdown-menu">
           <RouterLink :to="{ name: 'Movie' }">
-            <li :class="{ 'current-page': $route.name === 'Movie' }">영화검색</li>
+            <li :class="{ 'current-page': $route.name === 'Movie' }">장르별보기</li>
+          </RouterLink>
+          <RouterLink :to="{ name: 'Search' }">
+            <li :class="{ 'current-page': $route.name === 'Search' }">영화검색</li>
           </RouterLink>
           <RouterLink :to="{ name: 'MovieCuration' }">
             <li :class="{ 'current-page': $route.name === 'MovieCuration' }">큐레이팅</li>
@@ -247,6 +250,16 @@ onUnmounted(() => {
 
 .dropdown-menu li:hover {
   color: #1F1F1F;
+}
+
+.fixed-navbar {
+  position: fixed;
+  opacity: 0.8;
+  transition: opacity 0.3 ease;
+}
+
+.fixed-navbar:hover {
+  opacity: 1;
 }
 
 @media screen and (max-width: 980px) {

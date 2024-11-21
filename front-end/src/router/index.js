@@ -4,10 +4,12 @@ import HomeView from '../views/HomeView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LoginView from '@/views/LoginView.vue'
 import MypageView from '@/views/MypageView.vue'
-import MovieView from '@/views/MovieView.vue'
+import MovieSearchView from '@/views/MovieSearchView.vue'
 import MovieforyouView from '@/views/MovieforyouView.vue'
 import ReviewView from '@/views/ReviewView.vue'
 import MovieCurationView from '@/views/MovieCurationView.vue'
+import MovieByGenreView from '@/views/MovieByGenreView.vue'
+import KakaoCallbackView from '@/views/KakaoCallbackView.vue'
 
 
 const routes = [
@@ -27,14 +29,24 @@ const routes = [
     component: LoginView,
   },
   {
+    path: '/kakao/login',
+    name: 'KakaoCallback',
+    component: KakaoCallbackView,
+  },
+  {
     path: '/mypage/:username',
     name: 'Mypage',
     component: MypageView,
   },
   {
+    path: '/search',
+    name: 'Search',
+    component: MovieSearchView,
+  },
+  {
     path: '/movie',
     name: 'Movie',
-    component: MovieView,
+    component: MovieByGenreView,
   },
   {
     path: '/curation',
