@@ -79,69 +79,53 @@ class CustomUserInfoView(APIView):
 # 카카오 로그인
 
 class KakaoLogin(APIView):
-  def get(self, request, *args, **kwargs):
-    """
-    카카오 인증 후 callback 요청 처리 및 Access Token 발급.
-    """
-    # Step 1: Authorization Code 가져오기
-    auth_code = request.GET.get('code')
-    if not auth_code:
-      return Response({"error": "Authorization code is missing."}, status=400)
+    def get(self, request, *args, **kwargs):
+        # Step 1: Authorization Code 받기
+        auth_code = request.GET.get('code')
+        if not auth_code:
+            return Response({"error": "Authorization code is missing."}, status=400)
 
-    print(auth_code)
-    # Step 2: Authorization Code로 Access Token 요청
-    token_url = "https://kauth.kakao.com/oauth/token"
-    token_data = {
-      "grant_type": "authorization_code",
-      "client_id": settings.SOCIAL_AUTH_KAKAO_REST_ID,
-      "client_secret": settings.SOCIAL_AUTH_KAKAO_CLIENT_SECRET_ID,
-      "redirect_uri": "http://127.0.0.1:5173/kakao/login",
-      "code": auth_code,
-    }
-    token_headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    token_response = requests.post(token_url, data=token_data, headers=token_headers)
+        # Step 2: Access Token 요청
+        token_url = "https://kauth.kakao.com/oauth/token"
+        token_data = {
+            "grant_type": "authorization_code",
+            "client_id": settings.SOCIAL_AUTH_KAKAO_REST_ID,
+            "client_secret": settings.SOCIAL_AUTH_KAKAO_CLIENT_SECRET_ID,
+            "redirect_uri": "http://127.0.0.1:8000/accounts/kakao/login/callback/",
+            "code": auth_code,
+        }
+        token_headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        token_response = requests.post(token_url, data=token_data, headers=token_headers)
 
-    if token_response.status_code != 200:
-      print(f"Error {token_response.status_code}: {token_response.text}")
-      
-    access_token = token_response.json().get("access_token")
-    refresh_token = token_response.json().get("refresh_token")
-    print(access_token)
+        if token_response.status_code != 200:
+            return Response({"error": "Failed to get access token."}, status=token_response.status_code)
 
-    # Step 3: Access Token으로 사용자 정보 요청
-    user_info_url = "https://kapi.kakao.com/v2/user/me"
-    user_info_headers = {"Authorization": f"Bearer {access_token}"}
-    user_info_response = requests.get(user_info_url, headers=user_info_headers)
+        access_token = token_response.json().get("access_token")
 
-    if user_info_response.status_code != 200:
-      print(f"Error {user_info_response.status_code}: {user_info_response.text}")
-      return Response({"error": "Failed to get user info from Kakao."}, status=user_info_response.status_code)
-    else:
-      user_info = user_info_response.json()
-      print("User Info Retrieved:", user_info)
+        # Step 3: 사용자 정보 요청
+        user_info_url = "https://kapi.kakao.com/v2/user/me"
+        user_info_headers = {"Authorization": f"Bearer {access_token}"}
+        user_info_response = requests.get(user_info_url, headers=user_info_headers)
 
-    user_info = user_info_response.json()
-    kakao_account = user_info.get("kakao_account", {})
-    email = kakao_account.get("email", f"kakao_{user_info['id']}@kakao.com")
-    nickname = kakao_account.get("profile", {}).get("nickname", f"kakao_{user_info['id']}")
+        if user_info_response.status_code != 200:
+            return Response({"error": "Failed to get user info."}, status=user_info_response.status_code)
 
-    # Step 4: 사용자 생성 또는 조회
-    user, created = User.objects.get_or_create(
-      email=email,  # 이메일을 기준으로 사용자를 조회하거나 생성
-      defaults={"nickname": nickname, "username": email.split("@")[0]},  # 생성 시 기본값 설정
-    )
-    if not created:
-      user.nickname = nickname
-      user.save()
+        user_info = user_info_response.json()
+        kakao_account = user_info.get("kakao_account", {})
+        email = kakao_account.get("email", f"kakao_{user_info['id']}@kakao.com")
+        nickname = kakao_account.get("profile", {}).get("nickname", f"kakao_{user_info['id']}")
 
-    refresh = RefreshToken.for_user(user)
-    return Response(
-      {
-        "access_token": str(refresh.access_token),
-        "refresh_token": str(refresh),
-      },
-      status=status.HTTP_200_OK,
-    )
+        # Step 4: 유저 생성 또는 조회
+        user, created = User.objects.get_or_create(
+            email=email,
+            defaults={"nickname": nickname, "username": email.split("@")[0]},
+        )
+
+        # Step 5: JWT 토큰 발급
+        refresh = RefreshToken.for_user(user)
+        redirect_url = f"http://localhost:5173/login?access_token={access_token}&refresh_token={refresh}"
+        return redirect(redirect_url)
+
 
     
 def kakao_login_redirect(request):

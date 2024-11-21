@@ -9,7 +9,6 @@ import MovieforyouView from '@/views/MovieforyouView.vue'
 import ReviewView from '@/views/ReviewView.vue'
 import MovieCurationView from '@/views/MovieCurationView.vue'
 import MovieByGenreView from '@/views/MovieByGenreView.vue'
-import KakaoCallbackView from '@/views/KakaoCallbackView.vue'
 
 
 const routes = [
@@ -27,11 +26,6 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginView,
-  },
-  {
-    path: '/kakao/login',
-    name: 'KakaoCallback',
-    component: KakaoCallbackView,
   },
   {
     path: '/mypage/:username',

@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCounterStore } from '@/stores/counter'
 import { publicAxios } from '@/axios';
@@ -38,12 +38,50 @@ const errorMessage = ref('')
 
 // 로그인 처리 함수
 const loginWithKakao = async () => {
-  const REDIRECT_URI = 'http://127.0.0.1:5173/kakao/login'
+  const REDIRECT_URI = 'http://127.0.0.1:8000/accounts/kakao/login/callback/'
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`
   window.location.href = KAKAO_AUTH_URL
 }
 
+// 카카오 콜백 처리 함수
+const processKakaoCallback = async () => {
+  const codeParams = new URLSearchParams(window.location.search)
+  const authCode = codeParams.get('code')
 
+  if (!authCode) {
+    console.error('Authorization code is missing.')
+    return
+  }
+
+  try {
+    // 백엔드로 인가 코드 전달 (POST 요청)
+    const response = await publicAxios.post('/accounts/kakao/login/callback/', {
+      code: authCode,
+    })
+
+    const { access_token, refresh_token } = response.data
+
+    // JWT 저장
+    localStorage.setItem('authToken', access_token)
+    localStorage.setItem('refreshToken', refresh_token)
+
+    console.log('JWT 토큰 저장 완료!')
+
+    // 사용자 상태 업데이트
+    await store.getUserInfo()
+
+    // URL 정리
+    router.replace({ name: 'Home' }) // 홈 페이지로 리다이렉트
+  } catch (error) {
+    console.error('로그인 처리 실패:', error.response?.data || error.message)
+    alert('로그인에 실패했습니다. 다시 시도해주세요.')
+  }
+}
+
+// 페이지가 로드되었을 때 카카오 콜백 처리
+onMounted(() => {
+  processKakaoCallback()
+})
 
 </script>
 
