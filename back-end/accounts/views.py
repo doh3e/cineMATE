@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from .serializers import CustomUserSerializer, MyPageSerializer, CustomUserUpdateSerializer
 from django.contrib.auth.hashers import make_password # 유저 정보 임의 입력 후 해시화할 때 사용
+from django.http import JsonResponse
 
 from .models import User
 from movies.models import Bookmark, Like
@@ -56,6 +57,17 @@ def mypage(request, username):
   serializer = MyPageSerializer(person)
   return Response(serializer.data)
 
+
+# 아이디 중복검사
+@api_view(['GET'])
+def checkid(request, username):
+  if not username:  # username이 없는 경우
+    return Response({'error': 'Username is required'}, status=400)
+  if User.objects.filter(username=username).exists():
+      print({'available': False})  # 로그 출력
+      return Response({'available': False})  # 이미 사용 중
+  print({'available': True})  # 로그 출력
+  return Response({'available': True})  # 사용 가능
 
 # 회원 탈퇴
 @api_view(['DELETE'])

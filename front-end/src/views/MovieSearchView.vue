@@ -16,8 +16,6 @@
       <MovieSearch
         v-if="isSearched"
         :movies="movies"
-        :hasMore="hasMore"
-        @loadMore="loadMoreSearchMovies"
       />
     </div>
     <div class="desciprtion-box" v-if="!isSearched">
@@ -34,9 +32,7 @@ import MovieSearch from '@/components/movies/MovieSearch.vue'
 import { authAxios, publicAxios } from '@/axios'
 
 const movies = ref([]) // 검색 결과
-const hasMore = ref(false) // 추가 데이터 유무
 const keyword = ref('') // 검색 키워드
-const currentPage = ref(1) // 현재 페이지
 const isSearched = ref(false) // 검색 여부 상태
 
 // 검색 실행
@@ -52,39 +48,18 @@ const searchMovies = async () => {
   }
 
   movies.value = []
-  hasMore.value = false
-  currentPage.value = 1
 
   try {
     const response = await publicAxios.get('/movies/search/', {
       params: { query: keyword.value.trim() },
     })
-
     movies.value = response.data
-    hasMore.value = movies.value.length > 20
-    currentPage.value = 1
     isSearched.value = true
   } catch (error) {
     console.error('검색 중 오류 발생:', error)
   }
 }
 
-// 추가 검색 결과 로드
-const loadMoreSearchMovies = async () => {
-  try {
-    const nextPage = currentPage.value + 1
-    const response = await publicAxios.get('/movies/search/', {
-      params: { query: keyword.value.trim(), page: nextPage },
-    })
-
-    const newMovies = response.data
-    movies.value = [...movies.value, ...newMovies]
-    hasMore.value = newMovies.length > 0
-    currentPage.value = nextPage
-  } catch (error) {
-    console.error('추가 검색 중 오류 발생:', error)
-  }
-}
 
 </script>
 

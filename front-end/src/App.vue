@@ -1,47 +1,57 @@
 <template>
-  <div class="app-container">
-    <header class="header">
-      <img src="@/assets/img/logo_imsi.png" alt="" class="header-logo">
-      <Navbar :class="{ 'fixed-navbar': isNavbarFixed }" />
-    </header>
+  <div class="app-container" @mousemove="handleMouseMove">
+    <Navbar/>
     <main class="main-container">
       <RouterView />
     </main>
+    <div class="page-cursor" :style="cursorStyle">
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref } from 'vue'
 import Navbar from './components/Navbar.vue'
-import { useAuthStore, useCounterStore } from './stores/counter';
 import { useRoute } from 'vue-router';
 
-const authStore = useAuthStore()
-const store = useCounterStore()
-const isNavbarFixed = ref(false)
-const route = useRoute()
+const cursorStyle = ref({
+  top: '0px',
+  left: '0px',
+})
 
-const handleScroll = () => {
-  if (route.name === 'Home' || route.name === 'Movie' ) {
-    isNavbarFixed.value = window.scrollY > 150
-  } else {
-    isNavbarFixed.value = false
-  }
+let animationFrameId = null
+
+const handleMouseMove = (event) => {
+  if (animationFrameId) return
+  animationFrameId = requestAnimationFrame(() => {
+    const { clientX, clientY } = event
+    cursorStyle.value = {
+      top: `${clientY - 40}px`,
+      left: `${clientX - 40}px`,
+    }
+    animationFrameId = null
+  })
 }
-
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-  handleScroll()
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
 
 </script>
 
 <style scoped>
+
+.page-cursor {
+  pointer-events: none;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  border: 2px solid #E1AFD1;
+  transform: translate(15px, 15px);
+  transition: transform 0.3s linear;
+  opacity: 0.8;
+  z-index: 20000;
+  box-shadow: 2px 2px 2px black;
+}
 
 .app-container {
   display: flex;
@@ -50,35 +60,6 @@ onUnmounted(() => {
   align-items: center;
   margin: 0 auto;
   width: 100%;
-}
-
-.header {
-  width: 100%;
-  position: relative;
-  z-index: 999; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.header-logo {
-  width: 150px;
-  object-fit: cover;
-}
-
-.fixed-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  opacity: 0.8;
-  transition: opacity 0.3 ease;
-}
-
-.fixed-navbar:hover {
-  opacity: 1;
 }
 
 .main-container {

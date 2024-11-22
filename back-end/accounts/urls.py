@@ -11,6 +11,8 @@ urlpatterns = [
 
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),  # 커스텀 JWT 토큰 발급
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),  # JWT 토큰 갱신
+
+    path('checkid/<str:username>/', views.checkid, name="checkid"),
     path('mypage/<str:username>/', views.mypage, name='mypage'),
     path('delete/<int:user_id>/', views.delete_user, name='delete_user'),
     path('follows/<str:personname>/', views.follows, name='follows'),

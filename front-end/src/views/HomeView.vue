@@ -1,8 +1,6 @@
 <template>
   <div class="home-main">
-    <div class="home-title">
-      <h1>CINEMATE에서 다양한 영화들을 만나보세요!</h1>
-    </div>
+    <h1 class="yesteryear-regular h1-cali">Top Rated Movie</h1>
     <MovieList :movies="movies" />
   </div>
 </template>
@@ -43,7 +41,12 @@ onMounted(() => {
   gap: 50px;
 }
 
-.home-title {
+.h1-cali {
+  padding-top: 80px;
+  margin: 0 auto;
   text-align: center;
+  vertical-align: middle;
+  font-size: 6rem;
+  color: #f8f8f8;
 }
 </style>

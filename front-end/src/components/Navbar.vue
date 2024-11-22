@@ -128,6 +128,7 @@ onUnmounted(() => {
 
 
 <style scoped>
+
 .navbar {
   position: relative;
   width: 100%;
@@ -139,6 +140,8 @@ onUnmounted(() => {
   padding: 20px 12px;
   font-family: 'NotoSansKR';
   padding-left: 0;
+  z-index: 9999;
+  opacity: 0.9;
   transition: opacity 0.3s ease;
 }
 
@@ -250,16 +253,6 @@ onUnmounted(() => {
 
 .dropdown-menu li:hover {
   color: #1F1F1F;
-}
-
-.fixed-navbar {
-  position: fixed;
-  opacity: 0.8;
-  transition: opacity 0.3 ease;
-}
-
-.fixed-navbar:hover {
-  opacity: 1;
 }
 
 @media screen and (max-width: 980px) {

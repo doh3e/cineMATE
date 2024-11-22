@@ -2,7 +2,8 @@
   <div class="movie-item" @click="openModal">
     <img :src="store.getImageUrl(movie.poster_path)" alt="Poster" v-if="movie.poster_path" id="movie-poster">
     <img v-else src="@/assets/img/default_movie_poster.png" alt="Default Poster" id="movie-poster">
-    <h4 class="truncate">{{ movie.title }}</h4>
+    <h4 class="truncate movie-title">{{ movie.title }}</h4>
+    <hr class="card-line">
     <div class="action-btn">
       <div class="likes" @click.stop="toggleLike">
         <span>
@@ -124,13 +125,18 @@ const toggleLike = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 20px 0px;
   box-sizing: border-box;
   background-color: #f8f8f8;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   text-align: center;
   cursor: pointer;
+}
+
+.movie-title {
+  width: 100%;
+  padding: 10px;
 }
 
 .truncate {
@@ -141,11 +147,15 @@ const toggleLike = async () => {
   white-space: nowrap;
 }
 
+.card-line {
+  width: 90%;
+  color: rgba(31, 31, 31, 0.3);
+}
+
 #movie-poster {
   width: 100%;
   aspect-ratio: 2 / 3;
   object-fit: cover;
-  border-radius: 4px;
 }
 
 .action-btn {
@@ -154,6 +164,7 @@ const toggleLike = async () => {
   align-items: center;
   justify-content: space-between;
   margin-top: 10px;
+  padding: 0px 15px;
 }
 
 .likes, .bookmarks {
