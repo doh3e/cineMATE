@@ -1,13 +1,12 @@
 <template>
-    <div v-if="displayedMovies.length > 0" class="movielist-box">
-      <MovieListItem v-for="movie in displayedMovies" :key="movie.id" :movie="movie" />
-    </div>
-    <p v-else>영화 데이터를 불러오는 중입니다...</p>
-    <div ref="loadMoreTrigger" class="loading">
+  <div ref="movielistBox" class="movielist-box">
+    <MovieListItem v-for="movie in displayedMovies" :key="movie.id" :movie="movie" />
+    <div class="loading">
       <p v-if="isLoading">로딩 중...</p>
       <p v-else-if="hasMore">더 많은 영화를 로드합니다...</p>
       <p v-else>더 이상 데이터가 없습니다.</p>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -22,11 +21,10 @@ const props = defineProps({
 })
 
 const displayedMovies = ref([]) // 화면에 표시할 영화 데이터
-const loadMoreTrigger = ref(null)
-const observer = ref(null)
+const movielistBox = ref(null)
 const isLoading = ref(false)
 const currentPage = ref(1)
-const moviesPerPage = 20 // 한 번에 보여줄 영화 수
+const moviesPerPage = 8 // 한 번에 보여줄 영화 수
 const hasMore = ref(true) // 추가 데이터 유무
 
 // 초기화 함수
@@ -45,58 +43,59 @@ const paginateMovies = () => {
   if (newMovies.length > 0) {
     displayedMovies.value.push(...newMovies)
     currentPage.value += 1
+    hasMore.value = displayedMovies.value.length < props.movies.length
   } else {
     hasMore.value = false
   }
 }
 
-// 무한 스크롤 설정
-onMounted(() => {
-  paginateMovies()
+// 스크롤 이벤트 핸들러
+const handleScroll = () => {
+  if (!movielistBox.value || isLoading.value || !hasMore.value) return
 
-  observer.value = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !isLoading.value && hasMore.value) {
+  const { scrollTop, scrollHeight, clientHeight } = movielistBox.value
+
+  if (scrollTop + clientHeight >= scrollHeight - 50) {
+    isLoading.value = true
+    setTimeout(() => {
       paginateMovies()
-    }
-  })
-
-  if (loadMoreTrigger.value) {
-    observer.value.observe(loadMoreTrigger.value)
+      isLoading.value = false
+    }, 500)
   }
+}
+
+// 초기 로드
+onMounted(() => {
+  movielistBox.value = document.querySelector('.movielist-box')
+  movielistBox.value?.addEventListener('scroll', handleScroll)
+  paginateMovies()
 })
 
-watch(() => props.movies, (newMovies) => {
-  resetPagination() // 페이징 초기화
-  paginateMovies()  // 첫 페이지 로드
-}, { immediate: true })
-
-// 컴포넌트가 언마운트될 때 관찰 중지
 onBeforeUnmount(() => {
-  if (observer.value && loadMoreTrigger.value) {
-    observer.value.unobserve(loadMoreTrigger.value)
-  }
+  movielistBox.value?.removeEventListener('scroll', handleScroll)
 })
+
+// 영화 데이터 변경 감지
+watch(() => props.movies, (newMovies) => {
+  resetPagination()
+  paginateMovies()
+}, { immediate: true })
 </script>
 
 <style scoped>
-
-.movielist-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
 .movielist-box {
+  background-color: #f8f8f8;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 40px;
   width: 100%;
-  max-width: 1200px;
+  border-radius: 10px;
+  max-height: 550px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px;
+  overflow-y: scroll;
 }
 
 .loading {

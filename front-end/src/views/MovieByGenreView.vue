@@ -26,7 +26,6 @@
       </select>
     </div>
 
-    <!-- 영화 목록 -->
     <MovieList
       v-if="sortedMovies.length > 0"
       :movies="sortedMovies"
@@ -47,7 +46,6 @@ import { publicAxios } from '@/axios';
 const store = useCounterStore()
 const GENRE_MAP = store.GENRE_MAP
 
-// 상태값
 const selectedGenre = ref('')
 const genreMovies = ref([])
 const selectedOrder = ref('')
@@ -72,35 +70,35 @@ const fetchGenreMovies = async () => {
 const sortMovies = () => {
   const movies = [...genreMovies.value]
   switch (selectedOrder.value) {
-    case 'latest': // 최신순
+    case 'latest':
       sortedMovies.value = []
       sortedMovies.value = [...movies].sort(
         (a, b) => new Date(b.release_date) - new Date(a.release_date)
       )
       break
-    case 'oldest': // 오래된 순
+    case 'oldest':
       sortedMovies.value = []
       sortedMovies.value = [...movies].sort(
         (a, b) => new Date(a.release_date) - new Date(b.release_date)
       )
       break
-    case 'title_asc': // 이름순
+    case 'title_asc':
       sortedMovies.value = []
       sortedMovies.value = [...movies].sort((a, b) => a.title.localeCompare(b.title))
       break
-    case 'title_desc': // 이름 역순
+    case 'title_desc':
       sortedMovies.value = []
       sortedMovies.value = [...movies].sort((a, b) => b.title.localeCompare(a.title))
       break
-    case 'popularity': // 인기순
+    case 'popularity':
       sortedMovies.value = []
       sortedMovies.value = [...movies].sort((a, b) => b.popularity - a.popularity)
       break
-    case 'rating': // 평점순
+    case 'rating':
       sortedMovies.value = []
       sortedMovies.value = [...movies].sort((a, b) => b.vote_average - a.vote_average)
       break
-    default: // 기본순
+    default:
       sortedMovies.value = []
       sortedMovies.value = [...movies]
   }

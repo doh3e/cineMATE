@@ -222,11 +222,9 @@ const handleMouseMove = (event) => {
   const rotateX = y * -5
   const rotateY = x * 2
   const translateZ = Math.sqrt(x * x + y * y) * -3
-  const blur = Math.abs(x * y) * 5
 
   imageStyle.value = {
     transform: `perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${translateZ}px)`,
-    filter: `blur(${blur}px)`,
     transition: 'transform 0.6s ease-out',
   }
 }
@@ -283,8 +281,8 @@ const resetTransform = () => {
   text-align: center;
   vertical-align: middle;
   font-size: 12rem;
-  color: #1f1f1f;
-  opacity: 0.7;
+  color: #f8f8f8;
+  opacity: 0.5;
   pointer-events: none;
 }
 

@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar">
-    <div class="navbar__logo">cineMATE</div>
+    <div class="yesteryear-regular navbar__logo">CINEMATE</div>
     <ul :class="['navbar__menu', { active: isMenuActive }]">
       <RouterLink :to="{ name: 'Home' }">
-        <li :class="{ 'current-page': $route.path === '/' }">HOME</li>
+        <li :class="{ 'current-page': $route.path === '/' }">메인</li>
       </RouterLink>
       <RouterLink v-if="!store.userInfo || !store.userInfo.id" :to="{ name: 'SignUp' }">
         <li :class="{ 'current-page': $route.path === '/signup' }">회원가입</li>
@@ -54,7 +54,7 @@
         <li :class="{ 'current-page': $route.path === '/movieforyou' }">무비포유</li>
       </RouterLink>
       <RouterLink v-if="store.userInfo && store.userInfo.id" :to="{ name: 'Mypage', params: { username: store.userInfo.username } }">
-        <li :class="{ 'current-page': $route.path === `/mypage/${store.userInfo.username}` }">나의 소행성</li>
+        <li :class="{ 'current-page': $route.path === `/mypage/${store.userInfo.username}` }">나의소행성</li>
       </RouterLink>
       <li v-if="store.userInfo && store.userInfo.id" @click="handleLogout">로그아웃</li>
     </ul>
@@ -130,7 +130,8 @@ onUnmounted(() => {
 <style scoped>
 
 .navbar {
-  position: relative;
+  position: sticky;
+  top: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -164,12 +165,12 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   position: relative;
-  font-family: 'TTLaundryGothicB';
+  font-family: 'S-CoreDream-3Light';
   font-size: 1.5rem;
   color: #F8F8F8;
-  padding: 8px 40px;
+  padding: 8px 30px;
   text-align: center;
-  font-weight: 600;
+  font-weight: 900;
   cursor: pointer;
   transition: color 0.3s ease;
 }
@@ -255,7 +256,7 @@ onUnmounted(() => {
   color: #1F1F1F;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 900px) {
   .navbar {
     flex-direction: column;
     transition: height 0.3s ease; /* 높이 전환 효과 추가 */
@@ -274,8 +275,10 @@ onUnmounted(() => {
   }
 
   .navbar__logo {
-    display: block;
-    font-family: 'TTLaundryGothicB';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
     width: 100%;
     color: #F8F8F8;
     text-align: center;

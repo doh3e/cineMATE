@@ -9,9 +9,15 @@ import MovieforyouView from '@/views/MovieforyouView.vue'
 import ReviewView from '@/views/ReviewView.vue'
 import MovieCurationView from '@/views/MovieCurationView.vue'
 import MovieByGenreView from '@/views/MovieByGenreView.vue'
+import FirstTimeView from '@/views/FirstTimeView.vue'
 
 
 const routes = [
+  {
+    path: '/first-time',
+    name: 'FirstTime',
+    component: FirstTimeView,
+  },
   {
     path: '/',
     name: 'Home',
