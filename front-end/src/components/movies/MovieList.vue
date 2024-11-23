@@ -1,10 +1,8 @@
 <template>
   <div ref="movielistBox" class="movielist-box">
     <MovieListItem v-for="movie in displayedMovies" :key="movie.id" :movie="movie" />
-    <div class="loading">
-      <p v-if="isLoading">로딩 중...</p>
-      <p v-else-if="hasMore">더 많은 영화를 로드합니다...</p>
-      <p v-else>더 이상 데이터가 없습니다.</p>
+    <div class="loading" v-if="isLoading || hasMore">
+      <img src="@/assets/img/loading-spinner-unscreen.gif" alt="spinner" class="loading-spinner">
     </div>
   </div>
 </template>
@@ -24,7 +22,7 @@ const displayedMovies = ref([]) // 화면에 표시할 영화 데이터
 const movielistBox = ref(null)
 const isLoading = ref(false)
 const currentPage = ref(1)
-const moviesPerPage = 8 // 한 번에 보여줄 영화 수
+const moviesPerPage = 10 // 한 번에 보여줄 영화 수
 const hasMore = ref(true) // 추가 데이터 유무
 
 // 초기화 함수
@@ -92,9 +90,9 @@ watch(() => props.movies, (newMovies) => {
   gap: 40px;
   width: 100%;
   border-radius: 10px;
-  max-height: 550px;
+  max-height: 1000px;
   margin: 0 auto;
-  padding: 30px;
+  padding: 40px 60px;
   overflow-y: scroll;
 }
 

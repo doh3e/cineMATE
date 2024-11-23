@@ -238,7 +238,7 @@ def like(request):
     return Response({'error': f'서버 오류가 발생했습니다: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# 조건에 따른 추천 영화 (분기: 기본(선호기반) / 생일 / 특별한 날 )
+# 조건에 따른 추천 영화 (분기: 기본(선호기반) / 유사도기반 / 생일 / 특별한 날 )
 @api_view(['GET'])
 def recommend(request, category):
   MOVIE_API_URL = 'https://api.themoviedb.org/3/discover/movie'
@@ -250,6 +250,7 @@ def recommend(request, category):
 
   params = {}
   
+  # 기본 추천
   if category == 'default':
     bookmark_genres = Genre.objects.filter(bookmark__user_id=user.id).values_list('id', flat=True)
     like_genres = Genre.objects.filter(like__user_id=user.id).values_list('id', flat=True)
@@ -269,7 +270,47 @@ def recommend(request, category):
       'vote_count.gte': 1000,
       'with_genres': with_genres,
     }
-    
+
+  # 유저 유사도 기반 추천
+  if category == 'similarity':
+
+    similar_users = (
+      Like.objects.filter(id__in=excluded_movie_ids)
+      .exclude(user=user)
+      .values('user')
+      .annotate(common_movies=Count('id'))
+      .order_by('-common_movies')
+    )
+
+    similar_user_ids = [entry['user'] for entry in similar_users[:3]]
+
+    similar_movies = Movie.objects.filter(
+        id__in=Like.objects.filter(user__in=similar_user_ids)
+        .exclude(id__in=excluded_movie_ids)
+        .values_list('id', flat=True)
+    )
+
+    sorted_movies = similar_movies.order_by('-vote_average', '-popularity')[:20]
+
+    serialized_movies = [
+      {
+        'id': movie.id,
+        'title': movie.title,
+        'overview': movie.overview,
+        'adult': movie.adult,
+        'poster_path': movie.poster_path,
+        'vote_average': movie.vote_average,
+        'vote_count': movie.vote_count,
+        'popularity': movie.popularity,
+        'genre_ids': list(movie.genre_ids.values_list('id', flat=True)),
+        'release_date': movie.release_date,
+      }
+      for movie in sorted_movies
+    ]
+
+    return Response(serialized_movies, status=200)
+  
+  # 생일인 사람
   if category == 'birthday':
     if not hasattr(user, 'birthday') or not user.birthday:
       return Response({'error': '생년월일 정보가 필요합니다.'}, status=status.HTTP_400_BAD_REQUEST)

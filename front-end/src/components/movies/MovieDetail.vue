@@ -2,7 +2,9 @@
   <div v-if="movie && isVisible" class="modal-overlay" @click.self="close">
     <div class="modal-content">
       <div class="modal-top">
-        <iframe :src="videoLink" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div id="player-container"
+        @mouseenter="onPlayerMouseEnter"
+        @mouseleave="onPlayerMouseLeave"></div>
       </div>
       <div class="modal-bottom">
         <div class="modal-bleft">
@@ -46,7 +48,7 @@
 
 <script setup>
 import { useCounterStore } from '@/stores/counter';
-import { computed, watch, ref, onMounted } from 'vue';
+import { computed, watch, ref, onMounted, onBeforeUnmount } from 'vue';
 import { publicAxios } from '@/axios';
 
 const store = useCounterStore();
@@ -70,7 +72,7 @@ const hasHalfStar = computed(() => roundedRating.value % 1 !== 0)
 const emptyStars = computed(() => maxStars - fullStars.value - (hasHalfStar.value ? 1 : 0))
 
 
-// 유튜브 영상 가져오는 로직
+// 유튜브 영상 아이디 가져오는 로직
 const youtube_path = ref('')
 const findVideoPath = async () => {
   try {
@@ -89,6 +91,7 @@ const findVideoPath = async () => {
     if (filteredResults.length > 0) {
       youtube_path.value = filteredResults[0].key
       console.log('YouTube Path:', youtube_path.value)
+      initializePlayer()
     } else {
       console.warn('No suitable trailer found.')
     }
@@ -97,13 +100,60 @@ const findVideoPath = async () => {
   }
 }
 
-const videoLink = computed(() => {
-  return youtube_path.value
-    ? `https://www.youtube-nocookie.com/embed/${youtube_path.value}?si=CB1jacN09Ik4Tkbp&controls=0&start=6&modestbranding=1&rel=0&autoplay=1&disablekb=1&fs=0&loop=1&mute=1`
-    : ''
-})
+// 유튜브 API 로드
+const player = ref(null)
+const loadYouTubeIframeAPI = () => {
+  return new Promise((resolve) => {
+    const existingScript = document.querySelector('script[src="https://www.youtube.com/iframe_api"]')
+    if (!existingScript) {
+      const tag = document.createElement('script')
+      tag.src = 'https://www.youtube.com/iframe_api'
+      document.body.appendChild(tag)
 
-const emit = defineEmits(['close']);
+      window.onYouTubeIframeAPIReady = () => {
+        resolve(window.YT)
+      }
+    } else if (window.YT) {
+      resolve(window.YT)
+    }
+  })
+}
+
+// 유튜브 플레이어 초기화
+const initializePlayer = async () => {
+  const YT = await loadYouTubeIframeAPI()
+
+  player.value = new YT.Player('player-container', {
+    height: '1500',
+    width: '2000',
+    videoId: youtube_path?.value,
+    playerVars: {
+      autoplay: 1,
+      mute: 1,
+      controls: 0,
+      modestbranding: 1,
+      rel: 0,
+    },
+    events: {
+      onReady: onPlayerReady,
+      onStateChange: onPlayerStateChange,
+    },
+  })
+}
+
+const onPlayerStateChange = (event) => {
+  if (event.data === YT.PlayerState.ENDED) {
+    player.value.seekTo(6)
+    player.value.playVideo()
+  }
+}
+
+const onPlayerReady = (event) => {
+  event.player.mute()
+  event.target.playVideo()
+}
+
+const emit = defineEmits(['close'])
 
 const close = () => {
   emit('close')
@@ -154,8 +204,8 @@ onMounted(() => {
   padding: 0;
   width: 60%;
   height: 100%;
-  min-width: 1000px;
-  max-width: 1200px;
+  min-width: 1200px;
+  max-width: 1500px;
   min-height: 600px;
   max-height: 1600px;
   text-align: center;
@@ -163,28 +213,28 @@ onMounted(() => {
 
 .modal-top {
   width: 100%;
-  min-width: 1000px;
-  max-width: 1200px;
+  min-width: 1200px;
+  max-width: 1500px;
   height: 50vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .modal-bottom {
   width: 100%;
   height: 50vh;
-  min-width: 1000px;
-  max-width: 1200px;
+  min-width: 1200px;
+  max-width: 1500px;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 }
 
 iframe {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
+  width: 1500px;
+  height: 1000px;
 }
 
 .modal-bleft {
@@ -199,7 +249,7 @@ iframe {
 
 .modal-bright {
   color: #f8f8f8;
-  padding: 30px;
+  padding: 30px 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -246,7 +296,7 @@ iframe {
   width: 100%;
   padding: 0px 20px;
   line-height: 1.6;
-  font-size: 0.9rem;
+  font-size: 1rem;
   text-align: justify;
   text-wrap: wrap;
   word-break: break-all;

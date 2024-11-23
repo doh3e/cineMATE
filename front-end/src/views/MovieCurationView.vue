@@ -1,11 +1,11 @@
 <template>
   <div class="curation-container">
-    <h1>더욱 심화된 큐레이션</h1>
+    <h1 class="yesteryear-regular h1-cali">🌘Curation</h1>
 
     <!-- 생일 추천 영화 -->
-    <div class="curation-title" v-if="isBirthday && birthDayQue.length > 0">
-      <h3>🎉 생일 축하해요, {{ store.userInfo?.nickname }}님! 🎉</h3>
-      <p> {{ store.userInfo?.nickname }}님이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
+    <div class="curation-header" v-if="isBirthday && birthDayQue.length > 0">
+      <h2 class="curation-title">🎉 생일 축하해요, {{ store.userInfo?.nickname }}님! 🎉</h2>
+      <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
     </div>
     <MovieCurationList
       v-if="isBirthday && birthDayQue.length > 0"
@@ -13,21 +13,31 @@
     />
 
     <!-- 특별한 날 추천 영화 -->
-    <div class="curation-title" v-if="isEventDay && eventDayQue.length > 0">
-      <h3>오늘은 {{ currentSpecialDay }}!</h3>
-      <p> {{ eventMent }} </p>
+    <div class="curation-header" v-if="isEventDay && eventDayQue.length > 0">
+      <h2 class="curation-title">오늘은 {{ currentSpecialDay }}!</h2>
+      <p class="curation-subtitle"> {{ eventMent }} </p>
     </div>
     <MovieCurationList
       v-if="isEventDay && eventDayQue.length > 0"
       :movies="eventDayQue"
     />
     <!-- 기본 추천 영화 -->
-    <div class="curation-title" v-if="defaultQue.length > 0">
-      <h3>선호하시는 장르의 영화를 찾아봤어요!</h3>
+    <div class="curation-header" v-if="defaultQue.length > 0">
+      <h2 class="curation-title">선호하시는 장르의 영화를 찾아봤어요!</h2>
     </div>
     <MovieCurationList
       v-if="defaultQue.length > 0"
       :movies="defaultQue"
+    />
+
+    <!-- 유저 유사도기반 추천 영화 -->
+    <div class="curation-header" v-if="similarQue.length > 0">
+      <h2 class="curation-title">유저 데이터를 기반으로 영화를 찾아봤어요!</h2>
+      <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님과 비슷한 취향의 유저들은, 이 영화들도 좋아해요.</p>
+    </div>
+    <MovieCurationList
+      v-if="similarQue.length > 0"
+      :movies="similarQue"
     />
   </div>
 </template>
@@ -50,6 +60,7 @@ const eventMent= ref('')
 const birthDayQue = ref([]) // 생일 영화 추천
 const eventDayQue = ref([]) // 특별한 날 영화 추천
 const defaultQue = ref([]) // 기본 추천 영화 리스트
+const similarQue = ref([]) // 유저유사도 기반 추천 영화 리스트
 
 
 // 기본 추천 영화 로드 (좋아요, 북마크에 따른)
@@ -59,6 +70,16 @@ const loadRecommendations = async () => {
     defaultQue.value = response.data
   } catch (error) {
     console.error('추천 영화 로드 중 오류 발생:', error)
+  }
+}
+
+const loadSimilarRecommendations = async () => {
+  try {
+    const response = await authAxios.get('/movies/recommend/similarity/')
+    similarQue.value = response.data
+  }
+  catch(error) {
+    console.error('유사도 기반 추천 영화 로드 중 오류 발생:', error)
   }
 }
 
@@ -133,21 +154,47 @@ const fetchEventDayMovies = async () => {
 
 onMounted(() => {
   loadRecommendations()
+  loadSimilarRecommendations()
   checkSpecialDay()
   if (isBirthday.value) fetchBirthdayMovies()
   if (isEventDay.value) fetchEventDayMovies()
 })
 
-
-
 </script>
 
 <style scoped>
 .curation-container {
+  width: 80%;
+  padding: 60px;
+  min-width: 500px;
+  height: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  width: 100%;
+  gap:20px;
 }
+
+.curation-header {
+  font-family: 'S-CoreDream-3Light';
+  color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 50px;
+}
+
+.curation-title {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.curation-subtitle{
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
 </style>

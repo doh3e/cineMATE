@@ -1,6 +1,6 @@
 <template>
   <div class="mvbygenre-container">
-    <h1>장르별 보기 페이지</h1>
+    <h1 class="yesteryear-regular h1-cali">🌘Genre Movies</h1>
     <div class="select-area">
       <!-- 장르 선택 -->
       <select v-model="selectedGenre" @change="fetchGenreMovies">
@@ -25,13 +25,16 @@
         <option value="rating">평점순</option>
       </select>
     </div>
-
-    <MovieList
-      v-if="sortedMovies.length > 0"
-      :movies="sortedMovies"
-    />
-    <div v-else>
-      <h3>장르를 선택하세요!</h3>
+    <div class="result-box" v-if="sortedMovies.length > 0">
+      <MovieList
+        :movies="sortedMovies"
+      />
+    </div>
+    <div v-else class="tooltip-box">
+      <h3>장르별 영화 보기</h3><br>
+          <p>장르 별 자주 찾는</p>
+          <p>띄어쓰기를 정확히 하셔야 해요. (ex.세얼간이x 세 얼간이o)</p>
+          <p>영문명으로도 검색이 가능합니다.</p>
     </div>
   </div>
 </template>
@@ -111,16 +114,61 @@ watch([genreMovies, selectedOrder], sortMovies)
 
 <style scoped>
 .mvbygenre-container {
-  padding: 20px;
+  width: 100%;
+  padding: 60px;
+  min-width: 500px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 30px;
 }
 
 .select-area {
+  width: 100%;
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
   margin-bottom: 20px;
 }
 
-select {
+.select-area > select {
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  width: 15%;
+  height: 3rem;
+  min-width: 150px;
+  max-width: 300px;
+  font-family: 'S-CoreDream-3Light';
+  font-size: 1.3rem;
+  font-weight: 600;
   padding: 5px;
 }
+
+.tooltip-box {
+  width: 50%;
+  max-width: 1000px;
+  min-width: 500px;
+  padding: 30px 40px;
+  background-color: rgba(254, 254, 254, 0.7);
+  border-radius: 10px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.result-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 </style>

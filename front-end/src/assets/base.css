@@ -31,3 +31,18 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+.loading-spinner {
+  width: 150px;
+  opacity: 0.8;
+  justify-self: center;
+  align-self: center;
+}
+
+.h1-cali {
+  margin: 0 auto;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 4rem;
+  color: #f8f8f8;
+}

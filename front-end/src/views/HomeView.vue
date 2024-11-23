@@ -2,23 +2,28 @@
   <div class="home-main">
 
     <div class="section">
-      <h1 class="yesteryear-regular h1-cali">Top Rated Movie</h1>
+      <h1 class="yesteryear-regular h1-cali">🌘Top Rated Movie</h1>
       <h2 class="subtitle">명작을 보고싶다면…</h2>
       <MovieList :movies="movies" />
     </div>
 
     <div class="section row-section">
       <div class="sub-section new-released">
-        <h1 class="yesteryear-regular h1-cali">New Released</h1>
-        <h2 class="subtitle">스크롤 페이징 처리 해야지!</h2>
-        <h2 class="subtitle">스크롤 페이징 처리 해야지!</h2>
-        <h2 class="subtitle">스크롤 페이징 처리 해야지!</h2>
+        <h2 class="section-title">국내 최신 개봉 영화</h2>
+        <h2 class="section-subtitle">기준일 : {{ today }}</h2>
+        <div class="boxoffice-container">
+          <img src="@/assets/img/loading-spinner-unscreen.gif" alt="spinner" class="loading-spinner" v-if="newReleased.length === 0">
+          <span v-for="newr in newReleased" :key="newr.index" v-else>
+            {{newr.movieNm}} {{newr.openDt}}
+          </span>
+        </div>
       </div>
       <div class="sub-section popular-review">
         <h2 class="section-title">국내 박스오피스 순위</h2>
         <h2 class="section-subtitle">기준일 : {{ yesterday }}</h2>
-        <div class="boxoffice-container" v-if="boxOffices.length > 0">
-          <span v-for="box in boxOffices" :key="box.rnum">
+        <div class="boxoffice-container">
+          <img src="@/assets/img/loading-spinner-unscreen.gif" alt="spinner" class="loading-spinner" v-if="boxOffices.length === 0">
+          <span v-for="box in boxOffices" :key="box.rnum" v-else>
             {{box.rnum}} {{box.movieNm}}
           </span>
         </div>
@@ -41,9 +46,12 @@ const store = useCounterStore()
 
 const movies = computed(() => store.topMovies)
 const boxOffices = ref([])
+const newReleased = ref([])
 const KOFIC_API_KEY = import.meta.env.VITE_KOFIC_API_KEY
-const yesterday = new Date()
-yesterday.setDate(yesterday.getDate() - 1) // 현재 날짜에서 하루 빼기
+const today = new Date()
+const yesterday = new Date(today)
+yesterday.setDate(yesterday.getDate() - 1)
+
 const formattedYesterday = yesterday.toISOString().slice(0, 10).replace(/-/g, '')
 
 const callBoxOffices = async () => {
@@ -54,6 +62,31 @@ const callBoxOffices = async () => {
   }
   catch(error) {
     console.error('국내 박스오피스 데이터를 로드하는 중 오류 발생: ', error)
+  }
+}
+
+const callNewestMovies = async() => {
+  try {
+    const response = await axios.get(`http://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key=${KOFIC_API_KEY}&itemPerPage=100&openStartDt=${today.getFullYear()}`)
+    const movieList = response.data.movieListResult.movieList
+    const formattedToday = today.toISOString().slice(0, 10).replace(/-/g, '')
+
+    const sortedMovies = movieList
+    .filter(movie => movie.openDt)
+    .filter(movie => movie.genreAlt !== '성인물(에로)')
+    .filter(movie => 
+      !(
+        movie.nationAlt === '일본' &&
+        movie.genreAlt && movie.genreAlt.includes('멜로')
+      )
+    )
+    .filter(movie => movie.openDt <= formattedToday)
+    .sort((a, b) => b.openDt.localeCompare(a.openDt))
+    .slice(0, 20)
+    newReleased.value = sortedMovies
+  }
+  catch(error) {
+    console.error('국내 최신작 데이터를 로드하는 중 오류 발생: ', error)
   }
 }
 
@@ -68,6 +101,7 @@ const loadMovies = async () => {
 onMounted(() => {
   loadMovies()
   callBoxOffices()
+  callNewestMovies()
 })
 
 
@@ -77,6 +111,7 @@ onMounted(() => {
 .home-main {
   padding-top: 60px;
   width: 80%;
+  min-width: 500px;
   height: 100%;
   margin: 0 auto;
   display: flex;
@@ -97,14 +132,6 @@ onMounted(() => {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
-
-.h1-cali {
-  margin: 0 auto;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 4rem;
-  color: #f8f8f8;
 }
 
 .subtitle {
@@ -145,9 +172,21 @@ onMounted(() => {
   background-color: #f8f8f8;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
   padding: 30px;
   gap: 10px;
   overflow-y: scroll;
   margin-top: 20px;
+}
+
+.movielist-box {
+  max-height: 550px;
+}
+
+@media screen and (max-width: 700px) {
+  .new-released {
+    display: none;
+  }
 }
 </style>

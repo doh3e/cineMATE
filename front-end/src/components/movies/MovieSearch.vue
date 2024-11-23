@@ -3,13 +3,7 @@
       <MovieList
         :movies="movies"
         :hasMore="hasMore"
-        @loadMore="loadMoreSearchMovies"
       />
-  </div>
-  <div v-else>
-      <h3>
-        {{ isSearched ? "검색 결과가 없습니다. 다른 검색어를 입력해보세요!" : "검색어를 입력하고 영화를 찾아보세요!" }}
-      </h3>
   </div>
 </template>
 <script setup>

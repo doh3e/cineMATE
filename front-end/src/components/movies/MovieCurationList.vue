@@ -2,7 +2,7 @@
   <div v-if="movies.length > 0" class="movie-slider-container">
     <Carousel v-bind="config">
       <Slide v-for="(movie, index) in movies" :key="index" class="carousel__slide">
-        <MovieCurationItem :movie="movie" />
+        <MovieCurationItem :movie="movie" @open-modal="openModal" />
       </Slide>
 
       <!-- 네비게이션 버튼 추가 -->
@@ -11,9 +11,15 @@
       </template>
     </Carousel>
   </div>
-  <div v-else class="loading-container">
-    <p>Loading movies...</p>
+  <div class="loading" v-else>
+      <img src="@/assets/img/loading-spinner-unscreen.gif" alt="spinner" class="loading-spinner">
   </div>
+  <MovieDetail
+    v-if="selectedMovie && isModalVisible"
+    :movie="selectedMovie"
+    :isVisible="isModalVisible"
+    @close="closeModal"
+  />
 </template>
 
 <script setup>
@@ -22,6 +28,7 @@ import { useCounterStore } from '@/stores/counter'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
 import MovieCurationItem from '@/components/movies/MovieCurationItem.vue'
+import MovieDetail from './MovieDetail.vue'
 
 
 const store = useCounterStore()
@@ -33,23 +40,59 @@ const props = defineProps({
   }
 })
 
+// 모달창 설정
+const isModalVisible = ref(false)
+const selectedMovie = ref(null)
+
+// 모달 열기
+const openModal = (movie) => {
+  selectedMovie.value = movie
+  isModalVisible.value = true
+}
+
+// 모달 닫기
+const closeModal = () => {
+  isModalVisible.value = false
+  selectedMovie.value = null
+}
+
+
 // 캐러셀 설정
 const config = {
-  itemsToShow: 4.95, // 자연스러운 4개 표시
-  wrapAround: true,  // 무한 루프
-  autoplay: 3000,    // 3초마다 자동 슬라이드
-  transition: 500,   // 부드러운 전환
-  height: 300,
+  wrapAround: true,
+  autoplay: 3000,
+  transition: 600,
+  snapAlign: 'center',
+  breakpoints: {
+    1200: {
+      itemsToShow: 3.95,
+    },
+    1100: {
+      itemsToShow: 3,
+    },
+    700: {
+      itemsToShow: 2,
+    },
+    450: {
+      itemsToShow: 1,
+    },
+  },
 }
+
+
 </script>
 
 <style scoped>
 .carousel__slide {
-  height: 90%;
-  min-height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
   opacity: 0.9;
-  transform: rotateY(-20deg) scale(0.9);
-  padding: 5px;
+  transform: scale(0.9);
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .carousel__viewport {
@@ -76,29 +119,36 @@ const config = {
 
 .carousel__slide--active {
   opacity: 1;
-  transform: rotateY(0) scale(1);
+  transform: scale(1);
 }
 
-/* 슬라이더 컨테이너 */
-.movie-slider-container {
-  position: relative;
-  width: 100%;
-  max-width: 1000px;
-  min-width: 500px;
-  height: 300px;
-  margin: 0 auto;
-  padding-top: 20px;
-  background-color: #1f1f1f;
-  border-radius: 12px;
-}
-
-.loading-container {
+.carousel__viewport {
+  overflow: hidden;
+  width: 100% !important;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
-  background-color: #f0f0f0;
-  font-size: 18px;
-  color: #999;
+  perspective: 2000px;
 }
+
+/* 캐러셀 트랙 */
+.carousel__track {
+  display: flex;
+  align-items: center;
+  transform-style: preserve-3d;
+}
+
+.movie-slider-container {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  margin: 0 auto;
+  padding-top: 20px;
+  background-color: #f8f8f8;
+  padding-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 </style>
