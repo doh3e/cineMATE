@@ -5,15 +5,15 @@
 
     <div class="start-button">
       <button type="button" class="btn start-btn"
-      @click="showTestPopup = true">테스트 시작하기!</button>
+      @click="openTestPopup">테스트 시작하기!</button>
     </div>
     <div class="test-example"></div>
   </div>
   <div v-if="showTestPopup" class="popup-overlay">
     <div class="popup-content">
-      <button class="close-button" @click="showTestPopup = false">✖</button>
+      <button class="close-button" @click="closeTestPopup">✖</button>
       <MovieforYouTest v-if="showTestPopup"
-      @close="showTestPopup = false" />
+      @close="closeTestPopup" />
     </div>
   </div>
 </template>
@@ -23,6 +23,14 @@ import { ref } from 'vue'
 import MovieforYouTest from '@/components/community/MovieforYouTest.vue'
 
 const showTestPopup = ref(false)
+
+const openTestPopup = () => {
+  showTestPopup.value = true
+}
+
+const closeTestPopup = () => {
+  showTestPopup.value = false
+}
 
 </script>
 

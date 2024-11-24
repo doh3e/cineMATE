@@ -230,6 +230,11 @@ SIMPLE_JWT = {
 ##CORS
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',  # Vue 개발 서버 주소
+    'http://127.0.0.1:5173'  # Vue 개발 서버 주소
+]
 
 CORS_ALLOW_METHODS = (
     'DELETE',

@@ -5,7 +5,9 @@
       <div class="testimg start-img">
         <img src="@/assets/img/mvforyou-logo.png" alt="test-logo" class="test-logo">
         <h2 class="qname">{{ typedText }}<span v-if="showCaret" class="caret">_</span></h2>
-        <input v-model="friendName" type="text" placeholder="이름 또는 별명 입력" />
+        <input v-model="friendName" type="text" placeholder="이름/별명 5글자까지"
+        maxlength="5"
+        @keyup.enter="startTest" />
         <img src="@/assets/img/mvforyou-start-cat.png" alt="test-cat" class="test-cat">
         <button class="start-btn" @click="startTest">다음으로 →</button>
       </div>
@@ -71,43 +73,62 @@
 
     <!-- 결과 화면 -->
     <div class="test-box" v-else-if="resultData && currentStep === questions.length + 2">
-      <div class="result-container">
+      <div class="result-container" v-if="resultData && resultData.movie">
         <div class="result-items">
-          <h3 class="resultimp fname">{{ resultData?.my_choice.friend_name }}</h3>
-          <p><strong>최고 장르:</strong> {{ resultData?.my_choice.top_genre }}</p>
-          <p><strong>취향:</strong> {{ resultData?.my_choice.preference }}</p>
-          <p><strong>태어난 달:</strong> {{ resultData?.my_choice.birth_month }}</p>
-          <p><strong>메시지:</strong> {{ resultData?.my_choice.final_message }}</p>
-          <h3>추천 영화</h3>
-          <p><strong>제목:</strong> {{ resultData?.movie.title }}</p>
-          <p><strong>개봉일:</strong> {{ resultData?.movie.release_date }}</p>
-          <p><strong>평점:</strong> {{ resultData?.movie.vote_average }}</p>
+          <h1 class="friend-name">{{ resultData?.my_choice.friend_name }}</h1>
+          <h1 class="friend-title">{{ resultData?.movie.title }} ({{ resultData?.movie.release_date.slice(0,4) }})</h1>
+          <div class="movie-rating">
+            <span v-for="n in fullStars" :key="'full-' + n">
+              <img src="@/assets/img/full-star.png" alt="Full Star" class="star" />
+            </span>
+            <span v-if="hasHalfStar">
+              <img src="@/assets/img/half-star.png" alt="Half Star" class="star" />
+            </span>
+            <span v-for="n in emptyStars" :key="'empty-' + n">
+              <img src="@/assets/img/empty-star.png" alt="Empty Star" class="star" />
+            </span>
+          </div>
+          <div class="desc-box">
+            <p> <span>{{ resultData?.my_choice.top_genre }}</span> 장르를 좋아하는 당신은
+              <span>{{ resultData?.my_choice.preference }}</span> 취향의 소유자!
+            </p>
+          </div>
+          <div class="message-box">
+            <p>{{ resultData?.my_choice.final_message }}</p>
+            <img src="@/assets/img/speech-bubble.png" alt="talkbox">
+          </div>
+          <img src="@/assets/img/pigtail.png" alt="pigtail" class="pigtail">
+          <h2 class="friend-state">{{chosenMind}}!!</h2>
+          <img src="@/assets/img/mvforyou-start-cat.png" alt="result-cat" class="result-cat" v-if="chosenMind === '새가슴'">
+          <img src="@/assets/img/mvforyou-blackcat.png" alt="result-cat" class="result-cat" v-if="chosenMind === '강심장'">
         </div>
         <div class="backgroundimg result-bg">
           <img src="@/assets/img/test-result.png" alt="result-background">
         </div>
         <div class="movie-poster-bg">
-          <img :src="store.getImageUrl(resultData?.movie.poster_path)" alt="poster">
+          <img :src="resultData?.movie.poster_base64 || '@/assets/img/default_movie_poster.png'" alt="poster">
         </div>
       </div>
 
       <!-- 버튼들 -->
       <div class="buttons">
-        <button @click="saveResult">결정 및 저장하기</button>
+        <button @click="saveScreenshot">결정 및 저장</button>
         <button @click="retryTest">다시하기</button>
         <button @click="shareResult">공유하기</button>
       </div>
     </div>
 
     <!-- 로딩 화면 -->
-    <div v-else-if="isLoading">
-      <h2>결과를 불러오는 중...</h2>
+    <div class ="loading-status" v-else-if="isLoading">
+      <h2 class="load-message">결과를 불러오는 중...</h2>
+      <img src="@/assets/img/loading-spinner-unscreen.gif" alt="spinner" class="loading-spinner">
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
+import html2canvas from 'html2canvas'
 import { publicAxios, authAxios } from '@/axios'
 import { useCounterStore } from '@/stores/counter'
 import DefaultbackgroundImage from '@/assets/img/mvforyou-start-bg.png'
@@ -125,6 +146,11 @@ const chosenPreference = ref('') // 취향설정
 const chosenMind = ref('') // 강심장새가슴
 const resultData = ref(null)
 const isLoading = ref(false) // 로딩 상태
+
+const closeTest = () => {
+  resetState()
+  emit('close') // 부모 컴포넌트로 이벤트 전달
+}
 
 // 질문 데이터
 const questions = [
@@ -152,7 +178,7 @@ const questions = [
     title: '3. [ ] 은/는 어떤 취향을 가지고 있는 것 같아?',
     backgroundImage: DefaultQuestionImage,
     choices: [
-      { text: '사람들이 좋아하는 건 다 좋아해!', genres: { 드라마: 2, 로맨스: 2, 가족: 2, 액션: 2, 코미디: 2, 모험: 2, 음악: 2 }, preference: '다좋아' },
+      { text: '사람들이 좋아하는 건 다 좋아해!', genres: { 드라마: 2, 로맨스: 2, 가족: 2, 액션: 2, 코미디: 2, 모험: 2, 음악: 2 }, preference: '좋은게좋은' },
       { text: '남들이 좋아하는 걸 따라가는 건 별로야.', genres: { 미스터리: 2, 스릴러: 2, 범죄: 2, 다큐멘터리: 2, 공포: 2, SF: 2, 판타지: 2 }, preference: '홍대병' },
       { text: '적당히 대중적이면서도 적당히 자기 취향이 있는 것 같아.', genres: { 드라마: 2, 로맨스: 2, 코미디: 2, 모험: 2, 판타지: 2, SF: 2, 스릴러: 2, 미스터리: 2 }, preference: '평범'}
     ]
@@ -170,8 +196,8 @@ const questions = [
     title: '5. [ ] 은/는 강심장이야? 아니면 새가슴이야?',
     backgroundImage: DefaultQuestionImage,
     choices: [
-      { text: '강심장!', genres: { 공포: 3, 스릴러: 3, 액션: 3, 범죄: 2, 미스터리: 2, 모험: 1 }, preference: '강심장' },
-      { text: '새가슴!', genres: { 드라마: 3, 가족: 3, 로맨스: 2, 음악: 2, 다큐멘터리: 2, 판타지: 1, SF: 1 }, preference: '새가슴' },
+      { text: '강심장!', genres: { 공포: 3, 스릴러: 3, 액션: 3, 범죄: 2, 미스터리: 2, 모험: 1 }, mind: '강심장' },
+      { text: '새가슴!', genres: { 드라마: 3, 가족: 3, 로맨스: 2, 음악: 2, 다큐멘터리: 2, 판타지: 1, SF: 1 }, mind: '새가슴' },
     ]
   },
   {
@@ -238,7 +264,9 @@ const handleChoice = (choice) => {
   if (currentStep.value === 2 && choice.preference) {
     chosenPreference.value = choice.preference
   }
-  console.log(chosenPreference.value)
+  if (currentStep.value === 4 && choice.mind) {
+    chosenMind.value = choice.mind;
+  }
   nextStep()
 }
 
@@ -250,10 +278,6 @@ const submitResults = async () => {
   const topGenre = Object.keys(genreScores.value).reduce((a, b) =>
     genreScores.value[a] > genreScores.value[b] ? a : b
   )
-
-  console.log('가장 높은 점수의 장르:', topGenre)
-  console.log('점수:', genreScores.value)
-  console.log('메세지:', finalMessage)
 
   const result = {
     friendName: friendName.value,
@@ -269,7 +293,6 @@ const submitResults = async () => {
   try {
     const response = await authAxios.get('/community/test-result/', {params:result})
     resultData.value = response.data
-    console.log('결과 전송 성공:', resultData.value)
   } catch (error) {
     console.error('결과 전송 실패:', error)
   } finally {
@@ -277,9 +300,12 @@ const submitResults = async () => {
   }
 }
 
-const saveResult = () => {
-  alert('결과가 저장되었습니다!')
-}
+// 평점 별로 치환하는 로직
+const maxStars = 5
+const roundedRating = computed(() => Math.round(resultData?.value.movie.vote_average) / 2)
+const fullStars = computed(() => Math.floor(roundedRating.value))
+const hasHalfStar = computed(() => roundedRating.value % 1 !== 0)
+const emptyStars = computed(() => maxStars - fullStars.value - (hasHalfStar.value ? 1 : 0))
 
 const retryTest = () => {
   resultData.value = null
@@ -288,6 +314,13 @@ const retryTest = () => {
   birthMonth.value = ''
   finalMessage.value = ''
   genreScores.value = {}
+  chosenPreference.value = ''
+  chosenMind.value = ''
+  isLoading.value = false
+
+  // 화면을 다시 렌더링하도록 추가 처리
+  console.log('테스트가 초기화되었습니다.')
+  alert('처음으로 돌아갑니다!')
 }
 
 const shareResult = () => {
@@ -313,6 +346,69 @@ watch(
     }
   }
 )
+
+// 결과 이미지 저장 로직
+const saveScreenshot = async () => {
+  const resultContainer = document.querySelector('.result-container')
+
+  if (resultContainer) {
+    try {
+      const canvas = await html2canvas(resultContainer, {
+        useCORS: true,
+        crossOrigin: "anonymous",
+        scale: 1, // 캡처의 해상도
+      })
+      const image = canvas.toDataURL('image/png')
+
+      // 이미지 다운로드
+      const link = document.createElement('a')
+      link.href = image
+      link.download = `cinemate_movieforyou_${store.userInfo.username}.png`
+      link.click()
+
+      // 이미지와 데이터를 서버로 전송
+      await uploadResult(image)
+
+      alert('결과가 저장되었습니다!')
+    } catch (error) {
+      console.error('이미지 저장 실패:', error)
+      alert('이미지 저장 중 문제가 발생했습니다.')
+    }
+  } else {
+    alert('결과 컨테이너를 찾을 수 없습니다.')
+  }
+}
+
+const uploadResult = async (image) => {
+  const formData = new FormData()
+  formData.append('friend_name', resultData.value?.my_choice.friend_name)
+  formData.append('movie_id', resultData.value?.movie.id)
+  formData.append('movie_title', resultData.value?.movie.title)
+  formData.append('overview', resultData.value?.movie.overview)
+  formData.append('adult', resultData.value?.movie.adult)
+  formData.append('popularity', resultData.value?.movie.popularity)
+  formData.append('vote_average', resultData.value?.movie.vote_average)
+  formData.append('release_date', resultData.value?.movie.release_date)
+  formData.append('genre_ids', JSON.stringify(resultData.value?.movie.genre_ids))
+  formData.append('poster_path', resultData.value?.movie.poster_path || '')
+  formData.append('card_img', image)
+
+  try {
+    const response = await authAxios.post('/community/save-result/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+
+    console.log('업로드 성공:', response.data)
+    alert('결과가 서버에 저장되었습니다!')
+  } catch (error) {
+    console.error('업로드 실패:', error)
+    alert('서버에 저장하는 중 문제가 발생했습니다.')
+  }
+}
+
+
 
 
 // 시작 화면 텍스트 효과
@@ -544,7 +640,7 @@ button:hover {
 }
 
 .month-select {
-  width: 200px;
+  width: 250px;
   height: 60px;
   padding: 10px;
   font-size: 1rem;
@@ -577,12 +673,135 @@ textarea {
 }
 
 .result-items {
+  width: 100%;
+  height: 100%;
   position: absolute;
   z-index: 20001;
 }
 
-.resultimp .fname {
+.friend-name {
   position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  top: -8px;
+  left: 8%;
+  width: 250px;
+  text-align: right;
+  font-family: 'DungGeunMo';
+  font-size: 2.5rem;
+  color: #f8f8f8;
+  text-shadow: 2px 2px 2px #1f1f1f;
+}
+
+.friend-title {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 60px;
+  text-align: center;
+  font-family: 'DungGeunMo';
+  font-size: auto;
+  color: #7469B6;
+  text-shadow: 2px 2px 2px #1f1f1f;
+}
+
+.movie-rating {
+  position: absolute;
+  top: 130px;
+  left: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.star {
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
+}
+
+.desc-box {
+  position: absolute;
+  top: 220px;
+  left: 5%;
+  background-color: rgba(254, 254, 254, 0.7);
+  border: 1px solid #1f1f1f;
+  border-radius: 10px;
+  width: 90%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DungGeunMo';
+}
+
+.desc-box > p > span {
+  background-color: #AD88C6;
+  padding: 3px;
+}
+
+.message-box {
+  position: absolute;
+  top: 300px;
+  left: 20px;
+  width: 300px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-box > img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.message-box > p {
+  position: absolute;
+  top: -25px;
+  left: 5px;
+  z-index: 20002;
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: justify;
+  line-height: 1.6;
+  font-family: 'DungGeunMo';
+}
+
+.pigtail {
+  position: absolute;
+  width: 100px;
+  top: 500px;
+  left: 40%;
+  transform: scaleY(-1) rotate(30deg);
+}
+
+.friend-state {
+  position: absolute;
+  top: 580px;
+  left: 24%;
+  transform: rotate(20deg);
+  font-family: 'TTLaundryGothicB';
+  font-size: 2.8rem;
+  color: #f8f8f8;
+  text-shadow: 2px 2px 2px #1f1f1f;
+}
+
+.result-cat {
+  position: absolute;
+  width: 300px;
+  top: 400px;
 }
 
 .result-bg {
@@ -598,7 +817,6 @@ textarea {
 .result-bg > img {
   width: 100%;
   height: 100%;
-
   min-width: 600px;
   min-height: 800px;
   position: relative;
@@ -607,25 +825,56 @@ textarea {
 .movie-poster-bg {
   position: absolute;
   right: 0;
+  top: 50px;
   z-index: 19999;
   width: 450px;
-  height: 600px;
+  height: 700px;
 }
 
 .movie-poster-bg > img {
   width: 450px;
-  height: 600px;
+  height: 700px;
   object-fit: cover;
 }
 
 .buttons {
+  width: 100%;
   position: absolute;
-  bottom: 50px;
+  bottom: 20px;
+  right: 20px;
   z-index: 21000;
   display: flex;
   gap: 10px;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: center;
 }
 
+.buttons > button {
+  width: 140px;
+  height: 40px;
+  background-color: #f8f8f8;
+  font-family: 'DungGeunMo';
+  font-size: 1.2rem;
+}
+
+.buttons > button:hover {
+  background-color: #888;
+}
+
+.loading-status {
+  background-color: #1f1f1f;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.load-message {
+  font-family: 'S-CoreDream-3Light';
+  color: #f8f8f8;
+  text-align: center;
+}
 
 </style>

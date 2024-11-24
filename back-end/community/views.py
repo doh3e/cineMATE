@@ -1,13 +1,17 @@
+import base64
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.core.files.base import ContentFile
+from django.utils.text import slugify
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import Review, Comment, Movieforyou
+from movies.models import Genre
 from .serializers import ReviewSerializer, ListReviewSerializer, ReviewDetailSerializer
 from .serializers import CommentSerializer, MovieforyouSerializer
 from django.db.models import Count
@@ -148,6 +152,7 @@ def comment_detail(request, review_pk, comment_pk):
 @api_view(['GET', 'POST'])
 def movieforyou(request):
   MOVIE_API_URL = 'https://api.themoviedb.org/3/discover/movie'
+  MOVIE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500'
   user = request.user
   friend_name = request.GET.get('friendName')
   top_genre = request.GET.get('topGenre')
@@ -177,7 +182,7 @@ def movieforyou(request):
         'vote_average.lte': 8.0,
         'vote_count.gte': 2000,
       }
-    elif preference == '다좋아':
+    elif preference == '좋은게좋은':
       params = {
         'api_key': MOVIE_API_KEY,
         'language': 'ko-KR',
@@ -224,8 +229,17 @@ def movieforyou(request):
       if params['page'] > data.get('total_pages', 1):
         break
     
-    print(filtered_results)
     result_movie = filtered_results[0] if filtered_results else None
+
+    # Base64 변환
+    if result_movie and result_movie.get('poster_path'):
+      poster_url = f"{MOVIE_IMAGE_URL}{result_movie['poster_path']}"
+      image_response = requests.get(poster_url)
+      if image_response.status_code == 200:
+        encoded_image = base64.b64encode(image_response.content).decode('utf-8')
+        result_movie['poster_base64'] = f"data:image/jpeg;base64,{encoded_image}"
+      else:
+          result_movie['poster_base64'] = None
     
     return Response({
       'movie': result_movie,
@@ -244,3 +258,54 @@ def movieforyou(request):
     return Response({'error': f'TMDB API 요청 실패: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   except Exception as e:
     return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+  
+
+@api_view(['POST'])
+def save_result(request):
+  if request.method == 'POST':
+    user = request.user
+    friend_name = request.POST.get('friend_name')
+    movie_id = request.POST.get('movie_id')
+    movie_title = request.POST.get('movie_title')
+    overview = request.POST.get('overview')
+    adult = request.POST.get('adult') == 'true'
+    popularity = request.POST.get('popularity')
+    vote_average = request.POST.get('vote_average')
+    release_date = request.POST.get('release_date')
+    poster_path = request.POST.get('poster_path')
+
+    # `genre_ids`를 JSON으로 처리
+    genre_ids_raw = request.POST.get('genre_ids', '[]')
+    try:
+      genre_ids = json.loads(genre_ids_raw)
+    except json.JSONDecodeError:
+      return JsonResponse({'error': 'Invalid genre_ids format'}, status=400)
+
+    # 이미지 처리
+    card_img_data = request.POST.get('card_img')
+    format, imgstr = card_img_data.split(';base64,')  # Base64 분리
+    ext = format.split('/')[-1]
+    card_img_file = ContentFile(base64.b64decode(imgstr), name=f"{slugify(friend_name)}_card.{ext}")
+
+    # 저장
+    movieforyou = Movieforyou.objects.create(
+      user=user,
+      friend_name=friend_name,
+      id=movie_id,
+      title=movie_title,
+      overview=overview,
+      adult=adult,
+      popularity=popularity,
+      vote_average=vote_average,
+      release_date=release_date,
+      poster_path=poster_path,
+      card_img=card_img_file.name,
+    )
+
+    # Many-to-Many 장르 저장
+    genres = Genre.objects.filter(id__in=genre_ids)
+    movieforyou.genre_ids.set(genres)
+    movieforyou.save()
+
+    return JsonResponse({'message': 'Result saved successfully', 'card_id': movieforyou.card_id})
+  return JsonResponse({'error': 'Invalid request method'}, status=400)

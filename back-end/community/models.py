@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.conf import settings
 from movies.models import Genre
@@ -6,6 +7,13 @@ from movies.models import Genre
 # 그래서 영화 정보를 받아오는 모델의 경우 기본키 이름 변경함
 
 # Create your models here.
+
+def user_directory_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+    return 'user_{0}/{1}'.format(instance.username, filename)
+
+
 class Review(models.Model):
     review_id = models.AutoField(primary_key=True)
     review_title = models.CharField(max_length=100)
@@ -47,6 +55,6 @@ class Movieforyou(models.Model):
     genre_ids = models.ManyToManyField(Genre)
     release_date = models.DateField()
     poster_path = models.CharField(max_length=200, null=True, blank=True)
-    card_img = models.CharField(max_length=200)
+    card_img = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     
     
