@@ -95,11 +95,11 @@ const eventDay = {
   '08-15': ['광복절', '역사를 잊은 민족에게 미래는 없습니다.'],
   '10-06': ['추석', '명절에 가족들과 함께 볼 수 있는 영화들을 소개할게요.'],
   '10-31': ['할로윈', '할로윈이니 으스스한 영화 어때요?'],
-  '11-19': ['프로젝트 발표연습', '프로젝트를 위해 머리를 잔뜩 굴려볼까요?'],
-  '11-27': ['프로젝트 발표날', '프로젝트를 위해 머리를 잔뜩 굴려볼까요?'],
+  '11-24': ['프로젝트 발표연습', '프로젝트를 위해 머리를 잔뜩 굴려볼까요?'],
+  '11-27': ['프로젝트 발표일', '프로젝트를 위해 머리를 잔뜩 굴려볼까요?'],
   '12-24': ['크리스마스 이브', '이번 크리스마스엔 무엇을 하시나요?'],
   '12-25': ['크리스마스', `메리 크리스마스, ${store.userInfo?.nickname}님!`],
-  '12-31': ['연말'],
+  '12-31': ['연말', `${store.userInfo.nickname}님의 올 한 해는 어떠셨나요?`],
 }
 
 // 날짜 비교 함수
@@ -165,7 +165,7 @@ onMounted(() => {
 <style scoped>
 .curation-container {
   width: 80%;
-  padding: 60px;
+  padding-top: 60px;
   min-width: 500px;
   height: 100%;
   margin: 0 auto;
@@ -173,7 +173,7 @@ onMounted(() => {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap:20px;
+  gap: 20px;
 }
 
 .curation-header {

@@ -73,16 +73,15 @@ const searchMovies = async () => {
 
 <style scoped>
 .movie-container {
+  padding-top: 60px;
   width: 80%;
-  padding: 60px;
   min-width: 500px;
   height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  gap: 30px;
+  gap: 40px;
 }
 
 .movie-head {
@@ -101,7 +100,6 @@ const searchMovies = async () => {
   max-width: 600px;
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
 .search-box > input[type=text]{

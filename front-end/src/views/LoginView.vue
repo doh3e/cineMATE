@@ -18,8 +18,8 @@
       <button type="submit" class="btn submit-btn">로그인</button>
     </form>
     <div class="find-anchor">
-      <a href="">아이디 찾기</a>
-      <a href="">비밀번호 찾기</a>
+      <a href="" @click.prevent>아이디 찾기</a>
+      <a href="" @click.prevent>비밀번호 찾기</a>
     </div>
   </div>
 </template>

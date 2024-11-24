@@ -133,6 +133,7 @@ const initializePlayer = async () => {
       controls: 0,
       modestbranding: 1,
       rel: 0,
+      start: 7,
     },
     events: {
       onReady: onPlayerReady,

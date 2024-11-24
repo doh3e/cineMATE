@@ -92,7 +92,7 @@ watch(() => props.movies, (newMovies) => {
   border-radius: 10px;
   max-height: 1000px;
   margin: 0 auto;
-  padding: 40px 60px;
+  padding: 40px 40px;
   overflow-y: scroll;
 }
 

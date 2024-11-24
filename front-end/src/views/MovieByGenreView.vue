@@ -114,16 +114,15 @@ watch([genreMovies, selectedOrder], sortMovies)
 
 <style scoped>
 .mvbygenre-container {
-  width: 100%;
-  padding: 60px;
+  padding-top: 60px;
+  width: 80%;
   min-width: 500px;
   height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  gap: 30px;
+  gap: 40px;
 }
 
 .select-area {
@@ -132,7 +131,6 @@ watch([genreMovies, selectedOrder], sortMovies)
   justify-content: center;
   align-items: center;
   gap: 15px;
-  margin-bottom: 20px;
 }
 
 .select-area > select {
@@ -163,11 +161,15 @@ watch([genreMovies, selectedOrder], sortMovies)
 }
 
 .result-box {
-  width: 100%;
+  width: 90%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.movielist-box {
+  max-height: 880px;
 }
 
 

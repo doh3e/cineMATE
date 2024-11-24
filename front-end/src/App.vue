@@ -28,16 +28,12 @@ import { useRoute } from 'vue-router';
 }
 
 .main-container {
-  width: 90%;
+  width: 100%;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-input, select, textarea, option {
-  cursor: inherit !important;
 }
 
 </style>

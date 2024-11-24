@@ -371,7 +371,6 @@ const resetTransform = () => {
   border-radius: .25em;
 }
 
-/* named upload */
 .filebox .upload-name {
   display: inline-block;
   padding: 5px;
@@ -388,7 +387,7 @@ const resetTransform = () => {
   appearance: none;
 }
 
-.upload-display {  /* 이미지가 표시될 지역 */
+.upload-display {
   margin-bottom: 5px;
 }
 
@@ -400,7 +399,7 @@ const resetTransform = () => {
   }
 }
 
-.upload-thumb-wrap {  /* 추가될 이미지를 감싸는 요소 */
+.upload-thumb-wrap {
   display: inline-block;
   width: 100px;
   padding: 2px;
@@ -408,7 +407,7 @@ const resetTransform = () => {
   border-radius: 5px;
 }
 
-.upload-display img {  /* 추가될 이미지 */
+.upload-display img {
   display: block;
   width: 100%;
   height: auto;

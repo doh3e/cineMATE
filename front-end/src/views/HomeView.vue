@@ -181,7 +181,7 @@ onMounted(() => {
 }
 
 .movielist-box {
-  max-height: 550px;
+  max-height: 600px;
 }
 
 @media screen and (max-width: 700px) {
