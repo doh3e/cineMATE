@@ -2,9 +2,13 @@
   <div v-if="movie && isVisible" class="modal-overlay" @click.self="close">
     <div class="modal-content">
       <div class="modal-top">
-        <div id="player-container"
+        <div id="player-container" v-if="youtube_path"
         @mouseenter="onPlayerMouseEnter"
         @mouseleave="onPlayerMouseLeave"></div>
+        <div v-else>
+        <h1 class="yesteryear-regular h1-cali">No Trailers</h1>
+        <img src="@/assets/img/projector-12629.gif" alt="default gif">
+        </div>
       </div>
       <div class="modal-bottom">
         <div class="modal-bleft">
@@ -35,9 +39,37 @@
           <div class="user-reaction">
             <div class="user-review">
               <h3>유저리뷰</h3>
+              <div class="review-box">
+                <div class="review-item" v-if="reviewList.length > 0"
+                v-for="review in reviewList"
+                :key="review.review_id">
+                  {{ review.review_title }} {{ review.user.nickname }} {{ review.user_rating }}
+                </div>
+                <h3 v-else>아직 유저 리뷰가 없습니다.</h3>
+              </div>
             </div>
-            <div class="etc">
-              <h3>여긴 뭐하지</h3>
+            <div class="movie-stats ">
+              <h3>메이트들의 선택</h3>
+              <div v-if="movieStats" class="stat-box">
+                <div class="stat">
+                  <img src="@/assets/img/gradation-heart.png" alt="" class="stat-icon">
+                  <h3>{{ movieStats.like_count }}</h3>
+                </div>
+                <div class="stat">
+                  <img src="@/assets/img/gradation-bookmark.png" alt="" class="stat-icon">
+                  <h3>{{ movieStats.bookmark_count }}</h3>
+                </div>
+                <div class="stat">
+                  <img src="@/assets/img/gradation-flag.png" alt="" class="stat-icon">
+                  <h3 v-if="movieStats.popularity_rank !== 'No Rank'">
+                    {{ movieStats.popularity_rank }}
+                  </h3>
+                  <h3 v-else>
+                    -
+                  </h3>
+                </div>
+              </div>
+              <p v-else>통계 데이터를 불러오는 중...</p>
             </div>
           </div>
         </div>
@@ -72,6 +104,35 @@ const hasHalfStar = computed(() => roundedRating.value % 1 !== 0)
 const emptyStars = computed(() => maxStars - fullStars.value - (hasHalfStar.value ? 1 : 0))
 
 
+// 유저 리뷰 가져오기
+
+const reviewList = ref([])
+const getUserReview = async() => {
+  try{
+    const response = await publicAxios(`/movies/get-movie-reviews/${props.movie?.id}/`)
+    if(response.data.length > 0){
+      reviewList.value = response.data
+    } else {
+      console.log('리뷰가 없습니다.');
+    }
+  }
+  catch(error) {
+    console.log('리뷰 로드 중 에러 발생 : ', error)
+  }
+}
+
+// 사이트 내 영화 통계 가져오기
+const movieStats = ref(null)
+const fetchMovieStats = async () => {
+  try {
+    const response = await publicAxios.get(`/movies/get-movie-stats/${props.movie.id}/`)
+    movieStats.value = response.data
+  } catch (error) {
+    console.error('영화 통계 데이터를 가져오는 중 에러 발생:', error)
+  }
+}
+
+
 // 유튜브 영상 아이디 가져오는 로직
 const youtube_path = ref('')
 const findVideoPath = async () => {
@@ -90,13 +151,12 @@ const findVideoPath = async () => {
 
     if (filteredResults.length > 0) {
       youtube_path.value = filteredResults[0].key
-      console.log('YouTube Path:', youtube_path.value)
       initializePlayer()
     } else {
       console.warn('No suitable trailer found.')
     }
   } catch (error) {
-    console.error('Error fetching video path:', error)
+    console.error('유튜브 비디오 패스를 가져오는 중 에러 발생:', error)
   }
 }
 
@@ -150,7 +210,7 @@ const onPlayerStateChange = (event) => {
 }
 
 const onPlayerReady = (event) => {
-  event.player.mute()
+  event.target.mute()
   event.target.playVideo()
 }
 
@@ -174,6 +234,8 @@ onMounted(() => {
   genreNames.value = genreIds.map(genreId => store.getGenreNameById(genreId))
 
   findVideoPath()
+  getUserReview()
+  fetchMovieStats()
 })
 
 
@@ -221,6 +283,17 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  position: relative;
+}
+
+.modal-top > div > h1 {
+  position: absolute;
+  color: #f8f8f8;
+  z-index: 40000;
+  text-align: center;
+  top: 40%;
+  left: 40%;
+  text-shadow: 1px 1px 1px #1f1f1f;
 }
 
 .modal-bottom {
@@ -288,7 +361,7 @@ iframe {
   background-color: rgba(248, 248, 248, 0.5);
   border-radius: 10px;
   padding: 20px;
-  height: 150px;
+  height: 100px;
   overflow-y: scroll;
   color: #1f1f1f;
 }
@@ -307,10 +380,56 @@ iframe {
   margin-top: 30px;
   padding: 20px;
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
+}
+
+.user-review {
+  width: 100%;
+  gap:20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+}
+
+.movie-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.stat-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:40px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap:10px;
+}
+.stat-icon {
+  width: 40px;
+  height: 40px;
 }
 
 .close-btn {

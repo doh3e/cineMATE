@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
-from django.db.models import Count
+from django.db.models import Count, Q
 from collections import Counter
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -13,7 +14,9 @@ from django.conf import settings
 import requests, json
 
 from .models import Movie, Genre, Bookmark, Like
+from community.models import Review
 from .serializers import MovieDetailSerializer
+from community.serializers import ListReviewSerializer
 
 # Create your views here.
 
@@ -418,4 +421,50 @@ def moviebygenre(request, genre_id):
   movies = Movie.objects.filter(genre_ids__id=genre_id)
   serializer = MovieDetailSerializer(movies, many=True)
   return Response(serializer.data)
-    
+
+
+# 특정 영화의 리뷰 가져오기
+@api_view(['GET'])
+def get_reviews(request, movie_id):
+  reviews = Review.objects.filter(id=movie_id).order_by('-created_at')[:4]
+  serializer = ListReviewSerializer(reviews, many=True)
+  return Response(serializer.data)
+
+
+# 특정 영화의 스탯(인기순위 등) 가져오기
+@api_view(['GET'])
+def get_movie_stats(request, movie_id):
+  try:
+    # 특정 영화의 좋아요 및 북마크 수 계산
+    movie_likes = Like.objects.filter(id=movie_id).count()
+    movie_bookmarks = Bookmark.objects.filter(id=movie_id).count()
+
+    # 모든 영화의 좋아요 및 북마크 합계 계산
+    popularity_data = (
+      Like.objects.values('id')
+      .annotate(total_likes=Count('id'))
+      .union(
+        Bookmark.objects.values('id')
+        .annotate(total_bookmarks=Count('id'))
+      )
+    )
+
+    # 특정 영화의 순위 계산
+    popularity_list = sorted(
+      popularity_data,
+      key=lambda x: x.get('total_likes', 0) + x.get('total_bookmarks', 0),
+      reverse=True
+    )
+    rank_lookup = {item['id']: idx + 1 for idx, item in enumerate(popularity_list)}
+    movie_popularity_rank = rank_lookup.get(movie_id, 'No Rank')
+
+    # 결과 반환
+    return JsonResponse({
+      'like_count': movie_likes,
+      'bookmark_count': movie_bookmarks,
+      'popularity_score': movie_likes + movie_bookmarks,
+      'popularity_rank': movie_popularity_rank,
+    })
+
+  except Exception as e:
+    return JsonResponse({'detail': str(e)}, status=500)

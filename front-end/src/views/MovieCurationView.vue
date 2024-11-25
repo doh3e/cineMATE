@@ -41,7 +41,7 @@
     <div class="curation-box">
       <div class="curation-header" v-if="similarQue.length > 0">
         <h2 class="curation-title">유저 데이터를 기반으로 영화를 찾아봤어요!</h2>
-        <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님과 비슷한 취향의 유저들은, 이 영화들도 좋아해요.</p>
+        <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님과 비슷한 취향의 유저들은, 이 영화도 좋아해요.</p>
       </div>
       <MovieCurationList
         v-if="similarQue.length > 0"
@@ -195,6 +195,7 @@ onMounted(() => {
 }
 
 .curation-box {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;

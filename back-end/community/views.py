@@ -285,7 +285,7 @@ def save_result(request):
     card_img_data = request.POST.get('card_img')
     format, imgstr = card_img_data.split(';base64,')  # Base64 분리
     ext = format.split('/')[-1]
-    card_img_file = ContentFile(base64.b64decode(imgstr), name=f"{slugify(friend_name)}_card.{ext}")
+    card_img_file = ContentFile(base64.b64decode(imgstr), name=f"{user.username}_card.{ext}")
 
     # 저장
     movieforyou = Movieforyou.objects.create(
@@ -299,9 +299,11 @@ def save_result(request):
       vote_average=vote_average,
       release_date=release_date,
       poster_path=poster_path,
-      card_img=card_img_file.name,
     )
-
+    
+    movieforyou.card_img.save(file_name, card_img_file)
+    print(f"Saved image path: {movieforyou.card_img.path}")
+    
     # Many-to-Many 장르 저장
     genres = Genre.objects.filter(id__in=genre_ids)
     movieforyou.genre_ids.set(genres)

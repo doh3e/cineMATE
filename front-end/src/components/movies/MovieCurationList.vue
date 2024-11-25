@@ -66,13 +66,13 @@ const config = {
   snapAlign: 'center',
   breakpoints: {
     1200: {
-      itemsToShow: 3.95,
+      itemsToShow: 5,
     },
-    1100: {
-      itemsToShow: 3,
+    1000: {
+      itemsToShow: 4,
     },
     700: {
-      itemsToShow: 2,
+      itemsToShow: 3,
     },
     450: {
       itemsToShow: 1,
@@ -89,20 +89,11 @@ const config = {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  padding: 10px;
   width: 100%;
   height: 100%;
   opacity: 0.9;
   transform: scale(0.9);
   transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.carousel__viewport {
-  perspective: 2000px;
-}
-
-.carousel__track {
-  transform-style: preserve-3d;
 }
 
 .carousel__slide--active ~ .carousel__slide {
@@ -131,7 +122,7 @@ const config = {
   display: flex;
   justify-content: center;
   align-items: center;
-  perspective: 2000px;
+  perspective: 1000px;
 }
 
 /* 캐러셀 트랙 */
@@ -144,6 +135,7 @@ const config = {
 .movie-slider-container {
   width: 100%;
   max-width: 1200px;
+  min-width: 300px;
   height: 48vh;
   margin: 0 auto;
   padding-top: 20px;

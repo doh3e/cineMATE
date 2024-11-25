@@ -11,7 +11,7 @@ from movies.models import Genre
 def user_directory_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{uuid.uuid4()}.{ext}'
-    return 'user_{0}/{1}'.format(instance.username, filename)
+    return 'user_{0}/{1}'.format(instance.user.username, filename)
 
 
 class Review(models.Model):

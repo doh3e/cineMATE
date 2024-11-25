@@ -50,7 +50,8 @@ const closeTestPopup = () => {
 
 .subtitle {
   text-align: center;
-  font-family: 'S-CoreDream-3Light';
+  font-family: 'S-CoreDream';
+  font-weight: 600;
   font-size: 1.5rem;
   color: #f8f8f8;
 }

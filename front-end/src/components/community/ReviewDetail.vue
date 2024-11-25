@@ -63,7 +63,6 @@ import { useCounterStore } from '@/stores/counter';
 import ReviewEditModal from './ReviewEditModal.vue';
 import ReviewComment from './ReviewComment.vue';
 
-// 라우트에서 리뷰 ID 가져오기
 const route = useRoute()
 const router = useRouter()
 const review = ref(null)
@@ -71,7 +70,6 @@ const store = useCounterStore()
 const isEditModalOpen = ref(false)
 const isLikeAnimating = ref(false)
 
-// 좋아요 여부 확인
 const isLiked = computed(() => {
   return review.value?.liked_users?.includes(store.userInfo?.id)
 })
@@ -87,7 +85,6 @@ const toggleLike = async () => {
   }
 }
 
-// 리뷰 데이터 로드
 const fetchReviewDetail = async () => {
   try {
     const response = await publicAxios.get(`/community/reviews/${route.params.review_id}/`)
@@ -98,7 +95,6 @@ const fetchReviewDetail = async () => {
   }
 }
 
-// 목록으로 돌아가기
 const goBackToList = () => {
   router.push({ name: 'ReviewList' })
 }

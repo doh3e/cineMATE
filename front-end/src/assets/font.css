@@ -143,6 +143,10 @@
   font-style: normal;
 }
 
+/* 던파 비트비트 */
+@font-face{
+    font-family:'DNFBitBitv2';
+    font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
 
 /* ==================  영문 캘리그라피  ==================  */
 .yesteryear-regular {

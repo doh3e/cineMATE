@@ -684,14 +684,18 @@ textarea {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  top: -8px;
+  top: -3px;
   left: 8%;
   width: 250px;
   text-align: right;
-  font-family: 'DungGeunMo';
-  font-size: 2.5rem;
-  color: #f8f8f8;
-  text-shadow: 2px 2px 2px #1f1f1f;
+  font-family:'DNFBitBitv2';
+  font-size: 2.3rem;
+  color: #AD88C6;
+  text-shadow: 
+    2px 2px 0 #1f1f1f,  /* 오른쪽 아래 */
+    -2px -2px 0 #1f1f1f, /* 왼쪽 위 */
+    -2px 2px 0 #1f1f1f,  /* 왼쪽 아래 */
+    2px -2px 0 #1f1f1f;  /* 오른쪽 위 */
 }
 
 .friend-title {
@@ -704,7 +708,7 @@ textarea {
   text-align: center;
   font-family: 'DungGeunMo';
   font-size: auto;
-  color: #7469B6;
+  color: #f8f8f8;
   text-shadow: 2px 2px 2px #1f1f1f;
 }
 
@@ -792,7 +796,7 @@ textarea {
   top: 580px;
   left: 24%;
   transform: rotate(20deg);
-  font-family: 'TTLaundryGothicB';
+  font-family: 'UhBeeSeulvely';
   font-size: 2.8rem;
   color: #f8f8f8;
   text-shadow: 2px 2px 2px #1f1f1f;

@@ -6,8 +6,8 @@
     </div>
     <div class="mypage-listtab">
       <button @click="currentTab = 'info'" :class="{ active: currentTab === 'info' }">유저정보</button>
-      <button @click="currentTab = 'storage'" :class="{ active: currentTab === 'storage' }">유저 저장소</button>
-      <button @click="currentTab = 'reviews'" :class="{ active: currentTab === 'reviews' }">유저 리뷰</button>
+      <button @click="currentTab = 'storage'" :class="{ active: currentTab === 'storage' }">보관함</button>
+      <button @click="currentTab = 'reviews'" :class="{ active: currentTab === 'reviews' }">나의리뷰</button>
     </div>
     <div class="mypage-content">
     <component
@@ -81,6 +81,7 @@ onMounted(() => {
 <style scoped>
 .mypage-container {
   width: 80%;
+  min-width: 400px;
   height: 100%;
   margin: 0 auto;
   display: flex;
@@ -137,8 +138,13 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   height: 100%;
 }
+
+.mypage-content > div {
+  width: 100%;
+}
+
 </style>

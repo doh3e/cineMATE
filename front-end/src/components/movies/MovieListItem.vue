@@ -132,7 +132,13 @@ const toggleLike = async () => {
   border-radius: 2px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-item:hover {
   cursor: pointer;
+  transform: translateY(-10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .movie-title {
