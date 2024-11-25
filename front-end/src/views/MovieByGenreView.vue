@@ -114,7 +114,6 @@ watch([genreMovies, selectedOrder], sortMovies)
 
 <style scoped>
 .mvbygenre-container {
-  padding-top: 60px;
   width: 80%;
   min-width: 500px;
   height: 100%;
@@ -122,7 +121,7 @@ watch([genreMovies, selectedOrder], sortMovies)
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 30px;
 }
 
 .select-area {
@@ -138,7 +137,7 @@ watch([genreMovies, selectedOrder], sortMovies)
   border-radius: 5px;
   width: 15%;
   height: 3rem;
-  min-width: 150px;
+  min-width: 220px;
   max-width: 300px;
   font-family: 'S-CoreDream-3Light';
   font-size: 1.3rem;
@@ -161,7 +160,7 @@ watch([genreMovies, selectedOrder], sortMovies)
 }
 
 .result-box {
-  width: 90%;
+  width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -169,6 +168,7 @@ watch([genreMovies, selectedOrder], sortMovies)
 }
 
 .movielist-box {
+  height: 60vh;
   max-height: 880px;
 }
 

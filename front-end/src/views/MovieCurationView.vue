@@ -3,42 +3,51 @@
     <h1 class="yesteryear-regular h1-cali">🌘Curation</h1>
 
     <!-- 생일 추천 영화 -->
-    <div class="curation-header" v-if="isBirthday && birthDayQue.length > 0">
-      <h2 class="curation-title">🎉 생일 축하해요, {{ store.userInfo?.nickname }}님! 🎉</h2>
-      <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
+    <div class="curation-box">
+      <div class="curation-header" v-if="isBirthday && birthDayQue.length > 0">
+        <h2 class="curation-title">🎉 생일 축하해요, {{ store.userInfo?.nickname }}님! 🎉</h2>
+        <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님이 태어난 해에 개봉한 영화들을 보여줄게요. </p>
+      </div>
+      <MovieCurationList
+        v-if="isBirthday && birthDayQue.length > 0"
+        :movies="birthDayQue"
+      />
     </div>
-    <MovieCurationList
-      v-if="isBirthday && birthDayQue.length > 0"
-      :movies="birthDayQue"
-    />
 
     <!-- 특별한 날 추천 영화 -->
-    <div class="curation-header" v-if="isEventDay && eventDayQue.length > 0">
-      <h2 class="curation-title">오늘은 {{ currentSpecialDay }}!</h2>
-      <p class="curation-subtitle"> {{ eventMent }} </p>
+    <div class="curation-box">
+      <div class="curation-header" v-if="isEventDay && eventDayQue.length > 0">
+        <h2 class="curation-title">오늘은 {{ currentSpecialDay }}!</h2>
+        <p class="curation-subtitle"> {{ eventMent }} </p>
+      </div>
+      <MovieCurationList
+        v-if="isEventDay && eventDayQue.length > 0"
+        :movies="eventDayQue"
+      />
     </div>
-    <MovieCurationList
-      v-if="isEventDay && eventDayQue.length > 0"
-      :movies="eventDayQue"
-    />
+
     <!-- 기본 추천 영화 -->
-    <div class="curation-header" v-if="defaultQue.length > 0">
-      <h2 class="curation-title">선호하시는 장르의 영화를 찾아봤어요!</h2>
+    <div class="curation-box">
+      <div class="curation-header" v-if="defaultQue.length > 0">
+        <h2 class="curation-title">선호하시는 장르의 영화를 찾아봤어요!</h2>
+      </div>
+      <MovieCurationList
+        v-if="defaultQue.length > 0"
+        :movies="defaultQue"
+      />
     </div>
-    <MovieCurationList
-      v-if="defaultQue.length > 0"
-      :movies="defaultQue"
-    />
 
     <!-- 유저 유사도기반 추천 영화 -->
-    <div class="curation-header" v-if="similarQue.length > 0">
-      <h2 class="curation-title">유저 데이터를 기반으로 영화를 찾아봤어요!</h2>
-      <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님과 비슷한 취향의 유저들은, 이 영화들도 좋아해요.</p>
+    <div class="curation-box">
+      <div class="curation-header" v-if="similarQue.length > 0">
+        <h2 class="curation-title">유저 데이터를 기반으로 영화를 찾아봤어요!</h2>
+        <p class="curation-subtitle"> {{ store.userInfo?.nickname }}님과 비슷한 취향의 유저들은, 이 영화들도 좋아해요.</p>
+      </div>
+      <MovieCurationList
+        v-if="similarQue.length > 0"
+        :movies="similarQue"
+      />
     </div>
-    <MovieCurationList
-      v-if="similarQue.length > 0"
-      :movies="similarQue"
-    />
   </div>
 </template>
 
@@ -165,7 +174,6 @@ onMounted(() => {
 <style scoped>
 .curation-container {
   width: 80%;
-  padding-top: 60px;
   min-width: 500px;
   height: 100%;
   margin: 0 auto;
@@ -173,28 +181,36 @@ onMounted(() => {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 20px;
 }
 
 .curation-header {
-  font-family: 'S-CoreDream-3Light';
+  font-family: 'S-CoreDream';
   color: #f8f8f8;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.curation-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 20px;
-  margin-top: 50px;
+  margin-bottom: 30px;
 }
 
 .curation-title {
   font-size: 2rem;
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .curation-subtitle{
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 300;
 }
 
 </style>

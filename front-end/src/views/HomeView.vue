@@ -1,7 +1,7 @@
 <template>
   <div class="home-main">
 
-    <div class="section">
+    <div class="section top-section">
       <h1 class="yesteryear-regular h1-cali">🌘Top Rated Movie</h1>
       <h2 class="subtitle">명작을 보고싶다면…</h2>
       <MovieList :movies="movies" />
@@ -58,7 +58,7 @@ const callBoxOffices = async () => {
   try {
     const response = await axios.get(`http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${KOFIC_API_KEY}&targetDt=${formattedYesterday}`)
 
-    boxOffices.value = response.data.boxOfficeResult.dailyBoxOfficeList
+    boxOffices.value = response?.data.boxOfficeResult.dailyBoxOfficeList
   }
   catch(error) {
     console.error('국내 박스오피스 데이터를 로드하는 중 오류 발생: ', error)
@@ -68,7 +68,7 @@ const callBoxOffices = async () => {
 const callNewestMovies = async() => {
   try {
     const response = await axios.get(`http://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key=${KOFIC_API_KEY}&itemPerPage=100&openStartDt=${today.getFullYear()}`)
-    const movieList = response.data.movieListResult.movieList
+    const movieList = response?.data.movieListResult.movieList
     const formattedToday = today.toISOString().slice(0, 10).replace(/-/g, '')
 
     const sortedMovies = movieList
@@ -109,7 +109,6 @@ onMounted(() => {
 
 <style scoped>
 .home-main {
-  padding-top: 60px;
   width: 80%;
   min-width: 500px;
   height: 100%;
@@ -117,7 +116,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
 }
 
 .section {
@@ -125,10 +123,16 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+}
+
+.top-section {
+  height: 60vh;
+  gap: 20px;
 }
 
 .row-section {
+  height: 25vh;
+  gap: 30px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -136,7 +140,8 @@ onMounted(() => {
 
 .subtitle {
   text-align: center;
-  font-family: 'S-CoreDream-3Light';
+  font-family: 'S-CoreDream';
+  font-weight: 400;
   font-size: 1.2rem;
   color: #f8f8f8;
 }
@@ -151,7 +156,8 @@ onMounted(() => {
 
 .section-title {
   text-align: center;
-  font-family: 'S-CoreDream-3Light';
+  font-family: 'S-CoreDream';
+  font-weight: 600;
   font-size: 1.5rem;
   color: #f8f8f8;
   margin-bottom: 10px; 
@@ -159,7 +165,8 @@ onMounted(() => {
 
 .section-subtitle{
   text-align: center;
-  font-family: 'S-CoreDream-3Light';
+  font-family: 'S-CoreDream';
+  font-weight: 200;
   font-size: 1rem;
   font-weight: 400;
   color: #f8f8f8;    
@@ -167,7 +174,7 @@ onMounted(() => {
 
 .boxoffice-container {
   width: 100%;
-  height: 200px;
+  height: 10vh;
   border-radius: 10px;
   background-color: #f8f8f8;
   display: flex;
@@ -177,7 +184,7 @@ onMounted(() => {
   padding: 30px;
   gap: 10px;
   overflow-y: scroll;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .movielist-box {

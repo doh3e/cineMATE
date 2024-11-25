@@ -1,7 +1,8 @@
 <template>
   <div class="mypage-container">
     <div class="mypage-title">
-      <h1>소행성 MV-{{ route.params.username }}</h1>
+      <h1 class="yesteryear-regular h1-cali">🌌Planet of {{ route.params.username }}</h1>
+      <h2 class="subtitle">{{ store.userInfo?.nickname }}의 소행성</h2>
     </div>
     <div class="mypage-listtab">
       <button @click="currentTab = 'info'" :class="{ active: currentTab === 'info' }">유저정보</button>
@@ -80,22 +81,64 @@ onMounted(() => {
 <style scoped>
 .mypage-container {
   width: 80%;
+  height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30px;
 }
+
+.mypage-title {
+  width: 50%;
+  margin: 0 auto;
+  font-family: 'S-CoreDream';
+  font-weight: 600;
+  color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.h1-cali {
+  text-align: center;
+}
+
+.subtitle {
+  text-align: right;
+}
+
 .mypage-listtab {
   display: flex;
   gap: 10px;
 }
+
 .mypage-listtab button {
   padding: 10px 20px;
   border: none;
   cursor: pointer;
+  font-family: 'S-CoreDream-3Light';
+  font-weight: 600;
 }
+
+.mypage-listtab button:hover {
+  background-color: #AD88C6;
+}
+
 .mypage-listtab button.active {
-  background-color: #4caf50;
+  background-color: #7469B6;
   color: white;
+}
+
+.mypage-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 </style>

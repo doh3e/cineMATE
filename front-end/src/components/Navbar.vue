@@ -130,8 +130,9 @@ onUnmounted(() => {
 <style scoped>
 
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -140,7 +141,6 @@ onUnmounted(() => {
   background-color: #7469B6;
   padding: 20px 12px;
   font-family: 'NotoSansKR';
-  padding-left: 0;
   z-index: 9999;
   opacity: 0.9;
   transition: opacity 0.3s ease;
@@ -165,12 +165,12 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   position: relative;
-  font-family: 'S-CoreDream-3Light';
+  font-family: 'S-CoreDream';
+  font-weight: 600;
   font-size: 1.5rem;
   color: #F8F8F8;
   padding: 8px 30px;
   text-align: center;
-  font-weight: 900;
   cursor: pointer;
   transition: color 0.3s ease;
 }

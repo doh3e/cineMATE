@@ -5,20 +5,38 @@
       <img v-else src="@/assets/img/default_profile_img.png" alt="profile-img" id="profile-img">
     </div>
     <div class="profile-content">
-      <h3>{{ person?.nickname }} ({{ person?.username }})</h3>
-      <p>이메일: {{ person?.email }}</p>
-      <p>생일: {{ person?.birthday }}</p>
-      <p>팔로워 수: {{ person?.followers.length }}</p>
-      <p>팔로잉 수: {{ person?.followings.length }}</p>
+      <div class="default-info">
+        <h2>{{ person?.nickname }} ({{ person?.username }})</h2>
+        <span>{{ person?.email }}</span>
+      </div>
+      <div class="additional-info">
+        <div class="follow-info">
+          <span>{{ person?.birthday.slice(0,4)+'년 '
+          +person?.birthday.slice(5,7)+'월 '
+          +person?.birthday.slice(8,10)+'일 ｜ '
+          || '일자 정보 없음'}}</span>
+          <span>팔로워 <b>{{ person?.followers.length }}</b></span> ｜
+          <span>팔로잉 <b>{{ person?.followings.length }}</b></span>
+        </div>
+        <div class="storage-info">
+          <span>좋아한 영화 <b>{{ person?.liked_movies.length }}</b></span> ｜
+          <span>보고싶은 영화 <b>{{ person?.bookmarked_movies.length }}</b></span>
+        </div>
+        <div class="review-info">
+          <span>지금까지 <b>{{ person?.my_reviews.length }}</b> 건의 관측보고서를 작성했어요.</span>
+        </div>
+      </div>
+      <div class="btn-area">
+        <button v-if="isEditAllowed" @click="editProfile">정보 수정</button>
+        <button
+          v-if="isFollowVisible"
+          @click="toggleFollow"
+          :class="{ following: isFollowing }"
+        >
+          {{ isFollowing ? '언팔로우' : '팔로우' }}
+        </button>
+      </div>
     </div>
-    <button v-if="isEditAllowed" @click="editProfile">정보 수정</button>
-    <button
-      v-if="isFollowVisible"
-      @click="toggleFollow"
-      :class="{ following: isFollowing }"
-    >
-      {{ isFollowing ? '언팔로우' : '팔로우' }}
-    </button>
   </div>
 </template>
 
@@ -69,16 +87,92 @@ const toggleFollow = async () => {
 <style scoped>
 .myinfo-box {
   display: flex;
-  gap: 20px;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 80%;
+  max-width: 600px;
+  min-width: 400px;
+  height: 25vh;
+  min-height: 250px;
+  max-height: 400px;
+  gap: 30px;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #f9f9f9;
 }
+
+.profile-imgbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 180px;
+  height: 180px;
+}
+
 #profile-img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 50%;
 }
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.btn-area{
+  align-self: flex-end;
+  display: flex;
+  justify-content: flex-end;
+  width: 100px;
+}
+
+.btn-area > button {
+  font-family: 'S-CoreDream';
+  font-weight: 400;
+  background-color: #AD88C6;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: 2px 2px 2px #1f1f1f;
+  width: 100px;
+  height: 40px;
+}
+
+.btn-area > button:hover {
+  background-color: #7469B6;
+  cursor: pointer;
+}
+
+.default-info {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  font-family: 'S-CoreDream'; 
+  gap: 10px;
+}
+
+.default-info > h2 {
+  font-weight: 600;
+}
+
+.additional-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: 'S-CoreDream'; 
+}
+
+@media screen and (max-width: 900px) {
+  .profile-imgbox {
+    display: none;
+  }
+}
+
 </style>

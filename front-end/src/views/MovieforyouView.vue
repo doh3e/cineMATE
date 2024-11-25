@@ -38,7 +38,6 @@ const closeTestPopup = () => {
 
 .mvforyou-container {
   width: 80%;
-  padding-top: 60px;
   min-width: 500px;
   height: 100%;
   margin: 0 auto;

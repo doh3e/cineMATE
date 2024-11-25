@@ -23,6 +23,7 @@ const emit = defineEmits(['loadMore'])
 <style scoped>
 
 .movielist-box {
+  height: 60vh;
   max-height: 880px;
 }
 

@@ -73,7 +73,6 @@ const searchMovies = async () => {
 
 <style scoped>
 .movie-container {
-  padding-top: 60px;
   width: 80%;
   min-width: 500px;
   height: 100%;

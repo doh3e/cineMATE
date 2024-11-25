@@ -13,36 +13,36 @@
       
       <div class="text-form">
         <input v-model="form.username" type="text" id="username" placeholder="아이디" autocomplete="username"/>
-        <p v-if="errors.username" class="error">{{ errors.username }}</p>
       </div>
+      <p v-if="errors.username" class="error">{{ errors.username }}</p>
         
       <div class="text-form">
         <input v-model="form.password1" type="password" placeholder="비밀번호" id="password1" required autocomplete="new-password"/>
-        <p v-if="errors.password1" class="error">{{ errors.password1 }}</p>
       </div>
-      
+      <p v-if="errors.password1" class="error">{{ errors.password1 }}</p>
+
       <div class="text-form">
         <input v-model="form.password2" type="password" placeholder="비밀번호 확인" id="password2" required autocomplete="new-password"/>
-        <p v-if="errors.password2" class="error">{{ errors.password2 }}</p>
       </div>
+      <p v-if="errors.password2" class="error">{{ errors.password2 }}</p>
 
       <div class="text-form">
         <input v-model="form.email" type="email" id="email" placeholder="이메일" required autocomplete="email"/>
-        <p v-if="errors.email" class="error">{{ errors.email }}</p>
       </div>
+      <p v-if="errors.email" class="error">{{ errors.email }}</p>
 
       <div class="text-form">
         <input v-model="form.nickname" type="text" id="nickname" placeholder="닉네임" required autocomplete="nickname"/>
-        <p v-if="errors.nickname" class="error">{{ errors.nickname }}</p>
       </div>
+      <p v-if="errors.nickname" class="error">{{ errors.nickname }}</p>
 
       <h3>선택사항</h3>
 
       <div class="date-form">
         <label for="birthday">생년월일</label>
         <input v-model="form.birthday" type="date" id="birthday" />
-        <p v-if="errors.birthday" class="error">{{ errors.birthday }}</p>
       </div>
+      <p v-if="errors.birthday" class="error">{{ errors.birthday }}</p>
 
       <div class="image-form">
         <label for="profile-image">프로필사진</label>
@@ -314,16 +314,13 @@ const resetTransform = () => {
 
 .text-form {
   border-bottom: 2px solid #adadad;
-  margin: 30px;
+  margin: 10px 30px;
   padding: 10px 10px;
 }
 
-.text-form > p {
-  font-size: 0.8rem;
-}
 
 .date-form, .image-form {
-  margin: 30px;
+  margin: 10px 30px;
   padding: 10px 10px;
   display: flex;
   flex-direction: column;
@@ -482,7 +479,6 @@ const resetTransform = () => {
 
 .error {
   color: red;
-  font-size: 0.9em;
-  margin-top: 0.5em;
+  font-size: 0.8em;
 }
 </style>

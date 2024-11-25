@@ -10,7 +10,6 @@ const props = defineProps({
   review: Object,
 })
 
-console.log(props.review)
 </script>
 
 <style scoped>

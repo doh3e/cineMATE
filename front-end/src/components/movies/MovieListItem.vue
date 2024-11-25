@@ -120,7 +120,7 @@ const toggleLike = async () => {
 
 <style scoped>
 .movie-item {
-  flex: 1 1 300px;
+  flex: 1 1 250px;
   max-width: 300px;
   display: flex;
   flex-direction: column;

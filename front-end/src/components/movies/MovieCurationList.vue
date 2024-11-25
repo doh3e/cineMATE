@@ -62,6 +62,7 @@ const config = {
   wrapAround: true,
   autoplay: 3000,
   transition: 600,
+  height: 400,
   snapAlign: 'center',
   breakpoints: {
     1200: {
@@ -90,6 +91,7 @@ const config = {
   box-sizing: border-box;
   padding: 10px;
   width: 100%;
+  height: 100%;
   opacity: 0.9;
   transform: scale(0.9);
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -125,7 +127,7 @@ const config = {
 .carousel__viewport {
   overflow: hidden;
   width: 100% !important;
-  height: auto;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -142,7 +144,7 @@ const config = {
 .movie-slider-container {
   width: 100%;
   max-width: 1200px;
-  height: auto;
+  height: 48vh;
   margin: 0 auto;
   padding-top: 20px;
   background-color: #f8f8f8;
