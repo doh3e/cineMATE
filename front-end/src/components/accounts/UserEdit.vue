@@ -48,7 +48,7 @@
         <button type="submit" :disabled="!isFormValid" class="btn submit-btn">수정</button>
       </div>
     </form>
-    <button @click="goodbye">회원탈퇴</button>
+    <button @click="goodbye" class="dontgo">회원탈퇴</button>
   </div>
 </template>
 
@@ -167,8 +167,9 @@ const goodbye = async () => {
     alert('탈퇴 권한이 없습니다!')
     return
   }
-  const isReal = confirm('정말 회원 탈퇴를 하시겠어요?')
-  if(isReal){
+  const isReal = confirm('회원 탈퇴를 진행하시겠어요?')
+  const isRealReal = confirm(`탈퇴하시면 저장된 영화와 리뷰가 모두 사라지고, ${store.userInfo.nickname} 님에게 딱 맞는 영화 추천을 받을 수 없어요. 정말 탈퇴하시겠어요?`)
+  if(isReal && isRealReal){
     try{
       await authAxios.delete(`/accounts/delete/${store.userInfo.id}`)
       alert('정상적으로 탈퇴 되었습니다.')
@@ -232,8 +233,10 @@ const submitForm = async () => {
   font-family: 'S-CoreDream';
   font-weight: 600;
   font-size: 2rem;
+  margin-top: 20px;
   margin-bottom: 20px;
   text-align: center;
+  color: #f8f8f8;
 }
 
 .edit-form {
@@ -254,7 +257,7 @@ const submitForm = async () => {
 .text-form {
   border-bottom: 2px solid #adadad;
   margin: 0 20px;
-  padding: 10px 10px;
+  padding: 7px 10px;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -427,6 +430,20 @@ const submitForm = async () => {
   color: red;
   font-size: 0.8em;
   text-align: center;
+}
+
+.dontgo {
+  position: absolute;
+  top: 82%;
+  left: 54%;
+  width: 100px;
+  height: 30px;
+  background-color: #666666;
+  cursor: pointer;
+}
+
+.dontgo:hover {
+  background-color: #adadad;
 }
 
 </style>

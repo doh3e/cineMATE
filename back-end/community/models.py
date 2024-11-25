@@ -1,13 +1,11 @@
-import uuid
 from django.db import models
 from django.conf import settings
 from movies.models import Genre
+import uuid
+
 
 # 영화 API에서 받아올때 API 필드랑 이름이 일치하지 않으면 아주 귀찮아집니다..
 # 그래서 영화 정보를 받아오는 모델의 경우 기본키 이름 변경함
-
-# Create your models here.
-
 def user_directory_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{uuid.uuid4()}.{ext}'

@@ -31,7 +31,7 @@ def review_list(request):
     comment_count=Count('review_comments')
     ).order_by('-created_at')
     
-    page_size = 3
+    page_size = 5
     page = int(request.query_params.get('page', 1))
     start = (page - 1) * page_size
     end = start + page_size
@@ -170,7 +170,7 @@ def movieforyou(request):
     birth_month = birth_month.zfill(2)
     
   if request.method == 'GET':
-    if preference == '평범':
+    if preference == '무난한':
       params = {
         'api_key': MOVIE_API_KEY,
         'language': 'ko-KR',
@@ -193,7 +193,7 @@ def movieforyou(request):
         'vote_average.gte': 7.5,
         'vote_count.gte': 3000,
       }
-    elif preference == '홍대병':
+    elif preference == '마이웨이':
       params = {
         'api_key': MOVIE_API_KEY,
         'language': 'ko-KR',
@@ -274,40 +274,43 @@ def save_result(request):
     release_date = request.POST.get('release_date')
     poster_path = request.POST.get('poster_path')
 
-    # `genre_ids`를 JSON으로 처리
     genre_ids_raw = request.POST.get('genre_ids', '[]')
     try:
       genre_ids = json.loads(genre_ids_raw)
     except json.JSONDecodeError:
       return JsonResponse({'error': 'Invalid genre_ids format'}, status=400)
 
-    # 이미지 처리
+    # base64 이미지 처리
     card_img_data = request.POST.get('card_img')
-    format, imgstr = card_img_data.split(';base64,')  # Base64 분리
-    ext = format.split('/')[-1]
-    card_img_file = ContentFile(base64.b64decode(imgstr), name=f"{user.username}_card.{ext}")
+    if card_img_data:
+      format, imgstr = card_img_data.split(';base64,')  # Base64 분리
+      ext = format.split('/')[-1]
+      file_name = f"{user.username}_card.{ext}"  # 파일 이름 생성
+      card_img_file = ContentFile(base64.b64decode(imgstr), name=file_name)
 
-    # 저장
-    movieforyou = Movieforyou.objects.create(
-      user=user,
-      friend_name=friend_name,
-      id=movie_id,
-      title=movie_title,
-      overview=overview,
-      adult=adult,
-      popularity=popularity,
-      vote_average=vote_average,
-      release_date=release_date,
-      poster_path=poster_path,
-    )
+     # 저장
+      movieforyou = Movieforyou.objects.create(
+        user=user,
+        friend_name=friend_name,
+        id=movie_id,
+        title=movie_title,
+        overview=overview,
+        adult=adult,
+        popularity=popularity,
+        vote_average=vote_average,
+        release_date=release_date,
+        poster_path=poster_path,
+      )
+      
+      movieforyou.card_img.save(file_name, card_img_file)
+      print(f"Saved image path: {movieforyou.card_img.path}")
     
-    movieforyou.card_img.save(file_name, card_img_file)
-    print(f"Saved image path: {movieforyou.card_img.path}")
-    
-    # Many-to-Many 장르 저장
-    genres = Genre.objects.filter(id__in=genre_ids)
-    movieforyou.genre_ids.set(genres)
-    movieforyou.save()
+      # Many-to-Many 장르 저장
+      genres = Genre.objects.filter(id__in=genre_ids)
+      movieforyou.genre_ids.set(genres)
+      movieforyou.save()
 
-    return JsonResponse({'message': 'Result saved successfully', 'card_id': movieforyou.card_id})
+      return JsonResponse({'message': 'Result saved successfully', 'card_id': movieforyou.card_id})
+    else:
+      return JsonResponse({'error': 'Card image is missing'}, status=400)
   return JsonResponse({'error': 'Invalid request method'}, status=400)

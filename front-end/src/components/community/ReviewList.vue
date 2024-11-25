@@ -1,7 +1,9 @@
 <template>
   <div class="review-box">
-    <h2>리뷰 게시판</h2>
-    <table>
+    <div class="best-review">
+      
+    </div>
+    <table class="review-board">
       <thead>
         <tr>
           <th id="index-num">번호</th>
@@ -20,7 +22,7 @@
           style="cursor: pointer"
         >
           <td class="index-num-data">{{ review.review_id }}</td>
-          <td>{{ review.review_title }} <span class="comment-cnt">[{{review.comment_count}}]</span></td>
+          <td>{{ review.review_title }} <span class="comment-cnt"> <b>[{{review.comment_count}}]</b></span></td>
           <td>{{ review.title }}</td>
           <td class="writer-data">{{ review.user.nickname || review.user.username }}</td>
           <td class="date-data">{{ formatDate(review.created_at) }}</td>
@@ -31,13 +33,13 @@
 
     <!-- 페이지네이션 -->
     <div class="pagination">
-      <button
+      <button class="pg-btn"
         @click="changePage(currentPage - 1)"
         :disabled="currentPage === 1"
       >
         ◀
       </button>
-      <button
+      <button class="num-btn"
         v-for="page in totalPages"
         :key="page"
         @click="changePage(page)"
@@ -45,7 +47,7 @@
       >
         {{ page }}
       </button>
-      <button
+      <button class="pg-btn"
         @click="changePage(currentPage + 1)"
         :disabled="currentPage === totalPages"
       >
@@ -72,6 +74,7 @@ const reviews = ref([]) // 리뷰 데이터
 const currentPage = ref(1) // 현재 페이지
 const totalPages = ref(1) // 총 페이지 수
 const pageSize = 5 // 한 페이지에 표시할 리뷰 수
+const bestReviews = ref([])
 
 // 날짜 포맷 함수
 const formatDate = (dateString) => {
@@ -99,6 +102,17 @@ const fetchReviews = async (page = 1) => {
   }
 }
 
+// 베스트 리뷰 5개 가져오기
+const fetchBestReview = async() => {
+  try {
+    const response = await publicAxios.get('/community/best-reviews/')
+    bestReviews.value = response.data
+  }
+  catch(error) {
+    console.error('베스트 리뷰 가져오는 중 오류 발생 : ', error)
+  }
+}
+
 // 페이지 변경
 const changePage = (page) => {
   if (page < 1 || page > totalPages.value) return
@@ -122,7 +136,7 @@ onBeforeRouteUpdate((to, from, next) => {
 
 <style scoped>
 .review-box {
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -136,18 +150,23 @@ table {
   min-width: 400px;
 }
 thead th {
-  background-color: #f4f4f4;
+  background-color: #888;
   padding: 10px;
   text-align: left;
-  border-bottom: 2px solid #ddd;
+  border-bottom: 2px solid #111;
 }
 tbody td {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #888;
+  background-color: #f8f8f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #index-num {
   width: 5%;
+  min-width: 60px;
   text-align: center;
 }
 
@@ -173,6 +192,7 @@ tbody td {
 #like {
   width: 10%;
   text-align: center;
+  min-width: 60px;
 }
 
 .index-num-data,
@@ -181,24 +201,43 @@ tbody td {
   text-align: center;
 }
 
+.index-num-data {
+  font-weight: 600;
+}
+
 .pagination {
   margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.pagination button {
+
+.pagination .num-btn {
   margin: 0 5px;
   padding: 5px 10px;
-  border: 1px solid #ccc;
-  background-color: white;
+  border: 0;
+  background-color: #f8f8f8;
   cursor: pointer;
 }
-.pagination button.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
+
+.pagination .pg-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  background: none;
+  scale: 1.2;
+  color: #ad88c6;
+  margin: 5px;
+  padding: 4px;
 }
+
+.pagination .num-btn.active {
+  background-color: #7469B6;
+  color: #f8f8f8;
+  border: 0;
+}
+
 .pagination button:disabled {
   cursor: not-allowed;
   opacity: 0.5;

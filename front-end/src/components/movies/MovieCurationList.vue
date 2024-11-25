@@ -137,6 +137,7 @@ const config = {
   max-width: 1200px;
   min-width: 300px;
   height: 48vh;
+  max-height: 450px;
   margin: 0 auto;
   padding-top: 20px;
   background-color: #f8f8f8;

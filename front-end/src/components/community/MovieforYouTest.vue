@@ -144,12 +144,12 @@ const finalMessage = ref('') // 입력한 메시지
 const currentStep = ref(-1) // -1: 이름 입력, 0 이상: 질문 단계
 const chosenPreference = ref('') // 취향설정
 const chosenMind = ref('') // 강심장새가슴
-const resultData = ref(null)
+const resultData = ref(null) // 결과 데이터 들어옴!
 const isLoading = ref(false) // 로딩 상태
 
 const closeTest = () => {
   resetState()
-  emit('close') // 부모 컴포넌트로 이벤트 전달
+  emit('close')
 }
 
 // 질문 데이터
@@ -179,8 +179,8 @@ const questions = [
     backgroundImage: DefaultQuestionImage,
     choices: [
       { text: '사람들이 좋아하는 건 다 좋아해!', genres: { 드라마: 2, 로맨스: 2, 가족: 2, 액션: 2, 코미디: 2, 모험: 2, 음악: 2 }, preference: '좋은게좋은' },
-      { text: '남들이 좋아하는 걸 따라가는 건 별로야.', genres: { 미스터리: 2, 스릴러: 2, 범죄: 2, 다큐멘터리: 2, 공포: 2, SF: 2, 판타지: 2 }, preference: '홍대병' },
-      { text: '적당히 대중적이면서도 적당히 자기 취향이 있는 것 같아.', genres: { 드라마: 2, 로맨스: 2, 코미디: 2, 모험: 2, 판타지: 2, SF: 2, 스릴러: 2, 미스터리: 2 }, preference: '평범'}
+      { text: '남들이 좋아하는 걸 따라가는 건 별로야.', genres: { 미스터리: 2, 스릴러: 2, 범죄: 2, 다큐멘터리: 2, 공포: 2, SF: 2, 판타지: 2 }, preference: '마이웨이' },
+      { text: '적당히 대중적이면서도 적당히 자기 취향이 있는 것 같아.', genres: { 드라마: 2, 로맨스: 2, 코미디: 2, 모험: 2, 판타지: 2, SF: 2, 스릴러: 2, 미스터리: 2 }, preference: '무난한'}
     ]
   },
   {
@@ -209,7 +209,7 @@ const questions = [
     ]
   },
   {
-    title: '7. [ ]에게 “영화속 주인공이 된다면 어떤 스토리의 영화에 출연하고 싶어?” 라고 물어보면',
+    title: '7. [ ] 에게 “영화속 주인공이 된다면 어떤 스토리의 영화에 출연하고 싶어?” 라고 물어보면',
     backgroundImage: DefaultQuestionImage,
     choices: [
       { text: '끝없는 모험과 위험이 가득한 스토리', genres: { 모험: 3, SF: 3, 판타지: 3, 액션: 2, 코미디: 2, 범죄: 1, 공포: 1, } },
@@ -307,6 +307,8 @@ const fullStars = computed(() => Math.floor(roundedRating.value))
 const hasHalfStar = computed(() => roundedRating.value % 1 !== 0)
 const emptyStars = computed(() => maxStars - fullStars.value - (hasHalfStar.value ? 1 : 0))
 
+
+// 테스트 다시하기 : 결과 관련 변수들 전부 초기화
 const retryTest = () => {
   resultData.value = null
   currentStep.value = -1
@@ -318,7 +320,6 @@ const retryTest = () => {
   chosenMind.value = ''
   isLoading.value = false
 
-  // 화면을 다시 렌더링하도록 추가 처리
   console.log('테스트가 초기화되었습니다.')
   alert('처음으로 돌아갑니다!')
 }
@@ -356,20 +357,18 @@ const saveScreenshot = async () => {
       const canvas = await html2canvas(resultContainer, {
         useCORS: true,
         crossOrigin: "anonymous",
-        scale: 1, // 캡처의 해상도
+        scale: 1,
       })
       const image = canvas.toDataURL('image/png')
 
-      // 이미지 다운로드
       const link = document.createElement('a')
       link.href = image
-      link.download = `cinemate_movieforyou_${store.userInfo.username}.png`
+      link.download = `cinemate_movieforyou_${store.userInfo?.username}.png`
       link.click()
 
-      // 이미지와 데이터를 서버로 전송
       await uploadResult(image)
 
-      alert('결과가 저장되었습니다!')
+      alert('결과가 서버 및 PC에 저장되었습니다!')
     } catch (error) {
       console.error('이미지 저장 실패:', error)
       alert('이미지 저장 중 문제가 발생했습니다.')
@@ -379,7 +378,7 @@ const saveScreenshot = async () => {
   }
 }
 
-const uploadResult = async (image) => {
+const uploadResult = async (base64Image) => {
   const formData = new FormData()
   formData.append('friend_name', resultData.value?.my_choice.friend_name)
   formData.append('movie_id', resultData.value?.movie.id)
@@ -391,7 +390,7 @@ const uploadResult = async (image) => {
   formData.append('release_date', resultData.value?.movie.release_date)
   formData.append('genre_ids', JSON.stringify(resultData.value?.movie.genre_ids))
   formData.append('poster_path', resultData.value?.movie.poster_path || '')
-  formData.append('card_img', image)
+  formData.append('card_img', base64Image)
 
   try {
     const response = await authAxios.post('/community/save-result/', formData, {
@@ -401,14 +400,11 @@ const uploadResult = async (image) => {
     })
 
     console.log('업로드 성공:', response.data)
-    alert('결과가 서버에 저장되었습니다!')
   } catch (error) {
     console.error('업로드 실패:', error)
     alert('서버에 저장하는 중 문제가 발생했습니다.')
   }
 }
-
-
 
 
 // 시작 화면 텍스트 효과

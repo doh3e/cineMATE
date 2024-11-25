@@ -1,5 +1,6 @@
 <template>
   <div class="review-container">
+    <h1 class="yesteryear-regular h1-cali">🌘Review Board</h1>
     <div class="container-header">
       <button @click="goToList">리뷰 목록 보기</button>
       <button v-if="!isWriteMode" @click="goToWrite">리뷰 작성하기</button>

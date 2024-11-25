@@ -43,7 +43,15 @@
                 <div class="review-item" v-if="reviewList.length > 0"
                 v-for="review in reviewList"
                 :key="review.review_id">
-                  {{ review.review_title }} {{ review.user.nickname }} {{ review.user_rating }}
+                <p>
+                  <span v-for="num in review.user_rating">
+                    <img src="@/assets/img/full-star.png" alt="Half Star" class="star" />
+                  </span>
+                  <span v-for="num in (5 - review.user_rating)">
+                    <img src="@/assets/img/empty-star.png" alt="Empty Star" class="star" />
+                  </span>
+                </p>
+                <p><span>❝ {{ review.review_title }} ❞</span> - {{ review.user.nickname }} 메이트</p>
                 </div>
                 <h3 v-else>아직 유저 리뷰가 없습니다.</h3>
               </div>
@@ -393,7 +401,7 @@ iframe {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .review-box {
@@ -401,7 +409,7 @@ iframe {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 5px;
+  gap: 10px;
 }
 
 .movie-stats {
