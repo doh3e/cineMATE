@@ -1,7 +1,23 @@
 <template>
   <div class="review-box">
     <div class="best-review">
-      
+      <div class="best-item"
+        v-for="review in bestReviews"
+        :key="review.id"
+        >
+        <p>
+          <span v-for="num in review.user_rating">
+            <img src="@/assets/img/full-star.png" alt="Half Star" class="star" />
+          </span>
+          <span v-for="num in (5 - review.user_rating)">
+            <img src="@/assets/img/empty-star.png" alt="Empty Star" class="star" />
+          </span>
+        </p>
+        <h3>{{ review.review_title }}</h3>
+        <h4>{{ review.title }}</h4>
+        <hr>
+        <p>{{ review.user.nickname }}({{ review.user.username }})</p>
+      </div>
     </div>
     <table class="review-board">
       <thead>
@@ -122,6 +138,7 @@ const changePage = (page) => {
 // 최초 데이터 로드
 onMounted(() => {
   fetchReviews()
+  fetchBestReview()
 })
 
 // 라우트 변경 시 데이터 갱신
@@ -135,26 +152,87 @@ onBeforeRouteUpdate((to, from, next) => {
 </script>
 
 <style scoped>
+
 .review-box {
-  width: 90%;
+  width: 100%;
+  min-width: 900px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+.best-review {
+  width: 100%;
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.best-item {
+  background-color: rgba(248, 248, 248, 0.9);
+  width: 300px;
+  min-width: 160px;
+  height: 150px;
+  border: #1f1f1f;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+}
+
+.best-item:hover {
+  transform: scale(1.1);
+  background-color: rgba(173, 136, 198, 0.9);
+}
+
+.best-item > h3,
+.best-item > h4 {
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.star {
+  width: 20px;
+}
+
+hr {
+  width: 80%;
+  margin: 10px;
+}
+
 table {
   width: 90%;
   border-collapse: collapse;
   margin: 20px 0;
-  min-width: 400px;
 }
+
+table >>> tbody tr:hover {
+  cursor: pointer;
+  background-color: rgba(197, 169, 199, 1) !important;
+}
+
+tbody tr:hover td {
+  background-color: rgba(197, 169, 199, 0.1);
+}
+
 thead th {
   background-color: #888;
   padding: 10px;
   text-align: left;
   border-bottom: 2px solid #111;
 }
+
 tbody td {
   padding: 10px;
   border-bottom: 1px solid #888;
@@ -182,6 +260,7 @@ tbody td {
 
 #writer{
   width: 15%;
+  min-width: 120px;
   text-align: center;
 }
 

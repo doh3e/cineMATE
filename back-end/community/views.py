@@ -57,6 +57,17 @@ def review_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+# 베스트 리뷰 5개
+@api_view(['GET'])
+def best_reviews(request):
+  reviews = Review.objects.annotate(
+    like_count=Count('likes')).order_by('-like_count')[:5]
+  
+  serializer = ListReviewSerializer(reviews, many=True)
+  
+  return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 # 리뷰의 디테일 페이지를 보는 요청
 @api_view(['GET', 'PUT', 'DELETE'])
 def review_detail(request, review_pk):

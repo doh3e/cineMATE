@@ -2,8 +2,8 @@
   <div class="review-container">
     <h1 class="yesteryear-regular h1-cali">🌘Review Board</h1>
     <div class="container-header">
-      <button @click="goToList">리뷰 목록 보기</button>
-      <button v-if="!isWriteMode" @click="goToWrite">리뷰 작성하기</button>
+      <button @click="goToList">리뷰목록</button>
+      <button v-if="!isWriteMode" @click="goToWrite">리뷰작성</button>
     </div>
     <RouterView />
   </div>
@@ -49,9 +49,36 @@ const goToWrite = () => {
 }
 
 .container-header {
-  margin-top: 50px;
   width: 100%;
   min-width: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.container-header > button {
+  position:relative;
+  margin-bottom: 40px;
+  width:20%;
+  max-width: 300px;
+  min-width: 150px;
+  height:40px;
+  background: linear-gradient(125deg,#7469B6,#E1afd1,#AD88C6);
+  background-position: left;
+  background-size: 200%;
+  color:white;
+  font-weight: bold;
+  border:none;
+  cursor:pointer;
+  transition: 0.4s;
+  display:inline;
+  transition: background-position, color 0.3s ease;
+}
+
+.container-header > button:hover {
+  background-position: right;
+  color: #1f1f1f;
 }
 
 @media screen and (max-width: 900px) {

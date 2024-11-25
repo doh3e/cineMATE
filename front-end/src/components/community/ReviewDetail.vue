@@ -1,12 +1,11 @@
 <template>
   <div class="rvdetail-container">
-    <div class="rv-box">
-      <h2>{{ review?.review_title }}</h2>
-      <p><strong>리뷰제목:</strong> {{ review?.review_title}}</p>
+    <h1 class="rv-review-title">{{ review?.review_title }}</h1>
+    <div class="rv-box writer">
       <p><strong>작성자:</strong> {{ review?.user?.nickname}}({{review?.user?.username }})</p>
-
-      <br><hr><br>
-
+      <p><strong>작성일:</strong> {{ formatDate(review?.created_at) }}</p>
+    </div>
+    <div class="rv-box movieinfo">
       <p><strong>영화 제목:</strong> {{ review?.title }}</p>
       <p><strong>장르:</strong></p>
       <ul>
@@ -16,12 +15,10 @@
       </ul>
       <p><strong>줄거리 : {{ review?.overview }} </strong></p>
       <p><strong>영화평점 : {{ review?.vote_average }} </strong></p>
-
-      <br><hr><br>
-
+    </div>
+    <div class="rv-box review-content">
       <p><strong>유저평점:</strong> {{ review?.user_rating }}</p>
       <p><strong>리뷰내용:</strong> {{ review?.review_content }}</p>
-      <p><strong>작성일:</strong> {{ formatDate(review?.created_at) }}</p>
       <button v-if="isUserOwner" @click="goToEdit">수정</button>
       <button v-if="isUserOwner" @click="goToDelete">삭제</button>
       <button @click="goBackToList">리뷰 목록으로</button>
@@ -161,35 +158,25 @@ onMounted(() => {
 
 <style scoped>
 .rvdetail-container {
-  padding: 20px;
+  padding: 20px 30px;
   background-color: #f9f9f9;
   border-radius: 8px;
   max-width: 800px;
-  margin: auto;
-}
-
-.rvdetail-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0;
+  height: 70%;
+  margin: 0 auto;
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
 }
 
-.rvdetail-container ul li {
+.rv-box {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  text-align: center;
-  width: 100px;
-  height: 20px;
-  background-color: #e8e8e8;
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin-bottom: 5px;
-  box-shadow: 1px 1px 1px gray;
+  justify-content: center;
 }
 
 .likes {
