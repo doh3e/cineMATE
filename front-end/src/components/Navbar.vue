@@ -81,8 +81,8 @@ const calculateNavbarHeight = () => {
   const navbarMenu = document.querySelector('.navbar__menu')
   if (navbarMenu) {
     navbarHeight.value = isMenuActive.value
-      ? `${navbarMenu.scrollHeight}px` // 열렸을 때 높이
-      : '0px' // 닫혔을 때 높이
+      ? `${navbarMenu.scrollHeight}px`
+      : '0px'
   }
 }
 
@@ -113,7 +113,7 @@ const toggleMenu = () => {
 onMounted(() => {
   const resetMenuOnResize = () => {
     if (window.innerWidth > 980) {
-      isMenuActive.value = false // 데스크탑에서는 닫힘 상태 유지
+      isMenuActive.value = false
     }
     calculateNavbarHeight()
   }
@@ -232,7 +232,7 @@ onUnmounted(() => {
   padding: 15px 0;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 250px; /* 드롭다운 크기 유지 */
+  width: 250px;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -259,8 +259,8 @@ onUnmounted(() => {
 @media screen and (max-width: 900px) {
   .navbar {
     flex-direction: column;
-    transition: height 0.3s ease; /* 높이 전환 효과 추가 */
-    overflow: hidden; /* 높이가 줄어들 때 잘리지 않도록 처리 */
+    transition: height 0.3s ease;
+    overflow: hidden;
   }
 
   .navbar__toggleBtn {
@@ -338,7 +338,7 @@ onUnmounted(() => {
   }
 
   .dropdown-menu {
-    position: absolute; /* 부모 메뉴의 위치 기준 */
+    position: absolute;
     left: 57%;
     top:10%;
     background-color: #AD88C6;
@@ -346,7 +346,7 @@ onUnmounted(() => {
     padding: 10px 0;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 200px; /* 드롭다운 메뉴의 너비 */
+    width: 200px;
     max-height: 0;
     opacity: 0;
     visibility: hidden;
@@ -357,7 +357,7 @@ onUnmounted(() => {
 
   .dropdown-container:hover > .dropdown-menu,
   .dropdown-container.active > .dropdown-menu {
-    max-height: 300px; /* 드롭다운이 열렸을 때의 최대 높이 */
+    max-height: 300px;
     opacity: 1;
     visibility: visible;
   }
@@ -373,7 +373,7 @@ onUnmounted(() => {
     text-align: center;
     color: #F8F8F8;
     transition: color 0.3s ease;
-    white-space: nowrap; /* 텍스트 잘림 방지 */
+    white-space: nowrap;
   }
 
   .dropdown-menu li:hover {

@@ -57,20 +57,25 @@ const editProfile = () => {
 
 const store = useCounterStore()
 
+// 유저 프로필 이미지 있는지 확인 후 가져오는 함수
 const userImgPath = computed(() => {
   const profileImage = props.person?.profile_image
   return profileImage ? `http://127.0.0.1:8000${profileImage}` : null
 })
 
 
+// 본인인지 (정보수정 가능한지) 확인
 const isEditAllowed = computed(() => props.person?.username === store.userInfo?.username)
 
+// 팔로우 버튼이 보이는지 (본인이 아닌지) 확인
 const isFollowVisible = computed(() => props.person?.username !== store.userInfo?.username)
 
+// 팔로우 중인지 확인
 const isFollowing = computed(() => {
   return props.person?.followers?.includes(store.userInfo.username)
 })
 
+// 팔로우 버튼 기능
 const toggleFollow = async () => {
   try {
     const response = await authAxios.post(`/accounts/follows/${props.person.username}/`)

@@ -14,16 +14,17 @@ import MovieListItem from './MovieListItem.vue'
 const props = defineProps({
   movies: {
     type: Array,
-    default: () => [] // 부모 컴포넌트에서 전달받은 전체 영화 데이터
+    default: () => []
   }
 })
 
-const displayedMovies = ref([]) // 화면에 표시할 영화 데이터
+const displayedMovies = ref([])
 const movielistBox = ref(null)
 const isLoading = ref(false)
 const currentPage = ref(1)
-const moviesPerPage = 10 // 한 번에 보여줄 영화 수
-const hasMore = ref(true) // 추가 데이터 유무
+const moviesPerPage = 10
+const hasMore = ref(true)
+
 
 // 초기화 함수
 const resetPagination = () => {
@@ -62,7 +63,6 @@ const handleScroll = () => {
   }
 }
 
-// 초기 로드
 onMounted(() => {
   movielistBox.value = document.querySelector('.movielist-box')
   movielistBox.value?.addEventListener('scroll', handleScroll)
@@ -78,6 +78,7 @@ watch(() => props.movies, (newMovies) => {
   resetPagination()
   paginateMovies()
 }, { immediate: true })
+
 </script>
 
 <style scoped>

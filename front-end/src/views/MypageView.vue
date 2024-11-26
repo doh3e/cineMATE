@@ -43,17 +43,15 @@ import UserEdit from '@/components/accounts/UserEdit.vue'
 const store = useCounterStore()
 const route = useRoute()
 
-const currentTab = ref('info') // 현재 탭 상태
-const mypageData = ref(null) // 마이페이지 데이터
+const currentTab = ref('info')
+const mypageData = ref(null)
 
-// 탭 컴포넌트 매핑
 const tabComponents = {
   info: MyInfo,
   storage: MyStorage,
   reviews: MyReviews,
 }
 
-// 현재 컴포넌트
 const currentComponent = computed(() => tabComponents[currentTab.value])
 
 // 마이페이지 데이터 불러오기

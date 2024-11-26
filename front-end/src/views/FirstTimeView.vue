@@ -63,7 +63,7 @@ const scrollToSection = (id, force = false) => {
 // 위로 이동
 const moveUp = () => {
   if (inMove.value) return
-  if (activeSection.value === offsets.value.length - 1) return // 마지막 섹션에서 아래로 이동 방지
+  if (activeSection.value === offsets.value.length - 1) return
   inMove.value = true
   activeSection.value++
 
@@ -76,7 +76,7 @@ const moveUp = () => {
 // 아래로 이동
 const moveDown = () => {
   if (inMove.value) return
-  if (activeSection.value === 0) return // 첫 번째 섹션에서 위로 이동 방지
+  if (activeSection.value === 0) return
   inMove.value = true
   activeSection.value--
 
@@ -90,10 +90,8 @@ const moveDown = () => {
 // 마우스 휠 이벤트 처리
 const handleMouseWheel = e => {
   if (e.wheelDelta > 0 && !inMove.value) {
-    // 휠을 위로 올렸을 때 (음수 -> 양수로 변경)
     moveDown()
   } else if (e.wheelDelta < 0 && !inMove.value) {
-    // 휠을 아래로 내렸을 때 (양수 -> 음수로 변경)
     moveUp()
   }
   e.preventDefault()
@@ -123,7 +121,6 @@ const gotoMain = () => {
   router.replace({name: 'Home'})
 }
 
-// Vue 생명주기 훅
 onMounted(() => {
   calculateSectionOffsets()
 

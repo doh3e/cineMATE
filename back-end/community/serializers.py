@@ -26,7 +26,7 @@ class ListReviewSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
   genre_ids = serializers.ListField(
     child=serializers.IntegerField(),
-    write_only=True  # 입력 전용
+    write_only=True
   )
   class Meta:
     model = Review

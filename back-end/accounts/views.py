@@ -22,8 +22,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 # 유저 커스텀을 위한 클래스 뷰
 class CustomUserInfoView(APIView):
-  authentication_classes = [JWTAuthentication]  # JWT 인증
-  permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+  authentication_classes = [JWTAuthentication]
+  permission_classes = [IsAuthenticated]
 
   def get(self, request):
     user = get_object_or_404(User, pk=request.user.pk)
@@ -61,13 +61,14 @@ def mypage(request, username):
 # 아이디 중복검사
 @api_view(['GET'])
 def checkid(request, username):
-  if not username:  # username이 없는 경우
+  if not username:
     return Response({'error': 'Username is required'}, status=400)
   if User.objects.filter(username=username).exists():
-      print({'available': False})  # 로그 출력
-      return Response({'available': False})  # 이미 사용 중
-  print({'available': True})  # 로그 출력
-  return Response({'available': True})  # 사용 가능
+      print({'available': False})
+      return Response({'available': False})
+  print({'available': True})
+  return Response({'available': True})
+
 
 # 회원 탈퇴
 @api_view(['DELETE'])

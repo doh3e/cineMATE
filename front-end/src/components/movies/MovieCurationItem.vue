@@ -54,22 +54,22 @@ const isLiked = computed(() => store.userInfo?.liked_movies?.includes(props.movi
 const isBookmarkAnimating = ref(false)
 const isLikeAnimating = ref(false)
 
-// 포스터 URL 계산
+// 포스터 URL 계산 (없을 시 기본경로)
 const posterUrl = computed(() => {
   if (props.movie.poster_path) {
     return store.getImageUrl(props.movie.poster_path)
   }
-  // 포스터가 없을 경우 기본 이미지 경로 반환
   return new URL('@/assets/img/default_movie_poster.png', import.meta.url).href
 })
 
 
-// 부모로 모달 이벤트 전달
 const emit = defineEmits(['open-modal'])
 const handleClick = () => {
   emit('open-modal', props.movie)
 }
 
+
+// 북마크 기능
 const toggleBookmark = async () => {
   if (!store.userInfo || !store.userInfo.id) {
     alert('북마크 기능은 회원만 사용할 수 있습니다!')
@@ -93,7 +93,7 @@ const toggleBookmark = async () => {
   }
 }
 
-
+// 좋아요 기능
 const toggleLike = async () => {
   if (!store.userInfo || !store.userInfo.id) {
     alert('좋아요 기능은 회원만 사용할 수 있습니다!')
@@ -183,7 +183,7 @@ const toggleLike = async () => {
 
 .fa-heart, .fa-bookmark {
   cursor: pointer;
-  padding: 4px; /* 아이콘 패딩 축소 */
+  padding: 4px;
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
@@ -196,7 +196,7 @@ const toggleLike = async () => {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.2); /* 애니메이션 크기 축소 */
+    transform: scale(1.2);
   }
   100% {
     transform: scale(1);

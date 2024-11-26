@@ -113,7 +113,6 @@ const emptyStars = computed(() => maxStars - fullStars.value - (hasHalfStar.valu
 
 
 // 유저 리뷰 가져오기
-
 const reviewList = ref([])
 const getUserReview = async() => {
   try{

@@ -36,7 +36,7 @@
 
 
 <script setup>
-import MyReviewItem from './MyReviewItem.vue';
+import MyReviewItem from './MyReviewItem.vue'
 const props = defineProps({
   likedReviews: Array,
   myReviews: Array,

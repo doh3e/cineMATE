@@ -509,5 +509,27 @@
       15
     ]
   }
+},
+{
+  "model": "accounts.user",
+  "pk": 21,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$Bdj03e48wtBoFTIVRPEJ8D$2RjzwuRyil8v8qRu2UJ2oY91E4ghHHu789X6A7R0OC8=",
+    "last_login": "2024-11-26T14:42:52.254Z",
+    "is_superuser": false,
+    "username": "test2222",
+    "first_name": "",
+    "last_name": "",
+    "email": "test2222@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-26T14:42:51.960Z",
+    "nickname": "테스트2222",
+    "profile_image": "user_test2222/e77ae648-2bdb-41f3-98ad-05c4ee58f919.jfif",
+    "birthday": "1999-11-27",
+    "groups": [],
+    "user_permissions": [],
+    "followings": []
+  }
 }
 ]

@@ -157,10 +157,9 @@ def comment_detail(request, review_pk, comment_pk):
 
 
 # 무비포유
-# GET : 지인에게 어울리는 영화를 API와 자체 로직을 통해 제공해줌
-# POST 만들어진 무비포유를 저장
+# 지인에게 어울리는 영화를 API와 자체 로직을 통해 제공해줌
 @permission_classes([IsAuthenticated])
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def movieforyou(request):
   MOVIE_API_URL = 'https://api.themoviedb.org/3/discover/movie'
   MOVIE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500'
@@ -179,46 +178,34 @@ def movieforyou(request):
   
   if birth_month and len(birth_month) == 1:
     birth_month = birth_month.zfill(2)
-    
-  if request.method == 'GET':
-    if preference == '무난한':
-      params = {
-        'api_key': MOVIE_API_KEY,
-        'language': 'ko-KR',
-        'page': 1,
-        'sort_by': 'popularity.desc',
-        'include_adult': 'false',
-        'with_genres': genre_id,
-        'vote_average.gte': 7.0,
-        'vote_average.lte': 8.0,
-        'vote_count.gte': 2000,
-      }
-    elif preference == '좋은게좋은':
-      params = {
-        'api_key': MOVIE_API_KEY,
-        'language': 'ko-KR',
-        'page': 1,
-        'sort_by': 'popularity.desc',
-        'include_adult': 'false',
-        'with_genres': genre_id,
-        'vote_average.gte': 7.5,
-        'vote_count.gte': 3000,
-      }
-    elif preference == '마이웨이':
-      params = {
-        'api_key': MOVIE_API_KEY,
-        'language': 'ko-KR',
-        'page': 1,
-        'sort_by': 'popularity.desc',
-        'include_adult': 'false',
-        'with_genres': genre_id,
-        'vote_average.gte': 8.0,
-        'vote_count.gte': 1000,
-      }     
 
-  elif request.method == 'POST':
-    pass
-  
+  if preference == '무난한':
+    vote_avg_gte = 7.0
+    vote_avg_lte = 8.0
+    vote_cnt_gte = 2000
+
+  elif preference == '좋은게좋은':
+    vote_avg_gte = 7.5
+    vote_avg_lte = 10
+    vote_cnt_gte = 3000
+
+  elif preference == '마이웨이':
+    vote_avg_gte = 8.0
+    vote_avg_lte = 10
+    vote_cnt_gte = 1000
+
+  params = {
+    'api_key': MOVIE_API_KEY,
+    'language': 'ko-KR',
+    'page': 1,
+    'sort_by': 'popularity.desc',
+    'include_adult': 'false',
+    'with_genres': genre_id,
+    'vote_average.gte': vote_avg_gte,
+    'vote_average.lte': vote_avg_lte,
+    'vote_count.gte': vote_cnt_gte,
+  }
+
   try:
     filtered_results = []
     while len(filtered_results) < 20:
@@ -294,12 +281,11 @@ def save_result(request):
     # base64 이미지 처리
     card_img_data = request.POST.get('card_img')
     if card_img_data:
-      format, imgstr = card_img_data.split(';base64,')  # Base64 분리
+      format, imgstr = card_img_data.split(';base64,')
       ext = format.split('/')[-1]
-      file_name = f"{user.username}_card.{ext}"  # 파일 이름 생성
+      file_name = f"{user.username}_card.{ext}"
       card_img_file = ContentFile(base64.b64decode(imgstr), name=file_name)
 
-     # 저장
       movieforyou = Movieforyou.objects.create(
         user=user,
         friend_name=friend_name,
@@ -316,7 +302,6 @@ def save_result(request):
       movieforyou.card_img.save(file_name, card_img_file)
       print(f"Saved image path: {movieforyou.card_img.path}")
     
-      # Many-to-Many 장르 저장
       genres = Genre.objects.filter(id__in=genre_ids)
       movieforyou.genre_ids.set(genres)
       movieforyou.save()

@@ -33,13 +33,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class CustomUserUpdateSerializer(serializers.ModelSerializer):
-  # 일반 정보 필드
   email = serializers.EmailField(required=True)
   nickname = serializers.CharField(required=True)
   birthday = serializers.DateField(required=False)
   profile_image = serializers.ImageField(required=False)
 
-  # 비밀번호 필드
   old_password = serializers.CharField(write_only=True, required=False)
   new_password1 = serializers.CharField(write_only=True, required=False, validators=[validate_password])
   new_password2 = serializers.CharField(write_only=True, required=False)
@@ -48,19 +46,17 @@ class CustomUserUpdateSerializer(serializers.ModelSerializer):
     model = User
     fields = ['email', 'nickname', 'birthday', 'profile_image', 'old_password', 'new_password1', 'new_password2']
 
+  # 비밀번호 변경 관련 검증
   def validate(self, data):
-    # 비밀번호 변경 관련 검증
     if data.get('new_password1') or data.get('new_password2'):
-      # old_password가 없으면 에러
       if not data.get('old_password'):
         raise serializers.ValidationError({"old_password": "Old password is required to change the password."})
-      # 새 비밀번호와 확인 비밀번호가 다르면 에러
       if data.get('new_password1') != data.get('new_password2'):
         raise serializers.ValidationError({"new_password2": "Passwords do not match."})
     return data
 
+  # 일반 정보 업데이트
   def update(self, instance, validated_data):
-    # 일반 정보 업데이트
     instance.email = validated_data.get('email', instance.email)
     instance.nickname = validated_data.get('nickname', instance.nickname)
     instance.birthday = validated_data.get('birthday', instance.birthday)
@@ -68,10 +64,8 @@ class CustomUserUpdateSerializer(serializers.ModelSerializer):
 
     # 비밀번호 변경
     if validated_data.get('old_password') and validated_data.get('new_password1'):
-      # 기존 비밀번호 확인
       if not instance.check_password(validated_data['old_password']):
         raise serializers.ValidationError({"old_password": "Old password is incorrect."})
-      # 새 비밀번호 설정
       instance.set_password(validated_data['new_password1'])
 
     instance.save()

@@ -123,7 +123,7 @@ const isFormValid = computed(() => {
     !errors.birthday &&
     !errors.new_password1 &&
     !errors.new_password2 &&
-    form.old_password // 필수
+    form.old_password
   )
 })
 

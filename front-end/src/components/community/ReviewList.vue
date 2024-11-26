@@ -87,10 +87,10 @@ const goToDetail = (reviewId) => {
 }
 
 // 상태 변수
-const reviews = ref([]) // 리뷰 데이터
-const currentPage = ref(1) // 현재 페이지
-const totalPages = ref(1) // 총 페이지 수
-const pageSize = 5 // 한 페이지에 표시할 리뷰 수
+const reviews = ref([])
+const currentPage = ref(1)
+const totalPages = ref(1)
+const pageSize = 5
 const bestReviews = ref([])
 
 // 날짜 포맷 함수
@@ -103,7 +103,7 @@ const formatDate = (dateString) => {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: false, // 24시간 형식 사용
+    hour12: false,
   })
 }
 

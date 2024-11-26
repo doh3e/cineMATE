@@ -70,6 +70,8 @@ const closeModal = () => {
   isModalVisible.value = false
 }
 
+
+// 북마크
 const toggleBookmark = async () => {
   if (!store.userInfo || !store.userInfo.id) {
     alert('북마크 기능은 회원만 사용할 수 있습니다!')
@@ -93,7 +95,7 @@ const toggleBookmark = async () => {
   }
 }
 
-
+// 좋아요
 const toggleLike = async () => {
   if (!store.userInfo || !store.userInfo.id) {
     alert('좋아요 기능은 회원만 사용할 수 있습니다!')

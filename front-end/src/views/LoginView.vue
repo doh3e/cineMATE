@@ -32,7 +32,6 @@ import { useCounterStore } from '@/stores/counter'
 const store = useCounterStore()
 const router = useRouter()
 
-// 폼 데이터와 에러 메시지
 const form = ref({
   username: '',
   password: '',

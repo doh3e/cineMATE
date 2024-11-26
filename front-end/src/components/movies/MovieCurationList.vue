@@ -125,7 +125,6 @@ const config = {
   perspective: 1000px;
 }
 
-/* 캐러셀 트랙 */
 .carousel__track {
   display: flex;
   align-items: center;

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { authAxios, publicAxios } from '@/axios'
 import { useRouter } from 'vue-router'
 
-// Auth Store
+// 로그인 만료 (토큰 만료) 처리를 위한 authstore
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem('authToken') || null,
@@ -18,9 +18,9 @@ export const useAuthStore = defineStore('auth', {
       localStorage.setItem('refreshToken', refreshToken)
     },
     logout() {
-      const counterStore = useCounterStore() // counterStore 가져오기
 
-      // Auth 상태 초기화
+      const counterStore = useCounterStore()
+
       this.token = null
       this.refreshToken = null
       this.user = null
@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', {
   },
 })
 
-// Counter Store
+// 카운터 스토어
 export const useCounterStore = defineStore('counter', () => {
   const router = useRouter()
 
@@ -75,9 +75,9 @@ export const useCounterStore = defineStore('counter', () => {
     return GENRE_MAP[id] || "알 수 없음"
   }
 
-  const topMovies = ref([]) // 인기 영화 데이터
-  const userInfo = ref(null) // 로그인한 유저의 정보
-  const authToken = ref(localStorage.getItem('authToken') || null) // 토큰
+  const topMovies = ref([]) // 인기 영화 데이터 100개
+  const userInfo = ref(null) // 로그인한 유저의 정보 (로그인 시 가져옴)
+  const authToken = ref(localStorage.getItem('authToken') || null)
 
   const loadTopMovies = async () => {
     if (topMovies.value.length === 0) {
@@ -103,6 +103,7 @@ export const useCounterStore = defineStore('counter', () => {
     }
   }
 
+  // 유저 정보를 db에서 가져오는 함수
   const getUserInfo = async () => {
     try {
       const token = localStorage.getItem('authToken')
@@ -117,6 +118,7 @@ export const useCounterStore = defineStore('counter', () => {
     }
   }
 
+  // 로그인
   const login = async (username, password) => {
     try {
       const response = await publicAxios.post('accounts/api/token/', {
@@ -137,6 +139,7 @@ export const useCounterStore = defineStore('counter', () => {
     }
   }
 
+  // 로그아웃
   const logout = async () => {
     try {
       await authAxios.post('/accounts/dj-rest-auth/logout/')
@@ -154,6 +157,7 @@ export const useCounterStore = defineStore('counter', () => {
     }
   }
 
+  // TMDB의 이미지 경로를 치환해줌
   const getImageUrl = (path) => {
     return `https://image.tmdb.org/t/p/w500${path}`
   }

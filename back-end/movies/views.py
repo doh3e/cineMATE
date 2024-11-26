@@ -18,7 +18,6 @@ from community.models import Review
 from .serializers import MovieDetailSerializer
 from community.serializers import ListReviewSerializer
 
-# Create your views here.
 
 MOVIE_API_KEY = settings.MOVIE_API_KEY
 
@@ -174,7 +173,7 @@ def bookmark(request):
     })
 
     genre_ids = movie_data.get('genre_ids', [])
-    if genre_ids and isinstance(genre_ids[0], dict):  # genre_ids가 딕셔너리 리스트인 경우
+    if genre_ids and isinstance(genre_ids[0], dict):
       genre_ids = [genre['id'] for genre in genre_ids]
 
     genres = Genre.objects.filter(id__in=genre_ids)
@@ -310,7 +309,7 @@ def recommend(request, category):
 
     return Response(serialized_movies, status=200)
   
-  # 생일인 사람
+  # 생일인 사람 추천
   if category == 'birthday':
     if not hasattr(user, 'birthday') or not user.birthday:
       return Response({'error': '생년월일 정보가 필요합니다.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -432,7 +431,7 @@ def get_reviews(request, movie_id):
 @api_view(['GET'])
 def get_movie_stats(request, movie_id):
   try:
-    # 특정 영화의 좋아요 및 북마크 수 계산
+
     movie_likes = Like.objects.filter(id=movie_id).count()
     movie_bookmarks = Bookmark.objects.filter(id=movie_id).count()
 
@@ -455,7 +454,6 @@ def get_movie_stats(request, movie_id):
     rank_lookup = {item['id']: idx + 1 for idx, item in enumerate(popularity_list)}
     movie_popularity_rank = rank_lookup.get(movie_id, 'No Rank')
 
-    # 결과 반환
     return JsonResponse({
       'like_count': movie_likes,
       'bookmark_count': movie_bookmarks,

@@ -420,5 +420,55 @@
       1
     ]
   }
+},
+{
+  "model": "community.review",
+  "pk": 17,
+  "fields": {
+    "review_title": "삶이 힘들다 느껴질 땐, '알 이즈 웰'",
+    "user": 1,
+    "id": 20453,
+    "title": "세 얼간이",
+    "overview": "천재들만 간다는 일류 명문대 ICE, 성적과 취업만을 강요하는 학교를 발칵 뒤집어 놓은 대단한 녀석 란초! 아버지가 정해준 꿈, ‘공학자’가 되기 위해 정작 본인이 좋아하는 일은 포기하고 공부만 하는 파파보이 파르한! 찢어지게 가난한 집, 병든 아버지와 식구들을 책임지기 위해 무조건 대기업에 취직해야만 하는 라주! 친구의 이름으로 뭉친 ‘세 얼간이’! 삐딱한 천재들의 진정한 꿈을 찾기 위한 세상 뒤집기 한판이 시작된다!",
+    "adult": false,
+    "popularity": 29.284,
+    "vote_average": 8.001,
+    "release_date": "2009-12-23",
+    "poster_path": "/9zQdFVyDoXqFmGYXp4obna6FEMh.jpg",
+    "review_content": "모든 것이 괜찮게 풀릴 것 같은 기분이 드는 마법의 주문이에요.",
+    "user_rating": 5,
+    "created_at": "2024-11-26T13:49:52.461Z",
+    "updated_at": "2024-11-26T13:49:52.461Z",
+    "genre_ids": [
+      18,
+      35
+    ],
+    "likes": []
+  }
+},
+{
+  "model": "community.review",
+  "pk": 18,
+  "fields": {
+    "review_title": "사랑에 대한 영화",
+    "user": 21,
+    "id": 11036,
+    "title": "노트북",
+    "overview": "17살, 노아는 밝고 순수한 앨리를 보고 첫눈에 반한다. 빠른 속도로 서로에게 빠져드는 둘. 그러나 이들 앞에 놓인 장벽에 막혀 이별하게 된다. 24살, 앨리는 우연히 신문에서 노아의 소식을 접하고 잊을 수 없는 첫사랑 앞에서 다시 한 번 선택의 기로에 서게 되는데…",
+    "adult": false,
+    "popularity": 88.717,
+    "vote_average": 7.891,
+    "release_date": "2004-06-25",
+    "poster_path": "/ntdgcdsmMuHd9s4oEKTvWDiUyU7.jpg",
+    "review_content": "정말 좋은 느낌을 주는 영화였습니다.",
+    "user_rating": 4,
+    "created_at": "2024-11-26T14:46:02.039Z",
+    "updated_at": "2024-11-26T14:46:02.039Z",
+    "genre_ids": [
+      18,
+      10749
+    ],
+    "likes": []
+  }
 }
 ]

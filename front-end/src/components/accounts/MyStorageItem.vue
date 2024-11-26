@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { useCounterStore } from '@/stores/counter';
+import { useCounterStore } from '@/stores/counter'
 
 const store = useCounterStore()
 
@@ -16,10 +16,10 @@ const props = defineProps({
   movie: Object
 })
 
-const emit = defineEmits(['showDetail']);
+const emit = defineEmits(['showDetail'])
 
 const showDetail = () => {
-  emit('showDetail', props.movie);
+  emit('showDetail', props.movie)
 };
 
 </script>

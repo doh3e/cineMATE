@@ -172,5 +172,4 @@ watch([genreMovies, selectedOrder], sortMovies)
   max-height: 880px;
 }
 
-
 </style>
