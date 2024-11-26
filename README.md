@@ -44,7 +44,8 @@
 ### 3. 데이터베이스 모델링(ERD)
 <br>
 
-![cineMATE_ERD](https://github.com/user-attachments/assets/d2834d31-d0fb-4ff8-8efc-4748a5827f84)
+![cineMATE](https://github.com/user-attachments/assets/cd5282aa-0938-4081-abc2-500f104d4403)
+
 
 
 ### 4. 영화 추천 알고리즘에 대한 기술적 설명
