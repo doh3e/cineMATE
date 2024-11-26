@@ -139,8 +139,9 @@
 
   <code><b>영화탐색</b></code><br>
   <div>
-    <img src="https://github.com/user-attachments/assets/01946c6e-7d73-4984-989d-2ecdec8d1c4a" width=200>
-    
+    <img src="https://github.com/user-attachments/assets/407db785-9927-4113-bd60-a71ad1c71340" width=900>
+    <img src="https://github.com/user-attachments/assets/6866ef91-8437-4838-b4da-8562531a0fbe" width=900>
+    <img src="https://github.com/user-attachments/assets/f4e96e3c-03dd-4d2a-9599-a5fbc2f9b2fa" width=900>
   </div> <br>
 
   <code><b>리뷰페이지</b></code><br>
