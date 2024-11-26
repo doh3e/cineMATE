@@ -138,20 +138,50 @@
   </div> <br>
 
   <code><b>영화탐색</b></code><br>
+  <p>영화 장르별 보기, 영화 검색, 영화 큐레이팅, 영화 상세보기</p>
   <div>
     <img src="https://github.com/user-attachments/assets/407db785-9927-4113-bd60-a71ad1c71340" width=900>
     <img src="https://github.com/user-attachments/assets/6866ef91-8437-4838-b4da-8562531a0fbe" width=900>
     <img src="https://github.com/user-attachments/assets/f4e96e3c-03dd-4d2a-9599-a5fbc2f9b2fa" width=900>
+    <img src="https://github.com/user-attachments/assets/65cfc9cf-b1ab-4df3-9bf5-d2cc3e112f15" width=900>
   </div> <br>
 
   <code><b>리뷰페이지</b></code><br>
+  <p>리뷰 게시판, 리뷰 작성, 리뷰 상세보기, 댓글</p>
   <div>
-    <img src="https://github.com/user-attachments/assets/01946c6e-7d73-4984-989d-2ecdec8d1c4a" width=200>
-    
+    <img src="https://github.com/user-attachments/assets/37d9dda5-ff90-4f68-a15f-604687213ce2" width=900>
+    <img src="https://github.com/user-attachments/assets/e7655d81-ce0a-4427-8565-f2049e34145d" width=900>
   </div> <br>
   
 
 ### 6. 생성형 AI를 활용한 부분
+<br>
+<code><b>테스트에서의 장르 가중치 계산 및 재분배, 리뷰 데이터 생성에 활용</b></code><br>
+<div>
+  <img src="https://github.com/user-attachments/assets/93d907c4-5832-4aa5-9b5e-6a1b911c3251" width=900>
+  <img src="https://github.com/user-attachments/assets/881bdea6-9eee-42f8-a341-cb319040bda2" width=900>
+</div>
+<br><br>
+
 ### 7. 기타 (느낀점, 후기 등)
+
+<code><b>정지은</b></code><br>
+<p>
+이번 프로젝트를 통해 백엔드와 프론트엔드를 모두 다뤄볼 수 있어 좋았다.<br>
+또 UX를 어떻게하면 불편없이 짤 수 있을지에 대한 고민을 많이 해보는 시간이 되었다.<br>
+몇 개월 전 외부에서 처음 해본 팀 프로젝트와 비교했을 때, 스스로 많이 성장했음을 느꼈다.<br>
+다음에 프로젝트를 한다면 기능 하나하나의 깊이를 좀 더 파고들어보고 싶고,<br>
+디자인패턴 등을 열심히 공부하여 좀 더 객체지향의 이점을 살린 프로그래밍을 해보고 싶다.<br>
+</p>
+
+<code><b>홍노을</b></code><br>
+<p>
+비전공자로서 SSAFY를 통해 처음으로 파이썬을 포함하여 알고리즘, 백엔드, 프론트엔드에 대해 배울 수 있었고,<br>
+이번 기회로 RESTful한 백엔드 API 구현을 해볼 수 있어서 좋았다.<br>
+한 학기동안 배운 내용을 바탕으로 유의미한 결과물을 만들어낼 수 있는 좋은 기회였다.<br>
+</p>
+<br>
+
 ### 8. 배포 서버 URL (배포했을 경우)
-### 9. 이외의 내용은 자유롭게 작성 가능
+
+<p><b>추후 추가 예정</b></p>
