@@ -33,13 +33,19 @@
   5. 간단한 테스트를 제공하여 유저가 자신의 친구들에게 '자신이 생각한 친구와 닮은 영화'를 공유할 수 있도록 함
      - 사이트 방문 유도, 흥미 요소 부여
      - 자신이 만든 친구 카드 저장
-      
-</div>
+
+  #### 실제 구현 수준
+
+  1. ㅁㄴㅇㄹ
+  2. ㅁㄴㅁㄴㅁ
+  3. ㄹㄴㅇㄶ#
+
 
 ### 3. 데이터베이스 모델링(ERD)
 <br>
 
-![cineMATE_ERD](https://github.com/user-attachments/assets/d2834d31-d0fb-4ff8-8efc-4748a5827f84)
+![cineMATE](https://github.com/user-attachments/assets/cd5282aa-0938-4081-abc2-500f104d4403)
+
 
 
 ### 4. 영화 추천 알고리즘에 대한 기술적 설명
