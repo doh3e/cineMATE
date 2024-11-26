@@ -26,11 +26,9 @@
 <div>
   <code><b>홍노을</b></code>
 </div>
-
+<br><br>
 
 ### 2. 목표 서비스 구현 및 실제 구현 정도
-
-<div>
   
   #### 구현 목표
   
@@ -45,32 +43,29 @@
      - 리뷰 댓글, 좋아요 기능
   6. 간단한 테스트를 제공하여 유저가 자신의 친구들에게 '자신이 생각한 친구와 닮은 영화'를 공유할 수 있도록 함
      - 사이트 방문 유도, 흥미 요소 부여
-     - 자신이 만든 친구 카드를 PC와 서버에 저장
+     - 자신이 만든 친구 카드를 PC와 서버에 저장<br><br>
 
   #### 실제 구현 수준
 
   1. 필수 요구사항 이행 완료
      - 회원 기능(회원가입/로그인 등), 영화 DB fixture 2000개, 여러가지 추천 기능 구현,<br>
        유저간의 소통이 가능한 리뷰 게시판 및 상호 팔로우가 가능한 환경 구축 <br>
-
-  <code><b>회원가입 및 로그인</b></code><br>
-  <div>   
-    <img src="https://github.com/user-attachments/assets/01946c6e-7d73-4984-989d-2ecdec8d1c4a" width=200>
-    <img src="https://github.com/user-attachments/assets/3d200e5d-5a98-43f5-b222-6b1d5e44dddb" width=200>
-    <img src="https://github.com/user-attachments/assets/a2516f0d-77df-441e-9d8e-f3df786ccba5" width=200>
-  </div> <br>
+  
   2. 프론트-백 간의 원활한 흐름, 유저의 화면 크기에 따른 반응형 웹페이지 구현
      - bootstrap을 활용하지 않고 순수 css로 media 쿼리를 작성하여 모바일 환경까지는 고려하기 어려웠으나,<br>
-       PC나 태블릿 환경의 유저가 비슷한 경험을 할 수 있도록 고려하여 화면 배치
+       PC나 태블릿 환경의 유저가 비슷한 경험을 할 수 있도록 고려하여 화면 배치<br>
      - back-end와 front-end의 원활한 상호작용 확인. 오류가 날 시 상황에 맞는 오류 메세지를 throw / catch 하도록 고려
   3. 유저가 직관적으로 파악할 수 있도록 UX/UI 통일 고려, 디자인 컨셉 통일감 중시
      - 사용 font와 color 등을 사전에 지정하여 가급적이면 해당 무드를 벗어나지 않도록 함
-     - 동시에 정적이고 딱딱한 사이트가 아니라 최대한 유저가 다양한 경험을 하고 즐길 수 있도록 애니메이션 등 활성화
+     - 동시에 정적이고 딱딱한 사이트가 아니라 최대한 유저가 다양한 경험을 하고 즐길 수 있도록 애니메이션 등 활성화<br>
+  
   4. 영화 API를 통해 유저가 영화를 검색하기 용이하게 하고, 받아온 API를 백엔드에서 여러 알고리즘으로 처리하여 다양한 추천 제시
      - 사용 API : TMDB, KOFIC(영화진흥위원회 DB)
      - 추천 로직에 관해서는 추천 로직 설명 파트에서 자세히 다룸
   5. 리뷰 작성 시 정확한 정보를 유저가 입력하게 하기 보다는, 간단한 검색으로 영화 정보를 전부 받아올 수 있게 리뷰 작성 페이지 구현
-     
+  6. <code>무비포유</code> 테스트 제작, 저장 성공
+     - 주변 친구들에게 테스트 시켜본 결과 반응이 좋았음 <br>
+     <br>
 
 
 ### 3. 데이터베이스 모델링(ERD)
@@ -78,10 +73,57 @@
 
 ![cineMATE](https://github.com/user-attachments/assets/cd5282aa-0938-4081-abc2-500f104d4403)
 
+<br>
+<code><b>Like, Bookmark가 manytomany가 되지 않은 이유</b></code><br><br>
+<p>
+  DB에 있는 영화는 2000개에 불과한데, API를 통한 검색으로도 영화를 찾고 북마크/좋아요 할 수 있기 때문<br>
+  DB에 없는 영화를 manytomany로 연결할 순 없다! => 두 모델에 영화 정보를 함께 추가하게 된 이유이기도 함
+</p><br>
 
 
 ### 4. 영화 추천 알고리즘에 대한 기술적 설명
+
+#### 메인화면의 Top rated
+<p>사전에 인기순으로 불러온 2000개의 DB중 vote_average(평점, 10점 만점)와 vote_count(투표수)를 고려하여 100위 선정 후 보여줌</p>
+<br><br>
+
+#### 영화탐색의 큐레이팅
+
 ### 5. 핵심 기능에 대한 설명
+  <br>
+  <code><b>메인화면</b></code><br>
+  <p>TOP RATED 영화 리스트, 국내 박스오피스 순위 및 신작 목록</p>
+  <div>
+    <img src="https://github.com/user-attachments/assets/fd4d31e1-b86f-4b77-aa38-65a738811766" width=900>
+  </div> <br>
+  
+  <code><b>회원가입 및 로그인</b></code><br>
+  <p>회원가입 유효성 검사, 프로필사진 미리보기, 로그인, 로그아웃</p>
+  <div>   
+    <img src="https://github.com/user-attachments/assets/01946c6e-7d73-4984-989d-2ecdec8d1c4a" width=300>
+    <img src="https://github.com/user-attachments/assets/3d200e5d-5a98-43f5-b222-6b1d5e44dddb" width=300>
+    <img src="https://github.com/user-attachments/assets/a2516f0d-77df-441e-9d8e-f3df786ccba5" width=300>
+  </div> <br>
+
+  <code><b>마이페이지</b></code><br>
+  <p>내 정보 보기, 회원수정/탈퇴, 내 좋아요/북마크 저장함, 리뷰 보관함</p>
+  <div>
+    <img src="https://github.com/user-attachments/assets/6639b60e-f106-4a36-8681-407440d77880" width=900>
+  </div> <br>
+
+  <code><b>영화탐색</b></code><br>
+  <div>
+    <img src="https://github.com/user-attachments/assets/01946c6e-7d73-4984-989d-2ecdec8d1c4a" width=200>
+    
+  </div> <br>
+
+  <code><b>리뷰페이지</b></code><br>
+  <div>
+    <img src="https://github.com/user-attachments/assets/01946c6e-7d73-4984-989d-2ecdec8d1c4a" width=200>
+    
+  </div> <br>
+  
+
 ### 6. 생성형 AI를 활용한 부분
 ### 7. 기타 (느낀점, 후기 등)
 ### 8. 배포 서버 URL (배포했을 경우)
