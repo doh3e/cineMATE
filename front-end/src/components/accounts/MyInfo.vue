@@ -74,7 +74,6 @@ const isFollowing = computed(() => {
 const toggleFollow = async () => {
   try {
     const response = await authAxios.post(`/accounts/follows/${props.person.username}/`)
-    console.log(response.data.is_followed)
     emit('updateRequired')
   } catch (error) {
     console.error('팔로우/언팔로우 오류:', error)

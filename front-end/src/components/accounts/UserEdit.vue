@@ -433,13 +433,21 @@ const submitForm = async () => {
 }
 
 .dontgo {
-  position: absolute;
-  top: 82%;
-  left: 54%;
-  width: 100px;
-  height: 30px;
+  width: 20%;
+  max-width: 400px;
+  min-width: 100px;
+  justify-self: flex-end;
+  align-self: flex-end;
+  height: 40px;
+  margin-top: 20px;
   background-color: #666666;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .dontgo:hover {

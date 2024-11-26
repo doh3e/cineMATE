@@ -114,6 +114,8 @@ onMounted(() => {
 form > label {
   justify-self: flex-start;
   text-align: left;
+  font-family: 'S-CoreDream';
+  font-weight: 600;
 }
 
 .comments-listbox {
