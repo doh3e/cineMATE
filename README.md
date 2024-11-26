@@ -97,7 +97,23 @@
 <p>사전에 인기순으로 불러온 2000개의 DB중 vote_average(평점, 10점 만점)와 vote_count(투표수)를 고려하여 100위 선정 후 보여줌</p>
 <br><br>
 
-#### 영화탐색의 큐레이팅
+#### 영화 큐레이팅 페이지
+
+<code><b>기본 추천 (좋아요/북마크 기반)</b></code><br>
+<p>유저가 좋아요/북마크 한 영화의 장르 중 가장 많은 장르 1, 2위를 뽑고 1, 2위 장르가 함께 포함된 영화를 찾는다.</p>
+<img src="https://github.com/user-attachments/assets/65ff2283-d464-4973-93d8-064493fd0b3b" width=900>
+<img src="https://github.com/user-attachments/assets/0fe4b454-ffff-4abb-8964-6ace3fedd91d" width=900>
+<br><br>
+<code><b>특별한 날 추천(생일, 크리스마스 등...)</b></code><br>
+<p>생일, 혹은 개발자가 지정해둔 특별한 날에 관련 큐레이션을 띄운다.</p>
+<img src="https://github.com/user-attachments/assets/8dd58157-df47-4ef8-8ada-72f412b21025" width=900>
+<img src="https://github.com/user-attachments/assets/9ebf25b5-3adc-4bb4-b022-83de6b09bb63" width=900>
+<br><br>
+<code><b>유사유저 기반 추천</b></code><br>
+<p>나와 선호하는 영화가 비슷한 유저 상위 몇 명을 뽑아 유사유저로 지정하고, 유사유저가 좋아하거나 북마크한 다른 영화를 추천한다.</p>
+<img src="https://github.com/user-attachments/assets/612ea7e6-bfd2-473a-87e5-a886f193cdc0" width=900>
+<img src="https://github.com/user-attachments/assets/102f7ac8-70a3-4547-b7f6-a2cb769052e2" width=900>
+<br><br>
 
 ### 5. 핵심 기능에 대한 설명
   <br>
