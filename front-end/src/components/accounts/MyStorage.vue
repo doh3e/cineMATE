@@ -127,7 +127,8 @@ const responsiveBreakpoints = [
 
 <style scoped>
 .carousel-container {
-  margin: 20px auto; /* 가운데 정렬 */
+  margin: 0 auto; /* 가운데 정렬 */
+  margin-bottom: 30px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;

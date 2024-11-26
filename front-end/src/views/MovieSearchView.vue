@@ -18,11 +18,16 @@
           <p>원하시는 영화의 제목을 2글자 이상 입력해주세요.</p>
           <p>띄어쓰기를 정확히 하셔야 해요. (ex.세얼간이x 세 얼간이o)</p>
           <p>영문명으로도 검색이 가능합니다.</p>
+          <p>검색결과가 많으면 로딩에 시간이 걸릴 수도 있어요</p>
       </div>
-      <div class="tooltip-box" v-if="isSearched && movies.length === 0">
+      <div class="loading" v-if="isSearched && isLoading">
+        <img src="@/assets/img/loading-spinner-unscreen.gif" alt="spinner" class="loading-spinner">
+      </div>
+      <div class="tooltip-box" v-else-if="isSearched && !isLoading && movies.length === 0">
           <h3>❓ 검색 결과가 없습니다 ❓</h3><br>
           <p>검색어를 한 번 더 확인해주세요!</p>
           <p>띄어쓰기가 틀렸을 경우 검색에 나오지 않을 수 있습니다.</p>
+          <p>검색 API에 일시적 오류가 있을 수도 있습니다.</p>
       </div>
       <div class="result-box">
         <MovieSearch
@@ -42,6 +47,8 @@ import { authAxios, publicAxios } from '@/axios'
 const movies = ref([]) // 검색 결과
 const keyword = ref('') // 검색 키워드
 const isSearched = ref(false) // 검색 여부 상태
+const isLoading = ref(false) // 로딩 상태 관리
+const timeoutId = ref(null) // 타이머
 
 // 검색 실행
 const searchMovies = async () => {
@@ -55,19 +62,29 @@ const searchMovies = async () => {
     return
   }
 
+  isSearched.value = true
+  isLoading.value = true
   movies.value = []
+
+  timeoutId.value = setTimeout(() => {
+    isLoading.value = false
+    isSearched.value = true
+    movies.value = [] 
+    alert('결과를 가져오지 못했습니다. 다시 시도해주세요.')
+  }, 20000)
 
   try {
     const response = await publicAxios.get('/movies/search/', {
       params: { query: keyword.value.trim() },
     })
+    clearTimeout(timeoutId.value)
     movies.value = response.data
     isSearched.value = true
+    isLoading.value = false
   } catch (error) {
     console.error('검색 중 오류 발생:', error)
   }
 }
-
 
 </script>
 

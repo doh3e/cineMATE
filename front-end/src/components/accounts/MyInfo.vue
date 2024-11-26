@@ -173,6 +173,14 @@ const toggleFollow = async () => {
   .profile-imgbox {
     display: none;
   }
+
+  .profile-content{
+    width: 90%;
+  }
+  .default-info,
+  .additional-info {
+    align-self: flex-start;
+  }
 }
 
 </style>

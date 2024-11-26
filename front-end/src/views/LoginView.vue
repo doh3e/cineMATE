@@ -25,10 +25,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCounterStore } from '@/stores/counter'
-import { publicAxios } from '@/axios';
 
 const store = useCounterStore()
 const router = useRouter()

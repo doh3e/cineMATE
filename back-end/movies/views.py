@@ -114,10 +114,8 @@ def movie_search(request):
     MOVIE_API_URL = "https://api.themoviedb.org/3/search/movie"
     movies = []
     page = 1
-    max_results = 100
-    total_results = 0
 
-    while total_results < max_results:
+    while True:
       params = {
         'api_key': MOVIE_API_KEY,
         'language': 'ko-KR',
@@ -134,8 +132,7 @@ def movie_search(request):
       if not results:
         break
 
-      movies.extend(results[:max_results - total_results])
-      total_results = len(movies)
+      movies.extend(results)
       page += 1
 
       if page > response_data.get('total_pages', 1):
@@ -144,9 +141,9 @@ def movie_search(request):
     if not movies:
       return Response({"message": "검색 결과가 없습니다."}, status=404)
 
-    sorted_movies = sorted(movies, key=lambda x: x.get('popularity', 0), reverse=True)
+    sorted_movies = sorted(movies, key=lambda x: x.get('title', ''))
 
-    return Response(sorted_movies, status=200)  # 최대 100개 반환
+    return Response(sorted_movies, status=200)
   except requests.RequestException as e:
     return Response({"error": f"TMDB API 요청 실패: {str(e)}"}, status=500)
   except Exception as e:

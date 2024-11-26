@@ -9,6 +9,7 @@
           name="comment-content"
           id="comment-content"
           v-model="query"
+          maxlength="200"
           @keyup.enter.prevent="createComment"
         ></textarea>
         <button type="submit">등록</button>
@@ -33,8 +34,8 @@ import { useCounterStore } from '@/stores/counter'
 import { publicAxios, authAxios } from '@/axios'
 
 const store = useCounterStore()
-const query = ref('') // 댓글 작성 데이터
-const comments = ref([]) // 댓글 리스트
+const query = ref('')
+const comments = ref([])
 
 const prop = defineProps({
   review_id: {
@@ -46,13 +47,12 @@ const prop = defineProps({
 // 댓글 작성 함수
 const createComment = async () => {
   try {
-    console.log('작성된 댓글:', query.value)
     await authAxios.post(`/community/reviews/${prop.review_id}/comments/`, {
       content: query.value.trim(),
     })
     alert('댓글 등록이 완료되었습니다!')
-    query.value = '' // 입력 필드 초기화
-    fetchCommentList() // 댓글 목록 갱신
+    query.value = ''
+    fetchCommentList()
   } catch (error) {
     console.error('댓글 작성 실패:', error)
     alert('댓글 작성 중 오류가 발생했습니다.')
@@ -65,8 +65,7 @@ const fetchCommentList = async () => {
     const response = await publicAxios.get(
       `/community/reviews/${prop.review_id}/comments/`
     )
-    comments.value = response.data || [] // 데이터가 없으면 빈 배열로 설정
-    console.log('불러온 댓글 목록:', comments.value)
+    comments.value = response.data || []
   } catch (error) {
     console.error('댓글 데이터를 가져오는 중 오류 발생:', error)
   }
@@ -75,15 +74,27 @@ const fetchCommentList = async () => {
 onMounted(() => {
   fetchCommentList()
 })
+
 </script>
 
 <style scoped>
 .comment-container {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 20px;
+  padding: 30px 30px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  width: 90%;
+  min-width: 400px;
+  max-width: 800px;
+  height: 70%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
 }
+
 .comment-input {
   width: 100%;
   margin-bottom: 20px;
@@ -106,6 +117,7 @@ form > label {
 }
 
 .comments-listbox {
+  width: 100%;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -117,6 +129,15 @@ form > label {
 #comment-content {
   width: 500px;
   resize: none;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+button {
+  width: 50px;
+  min-width: 50px;
+  height: 30px;
+  cursor: pointer;
 }
 
 </style>

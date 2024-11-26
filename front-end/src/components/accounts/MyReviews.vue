@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h2>나의 리뷰</h2>
+  <div class="myreview-container">
+    <h1>나의 리뷰</h1>
     <div v-if="myReviews">
       <h3>내가 작성한 리뷰</h3>
       <MyReviewItem
@@ -43,4 +43,10 @@ console.log(props.myReviews)
 </script>
 
 <style scoped>
+
+.myreview-container {
+  width: 100%;
+  background-color: #f8f8f8;
+}
+
 </style>

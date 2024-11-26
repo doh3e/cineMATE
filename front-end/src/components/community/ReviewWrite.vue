@@ -1,32 +1,31 @@
 <template>
   <div class="write-container">
+    <h1 class="write-title">리뷰 작성</h1>
     <form @submit.prevent="submitReview" class="review-form">
       <div class="movieinfo userwrite-area">
         <div class="form-content title">
-          <label for="title">영화 제목</label>
-          <input type="text" id="title" v-model="formData.title" readonly />
+          <input type="text" id="title" v-model="formData.title" 
+          placeholder="검색을 통해서만 영화 입력이 가능합니다" readonly />
           <button type="button" @click="openSearchModal">검색</button>
         </div>
-        <p>검색을 통해서만 영화를 입력할 수 있습니다.</p>
         <div class="form-content review-title">
-          <label for="review-title">리뷰 제목</label>
           <input
             type="text"
             id="review-title"
             v-model="formData.review_title"
-            placeholder="리뷰 제목을 입력하세요"
+            placeholder="한줄평을 입력하세요 (30자까지)"
+            maxlength="30"
           />
         </div>
         <div class="form-content review-content">
-          <label for="review-content">리뷰내용</label>
           <textarea
             id="review-content"
             v-model="formData.review_content"
-            placeholder="리뷰 내용을 입력하세요"
+            placeholder="상세한 리뷰를 입력하세요"
           ></textarea>
         </div>
         <div class="form-content user-rating">
-          <label for="user-rating">별점</label>
+          <h3>나만의 별점</h3>
           <div class="star-rating">
             <input
               v-for="n in 5"
@@ -92,7 +91,7 @@
           <input type="text" v-model="formData.poster_path" readonly />
         </div>
       </div>
-      <button type="submit">리뷰 작성</button>
+      <button type="submit" class="submit-btn">리뷰 작성</button>
     </form>
 
     <!-- 영화 검색 모달 -->
@@ -138,7 +137,6 @@ const closeSearchModal = () => {
 
 // 영화 선택
 const selectMovie = (movie) => {
-  console.log('선택된 영화:', movie) // 디버깅 로그 추가
   formData.value.id = movie.id
   formData.value.title = movie.title
   formData.value.overview = movie.overview
@@ -148,21 +146,19 @@ const selectMovie = (movie) => {
   formData.value.genre_ids = movie.genre_ids
   formData.value.release_date = movie.release_date
   formData.value.poster_path = movie.poster_path
-  closeSearchModal() // 모달 닫기
+  closeSearchModal()
 }
 
-const selectedRating = ref(0) // 사용자가 선택한 별점
+const selectedRating = ref(0)
 
 const updateRating = (rating) => {
   selectedRating.value = rating
   formData.value.user_rating = rating
-  console.log(`별점 ${rating} 선택됨`) // 선택된 별점 디버깅용 로그
 }
 
 // 리뷰 제출
 const submitReview = async () => {
   try {
-    console.log('폼 데이터:', formData.value)
     await authAxios.post('/community/reviews/', formData.value)
     alert('리뷰 작성이 완료되었습니다!')
     router.replace({ name: 'ReviewList' })
@@ -183,23 +179,39 @@ const submitReview = async () => {
   align-items: center;
   width: 80%;
   margin-bottom: 30px;
+  height: 100%;
 }
+
+.write-title {
+  font-family: 'S-CoreDream';
+  font-weight: 600;
+  font-size: 2rem;
+  margin-top: -20px;
+  text-align: center;
+  color: #f8f8f8;
+}
+
 .review-form {
   width: 100%;
+  max-width: 600px;
+  min-width: 400px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 15px;
+  padding: 30px 0;
 }
 
 .movieinfo {
   width: 100%;
+  padding: 20px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap:20px;
 }
 
 .form-content {
@@ -207,44 +219,67 @@ const submitReview = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  border-bottom: 2px solid #adadad;
+  margin: 10px 30px;
+  padding: 10px 10px;
 }
 
-input[type=text] {
-  width: 200px;
-  height: 25px;
-  border-radius: 5px; 
-}
-
-textarea {
-  width: 400px;
-  resize: none;
-}
-
-#title, #review-title {
-  width: 350px;
-}
-
-#overview {
-  height: 50px;
+.review-content {
+  border-bottom: none;
 }
 
 #review-content {
-  height: 200px;
+  width: 400px;
+  resize: none;
+  border: none;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+  line-height: 1.4;
+  height: 150px;
   padding: 10px;
 }
 
-.genre-tags {
+.title, .review-title {
+  margin: 10px 30px;
+  padding: 10px 10px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.genre-tag {
-  background-color: #f0f0f0;
-  padding: 5px 10px;
-  border-radius: 5px;
+#title, #review-title {
+  width: 100%;
+  border:none;
+  outline:none;
+  color: #1f1f1f;
+  font-size:16px;
+  height:25px;
+  background: none;
+}
+
+.title > button {
+  width: 80px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+  background-color: #f8f8f8;
+  box-shadow: 1px 1px 1px #1f1f1f;
+}
+
+.info-typo {
+  padding-top: 0;
   font-size: 0.9rem;
+  color: red;
+}
+
+.user-rating {
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: none;
 }
 
 .star-rating input[type='radio'] {
@@ -261,5 +296,31 @@ textarea {
 .star-rating .star.filled {
   color: #ffc107;
 }
+
+.auto-area {
+  display: none;
+}
+
+.submit-btn {
+  position:relative;
+  margin-bottom: 20px;
+  width:30%;
+  height:40px;
+  background: linear-gradient(125deg,#7469B6,#E1afd1,#AD88C6);
+  background-position: left;
+  background-size: 200%;
+  color:white;
+  font-weight: bold;
+  border:none;
+  cursor:pointer;
+  transition: 0.4s;
+  display:inline;
+}
+
+.submit-btn:hover {
+  background-position: right;
+  color: #1f1f1f;
+}
+
 
 </style>

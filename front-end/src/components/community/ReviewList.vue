@@ -4,6 +4,7 @@
       <div class="best-item"
         v-for="review in bestReviews"
         :key="review.id"
+        @click="goToDetail(review.review_id)"
         >
         <p>
           <span v-for="num in review.user_rating">
@@ -186,16 +187,18 @@ onBeforeRouteUpdate((to, from, next) => {
   align-items: center;
   gap: 5px;
   padding: 5px;
+  text-align: center;
 }
 
 .best-item:hover {
   transform: scale(1.1);
-  background-color: rgba(173, 136, 198, 0.9);
+  background-color: rgba(197, 169, 199, 1);
 }
 
 .best-item > h3,
-.best-item > h4 {
-  width: 100%;
+.best-item > h4
+.best-item > p {
+  width: 95%;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;

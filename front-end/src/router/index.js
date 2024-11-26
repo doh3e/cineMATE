@@ -100,7 +100,10 @@ router.beforeEach((to, from, next) => {
     alert('이미 로그인 되어 있습니다!')
     next({ name: 'Home' })
   }
-  else if (to.name === 'Mypage' && !isAuthenticated) {
+  else if ((to.name === 'Mypage' || to.name === 'MovieCuration' ||
+    to.name === 'Review' || to.name === 'ReviewList' || to.name === 'ReviewWrite' ||
+    to.name === 'ReviewDetail' || to.name === 'Movieforyou'
+  ) && !isAuthenticated) {
     alert('로그인 한 사용자만 이용할 수 있습니다!')
     next({ name: 'Login' })
   }

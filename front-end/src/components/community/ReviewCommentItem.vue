@@ -100,6 +100,15 @@ const deleteComment = async () => {
   font-size: 0.8rem;
 }
 
+@media (max-width: 600px) {
+  .create-time {
+    display: none;
+  }
+  .comment-item {
+    justify-content: space-between;
+  }
+}
+
 .delete-btn {
   width: 3%;
   justify-self: flex-end;
