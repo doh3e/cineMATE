@@ -125,6 +125,7 @@ cineMATE/
 └─ README.md
 ```
 
+<br>
 
 ## 🎬 영화 추천 알고리즘에 대한 기술적 설명
 
@@ -196,14 +197,18 @@ cineMATE/
     <img src="https://github.com/user-attachments/assets/df031e66-3f23-4149-875c-0ad167a5e180" width=300>
   </div>
 
-## 📈 생성형 AI를 활용한 부분
 <br>
-<code><b>테스트에서의 장르 가중치 계산 및 재분배, 리뷰 데이터 생성에 활용</b></code><br>
+
+## 📈 생성형 AI를 활용한 부분
+
+### 테스트에서의 장르 가중치 계산 및 재분배, 리뷰 데이터 생성에 활용
+<br>
 <div>
   <img src="https://github.com/user-attachments/assets/93d907c4-5832-4aa5-9b5e-6a1b911c3251" width=900>
   <img src="https://github.com/user-attachments/assets/881bdea6-9eee-42f8-a341-cb319040bda2" width=900>
 </div>
-<br><br>
+
+<br>
 
 ## 🎀 느낀 점과 후기
 
@@ -222,6 +227,7 @@ cineMATE/
 이번 기회로 RESTful한 백엔드 API 구현을 해볼 수 있어서 좋았다.<br>
 한 학기동안 배운 내용을 바탕으로 유의미한 결과물을 만들어낼 수 있는 좋은 기회였다.<br>
 </p>
+
 <br>
 
 ## ⚙ 배포 서버 URL (배포했을 경우)
